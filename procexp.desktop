@@ -1,0 +1,11 @@
+[Desktop Entry]
+Name=Linux Process Explorer
+GenericName=System monitoring tool
+Comment=Start the Linux Process Explorer
+Exec=procexp.sh
+Icon=/usr/share/icons/procexp/icon.png
+Terminal=false
+Type=Application
+Categories=System;Utility;
+StartupNotify=True
+X-AppInstall-Package=procexp

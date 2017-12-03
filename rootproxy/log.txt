@@ -1,0 +1,36 @@
+0:00:01.000019
+bytes / second = 47681
+bytes / second = 47681
+bytes / second = 47681
+bytes / second = 47681
+bytes / second = 47681
+bytes / second = 47681
+bytes / second = 47681
+bytes / second = 47681
+bytes / second = 47681
+bytes / second = 47681
+
+0:00:01.000010
+bytes / second = 47864
+bytes / second = 47864
+bytes / second = 47864
+bytes / second = 47864
+bytes / second = 47864
+bytes / second = 47864
+bytes / second = 47864
+bytes / second = 47864
+bytes / second = 47864
+bytes / second = 47864
+
+0:00:01.000001
+bytes / second = 47992
+bytes / second = 47992
+bytes / second = 47992
+bytes / second = 47992
+bytes / second = 47992
+bytes / second = 47992
+bytes / second = 47992
+bytes / second = 47992
+bytes / second = 47992
+bytes / second = 47992
+

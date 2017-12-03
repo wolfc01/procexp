@@ -1,0 +1,176 @@
+
+<html>
+   <head>
+      <style type="text/css">
+         .sikuli-code {
+            font-size: 20px;
+            font-family: "Osaka-mono", Monospace;
+            line-height: 1.5em;
+            display:table-cell;
+            white-space: pre-wrap;       /* css-3 */
+            white-space: -moz-pre-wrap !important;  /* Mozilla, since 1999 */
+            white-space: -pre-wrap;      /* Opera 4-6 */
+            white-space: -o-pre-wrap;    /* Opera 7 */
+            word-wrap: break-word;       /* Internet Explorer 5.5+ */
+            width: 99%;   /* remove horizontal scroll-bar when viewing in IE7 */
+         }
+         .sikuli-code img {
+            vertical-align: middle;
+            margin: 2px;
+            border: 1px solid #ccc;
+            padding: 2px;
+            -moz-border-radius: 5px;
+            -webkit-border-radius: 5px;
+            -moz-box-shadow: 1px 1px 1px gray;
+            -webkit-box-shadow: 1px 1px 2px gray;
+         }
+         .kw {
+            color: blue;
+         }
+         .skw {
+            color: rgb(63, 127, 127);
+         }
+
+         .str {
+            color: rgb(128, 0, 0);
+         }
+
+         .dig {
+            color: rgb(128, 64, 0);
+         }
+
+         .cmt {
+            color: rgb(200, 0, 200);
+         }
+
+         h2 {
+            display: inline;
+            font-weight: normal;
+         }
+
+         .info {
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+            margin-bottom: 20px;
+            display: none;
+         }
+
+         a {
+            color: #9D2900;
+         }
+
+         body {
+            font-family: "Trebuchet MS", Arial, Sans-Serif;
+         }
+
+      </style>
+   </head>
+<body>
+<div class="info">
+<h2>sikulitest.sikuli</h2> <a href="sikulitest.zip">(Download this script)</a>
+</div>
+<pre class="sikuli-code">
+<span class="str">"""automatic test suite for process explorer
+   Run this on a quad cpu machine
+"""</span>
+<span class="kw">import</span> subprocess
+
+<span class="kw">try</span>:
+  subprocess.Popen([<span class="str">"killall"</span>, <span class="str">"python"</span>])
+<span class="kw">except</span>:
+  <span class="kw">pass</span>
+
+<span class="kw">def</span> start_processexplorer():
+    p = subprocess.Popen([<span class="str">"python"</span>,<span class="str">"/home/cpwolff/procexp/code/trunk/procexp.py"</span>])
+    <span class="cmt">#p = subprocess.Popen("procexp.sh")
+</span>
+    <span class="skw">wait</span>(<img src="1388491619153.png" />, <span class="dig">20</span>)
+    <span class="skw">type</span>(Pattern(<img src="1388491661459.png" />).targetOffset(-<span class="dig">175</span>,-<span class="dig">21</span>), <span class="str">"test"</span>)
+    <span class="skw">click</span>(<img src="1388435311540.png" />)
+    <span class="skw">click</span>(<img src="1388436794512.png" />)
+
+<span class="kw">def</span> maximize_process_explorer():
+    <span class="cmt">#process explorer full size
+</span>    <span class="skw">type</span>(Key.SPACE, KEY_ALT)
+    <span class="skw">type</span>(<span class="str">"x"</span>)
+    <span class="skw">click</span>(Pattern(<img src="1388478858825.png" />).similar(<span class="dig">0.98</span>).targetOffset(-<span class="dig">40</span>,<span class="dig">14</span>))
+    <span class="skw">doubleClick</span>(Pattern(<img src="1388436274469.png" />).similar(<span class="dig">0.90</span>))
+    <span class="skw">doubleClick</span>(Pattern(<img src="1388436357270.png" />).similar(<span class="dig">0.96</span>))
+
+<span class="kw">def</span> startproperties_25process():
+
+    maximize_process_explorer()
+    <span class="skw">wait</span>(<img src="1388436426300.png" />, <span class="dig">20</span>)
+    <span class="skw">rightClick</span>(<img src="1388436426300.png" />)
+
+<span class="kw">def</span> test_cpu25percent():
+    <span class="str">"""test a cpu bound process to take 25% CPU at a 4 core machine"""</span>
+    <span class="cmt">#start CPU bound process
+</span>    proc = subprocess.Popen([<span class="str">"python"</span>, <span class="str">"-c"</span>, <span class="str">"while True:  pass"</span>])
+    start_processexplorer()
+    startproperties_25process()
+
+    <span class="cmt">#show process detail screen 
+</span>    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.ENTER)
+
+    <span class="cmt">#wait until we see usage of about 25%
+</span>    <span class="skw">wait</span>(Pattern(<img src="1388480252501.png" />).similar(<span class="dig">0.86</span>), <span class="dig">60</span>)
+    <span class="skw">wait</span>(<img src="1388437097963.png" />, <span class="dig">90</span>)
+    p = subprocess.Popen([<span class="str">"killall"</span>, <span class="str">"python"</span>])
+
+<span class="kw">def</span> test_affinity():
+    <span class="str">"""test affinity settings of a process"""</span>
+    <span class="cmt">#start CPU bound process
+</span>    proc = subprocess.Popen([<span class="str">"python"</span>, <span class="str">"-c"</span>, <span class="str">"while True:  pass"</span>])
+    start_processexplorer()
+    startproperties_25process()
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.ENTER)
+    <span class="skw">click</span>(Pattern(<img src="1388483186882.png" />).exact())
+    <span class="skw">click</span>(Pattern(<img src="1388483198383.png" />).exact())
+    <span class="skw">click</span>(Pattern(<img src="1388483211934.png" />).exact())
+    <span class="skw">click</span>(<img src="1388483235141.png" />)
+    <span class="skw">type</span>(Key.F4, KEY_ALT)
+    start_processexplorer()
+    startproperties_25process()
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.ENTER)
+    <span class="skw">wait</span>(Pattern(<img src="1388483627687.png" />).similar(<span class="dig">0.86</span>))
+    <span class="skw">wait</span>(Pattern(<img src="1388483637679.png" />).similar(<span class="dig">0.95</span>))
+    <span class="skw">wait</span>(Pattern(<img src="1388483647911.png" />).similar(<span class="dig">0.98</span>))
+    <span class="skw">wait</span>(Pattern(<img src="1388483656564.png" />).similar(<span class="dig">0.98</span>))
+    p = subprocess.Popen([<span class="str">"killall"</span>, <span class="str">"python"</span>])
+
+<span class="kw">def</span> testdeadprocess():
+    start_processexplorer()
+    maximize_process_explorer()
+    proc = subprocess.Popen([<span class="str">"python"</span>, <span class="str">"-c"</span>, <span class="str">"import time; time.sleep(10)"</span>])
+    <span class="skw">wait</span>(<img src="1388494525665.png" />, <span class="dig">20</span>)
+    <span class="skw">rightClick</span>(<img src="1388494525665.png" />)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.DOWN)
+    <span class="skw">type</span>(Key.ENTER)
+    <span class="skw">wait</span>(Pattern(<img src="1388495924849.png" />).similar(<span class="dig">0.93</span>), <span class="dig">60</span>)
+    subprocess.Popen([<span class="str">"killall"</span>, <span class="str">"python"</span>])
+
+<span class="kw">if</span> __name__ == <span class="str">"__main__"</span>:
+   <span class="kw">for</span> i <span class="kw">in</span> range(<span class="dig">10</span>):
+     test_cpu25percent()
+     test_affinity()
+     testdeadprocess()
+   <span class="kw">print</span> <span class="str">"************************"</span>
+   <span class="kw">print</span> <span class="str">"* all tests succeeded  *"</span>
+   <span class="kw">print</span> <span class="str">"************************"</span>
+</pre>
+</body>
+</html>
