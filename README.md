@@ -2,7 +2,7 @@
 Process explorer for linux
 
 
-The Linux Process Explorer aims to be a Linux replacement of  (https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer). This project is a continuation of my project https://sourceforge.net/projects/procexp/. 
+The Linux Process Explorer aims to be a Linux equivalent of  (https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer). This project is a continuation of my project located at https://sourceforge.net/projects/procexp/. 
 
 Goals of this project
 1. Revive the old code, refactor and complete functionality
