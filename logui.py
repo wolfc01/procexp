@@ -1,3 +1,4 @@
+'''Log window'''
 # This file is part of the Linux Process Explorer
 # See www.sourceforge.net/projects/procexp
 #
@@ -15,29 +16,32 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
-from PyQt4 import QtGui
-import utils.procutils
-import ui.log
+from PyQt4.QtGui import QDialog
+from utils.procutils import getLog
+from ui.log import Ui_Dialog
 
-log_ui = None
-dialog = None
+class _LogWindowWrapper(object):
+  '''Manage the procexp log window.'''
+  def __init__(self):
+    self._dialog = None
+    self._log_ui = None
 
-def doLogWindow():
-  """Make a log window"""
-  global log_ui
-  global dialog
-  if dialog is None:
-    dialog = QtGui.QDialog()
-    log_ui = ui.log.Ui_Dialog()
-    log_ui.setupUi(dialog)
-  dialog.show()
+  def createDialog(self):
+    '''Create and show dialog window.'''
+    if not self._dialog:
+      self._dialog = QDialog()
+      self._log_ui = Ui_Dialog()
+      self._log_ui.setupUi(self._dialog)
+    self._dialog.show()
 
-def update():
-  """update the log from the logQueue"""
-  if log_ui is not None:
-    logs = procutils.getLog()
-    oldText = str(log_ui.plainTextEdit.toPlainText())
-    newText = oldText + logs
-    log_ui.plainTextEdit.setPlainText(newText)
-  
-  
+  def update(self):
+    '''Append latest log text.'''
+    if self._log_ui:
+      logs = getLog()
+      oldText = str(self._log_ui.plainTextEdit.toPlainText())
+      newText = oldText + logs
+      self._log_ui.plainTextEdit.setPlainText(newText)
+
+_inst = _LogWindowWrapper()
+doLogWindow = _inst.createDialog
+update = _inst.update
