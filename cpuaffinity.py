@@ -1,8 +1,7 @@
-from PyQt4 import QtGui
+from PyQt4 import QtGui, uic
 import subprocess
-
+import os
 import utils.procutils
-import ui.cpuaffinity as affinityDialog
 
 
 def doAffinity(cpuCount, process):
@@ -10,8 +9,7 @@ def doAffinity(cpuCount, process):
   """
   global ui
   dialog = QtGui.QDialog()
-  aff = affinityDialog.Ui_affinityDialog()
-  aff.setupUi(dialog)
+  aff = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/cpuaffinity.ui"), baseinstance=dialog)
   
   #get affinity of process
   affinityHexStr =subprocess.Popen(["taskset", "-p", str(process)], \
