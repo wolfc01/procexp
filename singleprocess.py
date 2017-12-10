@@ -19,14 +19,13 @@
 #
 # Display process properties and statistics of a single process
 #
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, uic
 import PyQt4.Qwt5 as Qwt
 import subprocess
 import utils.procutils
-import ui.processdetails
 import procreader.tcpip_stat as tcpip_stat
 import procreader.reader
-
+import os
 
 UNKNOWN = "---" 
 
@@ -53,8 +52,7 @@ class singleUi(object):
     self.__reader__ = reader
     self.__name__ = name
     self.__dialog__ = QtGui.QDialog()
-    self.__procDetails__ = ui.processdetails.Ui_Dialog()
-    self.__procDetails__.setupUi(self.__dialog__)
+    self.__procDetails__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/processdetails.ui"), baseinstance=self.__dialog__)
     self.__dialog__.show()
     self.__dialog__.setWindowTitle(proc+":"+cmdLine+" Properties")
     self.__processGone__ = False
