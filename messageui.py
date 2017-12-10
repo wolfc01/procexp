@@ -20,8 +20,7 @@
 # implements a message UI capable of supressing messages which the user already knows
 #
 
-from PyQt4 import QtGui
-import ui.message
+from PyQt4 import QtGui, uic
 import os
 dialog = None
 import configobj
@@ -65,8 +64,7 @@ def doMessageWindow(msg):
     return
   global dialog
   dialog = QtGui.QDialog()
-  msgDialog = ui.message.Ui_Dialog()
-  msgDialog.setupUi(dialog)
+  msgDialog = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/message.ui"), baseinstance=dialog)
   msgDialog.messageLabel.setText(msg)
   dialog.exec_()
   if msgDialog.showAgainCheckBox.isChecked():
