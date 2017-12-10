@@ -21,11 +21,10 @@
 #
 
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, uic
 import PyQt4.Qwt5 as Qwt
-import ui.systeminformation
 import plotobjects
-
+import os
 
 class memoryPlotObject(object):
   def __init__(self, plot, depth, reader):
@@ -117,8 +116,7 @@ class systemOverviewUi(object):
     self.__reader__ = reader
     self.__depth__ = depth
     self.__dialog__ = QtGui.QDialog()
-    self.__ui__ = ui.systeminformation.Ui_Dialog()
-    self.__ui__.setupUi(self.__dialog__)
+    self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/systeminformation.ui"), baseinstance=self.__dialog__)
     self.__cpuCount__ = cpuCount
     self.__cpuPlotArray__ = []
     self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_01]]

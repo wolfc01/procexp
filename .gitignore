@@ -28,3 +28,4 @@ ui/settings.pyc
 ui/systeminformation.pyc
 utils/__init__.pyc
 utils/procutils.pyc
+qwt_plot.pyc
