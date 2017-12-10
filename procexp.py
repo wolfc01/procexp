@@ -24,13 +24,12 @@
 
 #create qt app early, in order to show unhandled exceptions graphically.
 import sys
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, uic
 import utils.procutils
 
 app = QtGui.QApplication(sys.argv)
 
 import procreader.reader
-import ui.main
 import logui
 import aboutui
 import os
@@ -555,9 +554,7 @@ def updateUI():
 if __name__ == "__main__":
 
   g_mainWindow = QtGui.QMainWindow()
-  g_mainUi = ui.main.Ui_MainWindow()
-  g_mainUi.setupUi(g_mainWindow)
-
+  g_mainUi = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/main.ui"), baseinstance=g_mainWindow)
   prepareUI(g_mainUi)
   loadSettings()
 
