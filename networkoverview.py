@@ -20,11 +20,10 @@
 # Display network overview
 #
 
-from PyQt4 import QtCore, QtGui
+from PyQt4 import QtCore, QtGui, uic
 import utils.procutils
-import ui.networkinformation
 import plotobjects
-
+import os
 
 class networkPlotObject(object):
   def __init__(self, plot, depth, reader, card, scale):
@@ -65,8 +64,7 @@ class networkOverviewUi(object):
     self.__reader__ = reader
     self.__depth__ = depth
     self.__dialog__ = QtGui.QDialog()
-    self.__ui__ = ui.networkinformation.Ui_Dialog()
-    self.__ui__.setupUi(self.__dialog__)
+    self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/networkinformation.ui"), baseinstance=self.__dialog__)
     self.__networkCards__ = networkCards
     self.__netPlotArray = []
     self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_00, self.__ui__.qwtPlotNetworkCardHistory_00]]    
