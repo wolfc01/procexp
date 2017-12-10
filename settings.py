@@ -16,9 +16,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
 
-from PyQt4 import QtCore, QtGui
-import ui.settings as settingsMenu
-
+from PyQt4 import QtCore, QtGui, uic
+import os
 
 global ui
 
@@ -41,8 +40,7 @@ def onChange():
 def doSettings(millisecWait, depth, fontSize):
   global ui
   Dialog = QtGui.QDialog()
-  settings = settingsMenu.Ui_Dialog()
-  settings.setupUi(Dialog)
+  settings = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/settings.ui"), baseinstance=Dialog)
   ui = settings
   Dialog.setModal(True)
   QtCore.QObject.connect(settings.lineEditNfSamples,  QtCore.SIGNAL('textChanged (const QString&)'), onChange)
