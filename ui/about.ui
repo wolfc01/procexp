@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>359</width>
-    <height>430</height>
+    <width>363</width>
+    <height>453</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -140,6 +140,13 @@
        </property>
        <property name="alignment">
         <set>Qt::AlignCenter</set>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QLabel" name="label_9">
+       <property name="text">
+        <string>Jasper Huijsmans</string>
        </property>
       </widget>
      </item>
