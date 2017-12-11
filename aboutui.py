@@ -15,18 +15,16 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
-from PyQt4 import QtGui
-import ui.about
+from PyQt4 import QtGui, uic
 import os
 g_dialog = None
 
 def doAboutWindow():
-  """Make a log window"""
+  """Make an about window"""
   global g_dialog
   icon = os.path.dirname(__file__) + "/ui/icon.png"
   g_dialog = QtGui.QDialog()
-  about = ui.about.Ui_Dialog()
-  about.setupUi(g_dialog)
+  about = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/about.ui"), baseinstance=g_dialog)
   about.label.setPixmap(QtGui.QPixmap(icon))
   g_dialog.exec_()
 

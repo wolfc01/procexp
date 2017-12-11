@@ -15,13 +15,12 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
-from PyQt4 import QtGui
-import ui.helplegend
+from PyQt4 import QtGui, uic
+import os
 
 def doColorHelpLegend():
   """Make a color legend window"""
   dialog = QtGui.QDialog()
-  myui = ui.helplegend.Ui_Dialog()
-  myui.setupUi(dialog)
+  myui = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/helplegend.ui"), baseinstance=dialog)
   dialog.setModal(True)
   dialog.exec_()

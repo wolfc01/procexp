@@ -17,8 +17,9 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
 from PyQt4.QtGui import QDialog
+from PyQt4 import uic
 from utils.procutils import getLog
-from ui.log import Ui_Dialog
+import os
 
 class _LogWindowWrapper(object):
   '''Manage the procexp log window.'''
@@ -30,8 +31,7 @@ class _LogWindowWrapper(object):
     '''Create and show dialog window.'''
     if not self._dialog:
       self._dialog = QDialog()
-      self._log_ui = Ui_Dialog()
-      self._log_ui.setupUi(self._dialog)
+      self._log_ui = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/log.ui"), baseinstance=self._dialog)
     self._dialog.show()
 
   def update(self):
