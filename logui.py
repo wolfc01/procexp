@@ -42,6 +42,13 @@ class _LogWindowWrapper(object):
       newText = oldText + logs
       self._log_ui.plainTextEdit.setPlainText(newText)
 
+  def close(self):
+    '''Close this dialog'''
+    print("close")
+    if self._dialog:
+      self._dialog.close()
+
 _inst = _LogWindowWrapper()
 doLogWindow = _inst.createDialog
 update = _inst.update
+closeLogWindow = _inst.close

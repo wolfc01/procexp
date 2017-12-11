@@ -146,10 +146,7 @@ def performMenuAction(action):
     g_systemOverviewUi.close()
     g_networkOverviewUi.close()
     g_mainWindow.close()
-    if logui.dialog is not None:
-      logui.dialog.close()
-    if aboutui.dialog is not None:
-      aboutui.dialog.close()
+    logui.closeLogWindow()
   elif action is g_mainUi.actionColor_legend:
     colorlegend.doColorHelpLegend()
   elif action is g_mainUi.actionSet_affinity:

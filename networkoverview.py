@@ -25,6 +25,8 @@ import utils.procutils
 import plotobjects
 import os
 
+_MAX_NOOFNETWORKCARDS=32
+
 class networkPlotObject(object):
   def __init__(self, plot, depth, reader, card, scale):
     self.__curveNetInHist__ = plotobjects.niceCurve("Network In History", 
@@ -67,41 +69,12 @@ class networkOverviewUi(object):
     self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/networkinformation.ui"), baseinstance=self.__dialog__)
     self.__networkCards__ = networkCards
     self.__netPlotArray = []
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_00, self.__ui__.qwtPlotNetworkCardHistory_00]]    
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_01, self.__ui__.qwtPlotNetworkCardHistory_01]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_02, self.__ui__.qwtPlotNetworkCardHistory_02]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_03, self.__ui__.qwtPlotNetworkCardHistory_03]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_04, self.__ui__.qwtPlotNetworkCardHistory_04]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_05, self.__ui__.qwtPlotNetworkCardHistory_05]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_06, self.__ui__.qwtPlotNetworkCardHistory_06]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_07, self.__ui__.qwtPlotNetworkCardHistory_07]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_08, self.__ui__.qwtPlotNetworkCardHistory_08]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_09, self.__ui__.qwtPlotNetworkCardHistory_09]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_10, self.__ui__.qwtPlotNetworkCardHistory_10]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_11, self.__ui__.qwtPlotNetworkCardHistory_11]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_12, self.__ui__.qwtPlotNetworkCardHistory_12]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_13, self.__ui__.qwtPlotNetworkCardHistory_13]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_14, self.__ui__.qwtPlotNetworkCardHistory_14]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_15, self.__ui__.qwtPlotNetworkCardHistory_15]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_16, self.__ui__.qwtPlotNetworkCardHistory_16]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_17, self.__ui__.qwtPlotNetworkCardHistory_17]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_18, self.__ui__.qwtPlotNetworkCardHistory_18]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_19, self.__ui__.qwtPlotNetworkCardHistory_19]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_20, self.__ui__.qwtPlotNetworkCardHistory_20]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_21, self.__ui__.qwtPlotNetworkCardHistory_21]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_22, self.__ui__.qwtPlotNetworkCardHistory_22]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_23, self.__ui__.qwtPlotNetworkCardHistory_23]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_24, self.__ui__.qwtPlotNetworkCardHistory_24]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_25, self.__ui__.qwtPlotNetworkCardHistory_25]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_26, self.__ui__.qwtPlotNetworkCardHistory_26]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_27, self.__ui__.qwtPlotNetworkCardHistory_27]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_28, self.__ui__.qwtPlotNetworkCardHistory_28]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_29, self.__ui__.qwtPlotNetworkCardHistory_29]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_30, self.__ui__.qwtPlotNetworkCardHistory_30]]
-    self.__netPlotArray += [[self.__ui__.groupBoxNetworkCard_31, self.__ui__.qwtPlotNetworkCardHistory_31]]
+    for _i in xrange(_MAX_NOOFNETWORKCARDS):
+      self.__netPlotArray +=[[getattr(self.__ui__, "groupBoxNetworkCard_%02d" %_i),
+                              getattr(self.__ui__, "qwtPlotNetworkCardHistory_%02d" %_i)]]
     self.__tabs__ = {}
 
-    for card in xrange(32):
+    for card in xrange(_MAX_NOOFNETWORKCARDS):
       if card+1 > len(self.__networkCards__):
         self.__netPlotArray[card][0].setVisible(False)
         self.__netPlotArray[card].append(False)
@@ -136,13 +109,7 @@ class networkOverviewUi(object):
     #create tab per network card
     for card in self.__networkCards__:
       tab = QtGui.QWidget()
-      self.__tabs__[card] = [tab, 
-                              [QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), 
-                               QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), 
-                               QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab)],
-                              [QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), 
-                               QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), 
-                               QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab), QtGui.QLabel(tab)]] 
+      self.__tabs__[card] = [tab, [QtGui.QLabel(tab) for _ in xrange(13)], [QtGui.QLabel(tab) for _ in xrange(13)]] 
       self.__ui__.tabWidget.addTab(tab, "")
       self.__ui__.tabWidget.setTabText(self.__ui__.tabWidget.indexOf(tab), card)
       ymargin=20
@@ -198,7 +165,7 @@ class networkOverviewUi(object):
 
   def update(self):
     """update the state of this diaglog"""
-    for plot in xrange(32):
+    for plot in xrange(_MAX_NOOFNETWORKCARDS):
       if plot+1 <= len(self.__networkCards__):
         self.__netPlotArray[plot][3].update()
     

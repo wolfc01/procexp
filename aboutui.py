@@ -17,15 +17,12 @@
 
 from PyQt4 import QtGui, uic
 import os
-g_dialog = None
 
 def doAboutWindow():
   """Make an about window"""
-  global g_dialog
   icon = os.path.dirname(__file__) + "/ui/icon.png"
-  g_dialog = QtGui.QDialog()
-  about = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/about.ui"), baseinstance=g_dialog)
+  dialog = QtGui.QDialog()
+  about = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/about.ui"), baseinstance=dialog)
   about.label.setPixmap(QtGui.QPixmap(icon))
-  g_dialog.exec_()
+  dialog.exec_()
 
-  
