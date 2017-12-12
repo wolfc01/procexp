@@ -193,9 +193,11 @@ class singleUi(object):
     # Fill some field only at construction time
     QtCore.QObject.connect(self.__procDetails__.filterEdit, QtCore.SIGNAL('textEdited(QString)'), self.__onFilterTextEdit__)
     
-    self.update_sockets()
     self.__lddoutput__ = None
-    tcpip_stat.start()
+    self._tcpstat = tcpip_stat.tcpStat()
+    self._tcpstat.start()
+    self.update_sockets()
+
     
   def __startTcpStat__(self):
     """start tcpip throughput measurement"""
@@ -263,12 +265,12 @@ class singleUi(object):
       key1 = "%s.%s > %s.%s" %(ipfromaddrdec, int(ipfromport,16), iptoaddrdec, int(iptoport,16))
       bytesSentPerSecond=0
       bytesReceivedPerSecond=0
-      if tcpip_stat.connections.has_key(key1):
-        bytesSentPerSecond=tcpip_stat.connections[key1][tcpip_stat.BYTESPERSECONDIDX]
+      if self._tcpstat.connections().has_key(key1):
+        bytesSentPerSecond=self._tcpstat.connections()[key1][tcpip_stat.BYTESPERSECONDIDX]
         nftotalBytesPerSecond+=bytesSentPerSecond   
       key2 = "%s.%s > %s.%s" %(iptoaddrdec, int(iptoport,16), ipfromaddrdec, int(ipfromport,16))
-      if tcpip_stat.connections.has_key(key2):
-        bytesReceivedPerSecond=tcpip_stat.connections[key2][tcpip_stat.BYTESPERSECONDIDX]    
+      if self._tcpstat.connections().has_key(key2):
+        bytesReceivedPerSecond=self._tcpstat.connections()[key2][tcpip_stat.BYTESPERSECONDIDX]    
         nftotalBytesPerSecond+=bytesReceivedPerSecond
       
       state = tcpstates[int(connections[conn][3],16)]
@@ -324,10 +326,7 @@ class singleUi(object):
       row += 1
     
   def update(self):
-
-
-    
-    if not tcpip_stat.started():
+    if not self._tcpstat.started():
       self._availableLabel.setText("  tcpdump not running (no root privileges?).")
     else:
       self._availableLabel.setText("")

@@ -391,7 +391,7 @@ def expandAll():
 
 def updateUI():
   """update"""
-  tcpip_stat.tick()
+  tcpip_stat.tcpStat().tick()
   try:
     global g_procList
     global g_treeProcesses, g_greenTopLevelItems, g_redTopLevelItems
@@ -580,7 +580,7 @@ if __name__ == "__main__":
   signal.signal(signal.SIGINT, signal.SIG_DFL)
 
   app.exec_()
-  tcpip_stat.stop()
+  tcpip_stat.tcpStat().stop()
   rootproxy.end()
   sys.exit()
 

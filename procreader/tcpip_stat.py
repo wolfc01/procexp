@@ -33,80 +33,89 @@ import rootproxy
 import uuid
 import os
 
-TIMEOUT=10
-TIMEOUTIDX=1
-COUNTIDX=0
-TOTALIDX=3
+_TIMEOUT=10
+_TIMEOUTIDX=1
+_COUNTIDX=0
+_TOTALIDX=3
 BYTESPERSECONDIDX=2
 
-q = Queue.Queue()
-_g_prevTime = None 
-_g_started = False
-_g_fifo = None
-connections = {}
+_tcpStatInstance=None
 
-def readFifo():
-  """read fifo containing tcdump results"""
-  global connections
-  fifo = open(_g_fifo, "r")
-  while True:
-    msg = fifo.readline()
-    if msg.find("UDP") == -1:
-      try:
-        nfbytes = int(msg[msg.rfind(" "):])
-        msg = msg[3:msg.rfind(":")]
-      
-        if connections.has_key(msg):
-          connections[msg][COUNTIDX] += nfbytes+64
-          connections[msg][TOTALIDX] += nfbytes+64
-          connections[msg][TIMEOUTIDX] = TIMEOUT
+def tcpStat():
+  """singleton of tcp statistics reader"""
+  global _tcpStatInstance
+  if _tcpStatInstance is None:
+    _tcpStatInstance = _TcpStat()
+  return _tcpStatInstance
+
+class _TcpStat(object):
+  """tcp statistics reader"""
+  def __init__(self):
+    self._q = Queue.Queue()
+    self._prevTime = None 
+    self._started = False
+    self._fifo = None
+    self._connections = {}
+
+  def _readFifo(self):
+    """read fifo containing tcdump results"""
+    fifo = open(self._fifo, "r")
+    while True:
+      msg = fifo.readline()
+      if msg.find("UDP") == -1:
+        try:
+          nfbytes = int(msg[msg.rfind(" "):])
+          msg = msg[3:msg.rfind(":")]
+        
+          if self._connections.has_key(msg):
+            self._connections[msg][_COUNTIDX] += nfbytes+64
+            self._connections[msg][_TOTALIDX] += nfbytes+64
+            self._connections[msg][_TIMEOUTIDX] = _TIMEOUT
+          else:
+            self._connections[msg] = [nfbytes, _TIMEOUT, 0, 0]
+        except ValueError:
+          pass  
+  
+  def connections(self):
+    """connections"""
+    return self._connections
+
+  def start(self):
+    """start measuring"""
+    if self._started == False:
+      self._fifo = "/tmp/procexp_"+str(uuid.uuid4())
+      os.mkfifo(self._fifo)
+      rootproxy.doContinuousCommand(["tcpdump", "-U" , "-l", "-q", "-nn", "-t", "-i",  "any"], self._fifo)
+      self._started = True
+      t = threading.Thread(target=self._readFifo)
+      t.daemon = True    
+      t.start()
+  
+  def started(self):
+    return self._started
+  
+  def stop(self):
+    """stop"""
+    self._started = False
+    if self._fifo:
+      rootproxy.stopContinuousCommand(self._fifo)
+      os.remove(self._fifo)
+  
+  def tick(self):
+    if self._prevTime is None:
+      self._prevTime = datetime.datetime.now()
+    else:
+      now = datetime.datetime.now()
+      delta = now - self._prevTime
+      self._prevTime = now
+      deltasecs = delta.seconds + delta.microseconds*1.0 / 1000000.0
+      todelete = []
+      for conn in self._connections:
+        if self._connections[conn][_TIMEOUTIDX] == 0:
+          todelete.append(conn)
         else:
-          connections[msg] = [nfbytes, TIMEOUT, 0, 0]
-      except ValueError:
-        pass  
-  
-def start():
-  """start measuring"""
-  global _g_fifo
-  global _g_started
-  if _g_started == False:
-    _g_fifo = "/tmp/procexp_"+str(uuid.uuid4())
-    os.mkfifo(_g_fifo)
-    rootproxy.doContinuousCommand(["tcpdump", "-U" , "-l", "-q", "-nn", "-t", "-i",  "any"], _g_fifo)
-    _g_started = True
-    t = threading.Thread(target=readFifo)
-    t.daemon = True    
-    t.start()
-  
-def started():
-  return _g_started
-  
-def stop():
-  """stop"""
-  global _g_fifo
-  _g_started = False
-  if _g_fifo:
-    rootproxy.stopContinuousCommand(_g_fifo)
-    os.remove(_g_fifo)
-  
-def tick():
-  global _g_prevTime
-  global connections
-  if _g_prevTime is None:
-    _g_prevTime = datetime.datetime.now()
-  else:
-    now = datetime.datetime.now()
-    delta = now - _g_prevTime
-    _g_prevTime = now
-    deltasecs = delta.seconds + delta.microseconds*1.0 / 1000000.0
-    todelete = []
-    for conn in connections:
-      if connections[conn][TIMEOUTIDX] == 0:
-        todelete.append(conn)
-      else:
-        connections[conn][TIMEOUTIDX] -= 1
-        connections[conn][BYTESPERSECONDIDX] = int(connections[conn][COUNTIDX]*1.0 / deltasecs)
-        connections[conn][COUNTIDX] = 0 
-    for conn in todelete:
-      connections.pop(conn)
-
+          self._connections[conn][_TIMEOUTIDX] -= 1
+          self._connections[conn][BYTESPERSECONDIDX] = int(self._connections[conn][_COUNTIDX]*1.0 / deltasecs)
+          self._connections[conn][_COUNTIDX] = 0 
+      for conn in todelete:
+        self._connections.pop(conn)
