@@ -69,41 +69,8 @@ s = ctypes.create_string_buffer('\000' * BLOCKSIZE)
 class FileError(Exception):
   pass
 
-def readFullFileFast(path):
-  
-  try:
-    f = lib.open(path,0)
-    if f == -1: raise FileError    
-      
-    total = ""
-      
-    eof = lib.read(f, s, BLOCKSIZE)
-    if eof == -1: raise FileError
-    if eof > 0:
-      total = total + s.raw[:eof]
-      if eof < BLOCKSIZE:
-        lib.close(f)
-        return total
-
-    while eof > 0:
-      eof = lib.read(f, s, BLOCKSIZE)
-      print " ",eof, path
-      if eof == -1: raise FileError
-      if eof > 0:
-        total = total + s.raw[:eof]
- 
-    lib.close(f)
-    return total
-  except FileError:
-    lib.close(f)
-    raise
-  
-  except:
-    log("Unhandled exception: %s" % traceback.format_exc())
-    raise
-    
 def readFullFile(path):
-  return readFullFileFast(path)
+  return open(path,"rb").read()
 
 def killProcess(process):
   try:
@@ -122,7 +89,6 @@ def humanReadable(value):
     return "%4.1f kB" %float(value*1.0/1024.0)
   else:
     return "%4.1f MB" %float(value*1.0/(1024.0*1024.0))
-
 
 class IpResolver(object):
   """resolve IP numbers, threaded."""

@@ -32,7 +32,7 @@ import datetime
 import rootproxy
 import uuid
 import os
-
+import threading
 _TIMEOUT=10
 _TIMEOUTIDX=1
 _COUNTIDX=0
@@ -51,28 +51,28 @@ def tcpStat():
 class _TcpStat(object):
   """tcp statistics reader"""
   def __init__(self):
-    self._q = Queue.Queue()
     self._prevTime = None 
     self._started = False
     self._fifo = None
     self._connections = {}
+    self.connectionsLock = threading.Lock()
 
   def _readFifo(self):
     """read fifo containing tcdump results"""
     fifo = open(self._fifo, "r")
     while True:
       msg = fifo.readline()
-      if msg.find("UDP") == -1:
+      if msg.startswith("IP") and msg.find(" tcp ") != -1: #thus also contains ipv6 connections
         try:
           nfbytes = int(msg[msg.rfind(" "):])
-          msg = msg[3:msg.rfind(":")]
-        
-          if self._connections.has_key(msg):
-            self._connections[msg][_COUNTIDX] += nfbytes+64
-            self._connections[msg][_TOTALIDX] += nfbytes+64
-            self._connections[msg][_TIMEOUTIDX] = _TIMEOUT
-          else:
-            self._connections[msg] = [nfbytes, _TIMEOUT, 0, 0]
+          conn = msg[msg.find(" ")+1:msg.find(": tcp")]
+          with self.connectionsLock:
+            if self._connections.has_key(conn):
+              self._connections[conn][_COUNTIDX] += nfbytes+64
+              self._connections[conn][_TOTALIDX] += nfbytes+64
+              self._connections[conn][_TIMEOUTIDX] = _TIMEOUT
+            else:
+              self._connections[conn] = [nfbytes, _TIMEOUT, 0, 0]
         except ValueError:
           pass  
   
@@ -110,12 +110,13 @@ class _TcpStat(object):
       self._prevTime = now
       deltasecs = delta.seconds + delta.microseconds*1.0 / 1000000.0
       todelete = []
-      for conn in self._connections:
-        if self._connections[conn][_TIMEOUTIDX] == 0:
-          todelete.append(conn)
-        else:
-          self._connections[conn][_TIMEOUTIDX] -= 1
-          self._connections[conn][BYTESPERSECONDIDX] = int(self._connections[conn][_COUNTIDX]*1.0 / deltasecs)
-          self._connections[conn][_COUNTIDX] = 0 
-      for conn in todelete:
-        self._connections.pop(conn)
+      with self.connectionsLock:
+        for conn in self._connections:
+          if self._connections[conn][_TIMEOUTIDX] == 0:
+            todelete.append(conn)
+          else:
+            self._connections[conn][_TIMEOUTIDX] -= 1
+            self._connections[conn][BYTESPERSECONDIDX] = int(self._connections[conn][_COUNTIDX]*1.0 / deltasecs)
+            self._connections[conn][_COUNTIDX] = 0 
+        for conn in todelete:
+          self._connections.pop(conn)

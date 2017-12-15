@@ -25,6 +25,8 @@ import utils.procutils
 import singleprocess
 import subprocess
 import rootproxy
+import struct
+import socket
 
 UNKNOWN = "---"
 
@@ -468,13 +470,15 @@ class procreader(object):
 
     #~ At it`s current implementation state, it's a bit racy on 32-bit machines: if process
     #~ A reads process B's /proc/pid/io while process B is updating one of those 64-bit
-    #~ counters, process A could see an intermediate result.    
+    #~ counters, process A could see an intermediate result.  
+
+
   def __getAllSocketInfo__(self):
     self.__allConnections__ = {} #list of connections, organized by inode
-    data = utils.procutils.readFullFile(self._prefixDir + "/proc/net/tcp").split("\n")
-    for connection in data:
-      if len(connection) > 1:
-        self.__allConnections__[connection.split()[9]] = connection.split()
+    ipv4data = utils.procutils.readFullFile(self._prefixDir + "/proc/net/tcp").split("\n")[1:][:-1]
+    ipv6data = utils.procutils.readFullFile(self._prefixDir + "/proc/net/tcp6").split("\n")[1:][:-1]
+    for connection in ipv4data+ipv6data:
+      self.__allConnections__[connection.split()[9]] = connection.split()
   def __getAllUDPInfo__(self):
     self.__allUDP__ = {} #list of connections, organized by inode
     data = utils.procutils.readFullFile(self._prefixDir + "/proc/net/udp").split("\n")
@@ -503,7 +507,6 @@ class procreader(object):
     self.__noofrunningprocs__ = load[3].split("/")[0]
     self.__lastpid__ = load[4]
     
-    
   def getNetworkCards(self):
     return self.__networkCards__
 
@@ -522,11 +525,11 @@ class procreader(object):
       #__allFds = os.listdir(self._prefixDir + "/proc/" + str(process) + "/fd")
     except OSError:
      __allFds = ""
-    for fd in __allFds:
+    for _idx, fd in enumerate(__allFds):
       try:
         link = rootproxy.doReadlink(self._prefixDir + "/proc/" + str(process) + "/fd/" + fd)
         #link = os.readlink(self._prefixDir + "/proc/" + str(process) + "/fd/" + fd)
-      except OSError:
+      except (OSError, rootproxy.CommandException):
         link = ""
       if link.startswith("socket"):
         inode = link.split("[")[1].split("]")[0]
@@ -572,9 +575,7 @@ class procreader(object):
         self.__networkCards__[cardName]["recbytes"]   = int(splittedLine[0])        
         self.__networkCards__[cardName]["recpackets"]   = int(splittedLine[1])        
         self.__networkCards__[cardName]["sendbytes"]   = int(splittedLine[8])        
-        self.__networkCards__[cardName]["sendpackets"]   = int(splittedLine[9])        
-        
-          
+        self.__networkCards__[cardName]["sendpackets"]   = int(splittedLine[9])          
   
   def doReadProcessInfo(self):
     self.__updateCPUs()
@@ -631,4 +632,3 @@ class procreader(object):
     return self.__processList__[int(process)]["history"].threads
   def getFileInfo(self, process):
     return self.__processList__[int(process)]["history"].openFiles
-

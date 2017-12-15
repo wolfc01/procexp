@@ -26,6 +26,8 @@ import utils.procutils
 import procreader.tcpip_stat as tcpip_stat
 import procreader.reader
 import os
+import struct
+import socket
 
 UNKNOWN = "---" 
 
@@ -239,7 +241,15 @@ class singleUi(object):
     
   def closeWindow(self):
     self.__dialog__.close()
-    
+
+  def ipv6addr(self, addr):
+    """generate an ipv6 adress from a /proc/net/tcp6 local_adress and remote_address"""
+    addr = addr.decode('hex')
+    addr = struct.unpack('>IIII', addr)
+    addr = struct.pack('@IIII', *addr)
+    addr = socket.inet_ntop(socket.AF_INET6, addr)
+    return addr
+
   def update_sockets(self):
     #fill tcp/ip values
     connections, udp = self.__reader__.getAllProcessSockets(self.__proc__)
@@ -250,28 +260,33 @@ class singleUi(object):
       ipfrom = connections[conn][1].split(":")
       ipfromport = ipfrom[1]
       ipfromaddr = ipfrom[0]
-      ipfromaddrdec = str(int(ipfromaddr[6:8],16)) + "." + str(int(ipfromaddr[4:6],16)) + "." + str(int(ipfromaddr[2:4],16)) + "." + str(int(ipfromaddr[0:2],16))
-      
-      
-      
+      if len(ipfromaddr) == 32: #ipv6 address
+        ipfromaddrdec = self.ipv6addr(ipfromaddr)
+      else:
+        ipfromaddrdec = str(int(ipfromaddr[6:8],16)) + "." + str(int(ipfromaddr[4:6],16)) + "." + str(int(ipfromaddr[2:4],16)) + "." + str(int(ipfromaddr[0:2],16))
+
       ipto = connections[conn][2].split(":")
       iptoport = ipto[1]
       iptoaddr = ipto[0]
-
-      iptoaddrdec   = str(int(iptoaddr[6:8],16)) + "." + str(int(iptoaddr[4:6],16)) + "." + str(int(iptoaddr[2:4],16)) + "." + str(int(iptoaddr[0:2],16))
+      if len(iptoaddr) == 32:
+        iptoaddrdec = self.ipv6addr(iptoaddr)
+      else:
+        iptoaddrdec   = str(int(iptoaddr[6:8],16)) + "." + str(int(iptoaddr[4:6],16)) + "." + str(int(iptoaddr[2:4],16)) + "." + str(int(iptoaddr[0:2],16))
       
       allConn.append(((ipfromaddrdec,int(ipfromport,16)),(iptoaddrdec,int(iptoport,16))))
       
       key1 = "%s.%s > %s.%s" %(ipfromaddrdec, int(ipfromport,16), iptoaddrdec, int(iptoport,16))
       bytesSentPerSecond=0
       bytesReceivedPerSecond=0
-      if self._tcpstat.connections().has_key(key1):
-        bytesSentPerSecond=self._tcpstat.connections()[key1][tcpip_stat.BYTESPERSECONDIDX]
-        nftotalBytesPerSecond+=bytesSentPerSecond   
+      with self._tcpstat.connectionsLock:
+        if self._tcpstat.connections().has_key(key1):
+          bytesSentPerSecond=self._tcpstat.connections()[key1][tcpip_stat.BYTESPERSECONDIDX]
+          nftotalBytesPerSecond+=bytesSentPerSecond  
       key2 = "%s.%s > %s.%s" %(iptoaddrdec, int(iptoport,16), ipfromaddrdec, int(ipfromport,16))
-      if self._tcpstat.connections().has_key(key2):
-        bytesReceivedPerSecond=self._tcpstat.connections()[key2][tcpip_stat.BYTESPERSECONDIDX]    
-        nftotalBytesPerSecond+=bytesReceivedPerSecond
+      with self._tcpstat.connectionsLock:
+        if self._tcpstat.connections().has_key(key2):
+          bytesReceivedPerSecond=self._tcpstat.connections()[key2][tcpip_stat.BYTESPERSECONDIDX]    
+          nftotalBytesPerSecond+=bytesReceivedPerSecond
       
       state = tcpstates[int(connections[conn][3],16)]
       
