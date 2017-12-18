@@ -10,17 +10,17 @@ Goals of this project
 3. Make the process explorer a standard component of above mentioned distro's
 4. Everything else which will be needed
 
-INSTALLATION
+# INSTALLATION
 
 - *Ubuntu 16.04.3 LTS*
 
-## install dependencies
+### install dependencies
 
 apt-get install python-qwt5-qt4
 
 apt-get install python-configobj
 
-## download and install
+### download and install
 
 download procexp from github as zip file from https://github.com/wolfc01/procexp/archive/master.zip
 
