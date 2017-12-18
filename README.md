@@ -16,18 +16,18 @@ Goals of this project
 
 ### install dependencies
 
+```
 apt-get install python-qwt5-qt4
-
 apt-get install python-configobj
+```
 
 ### download and install
 
 download procexp from github as zip file from https://github.com/wolfc01/procexp/archive/master.zip
 
+```
 unzip master.zip
-
 cd procexp-master
-
 ./procexp.py
-
+```
 
