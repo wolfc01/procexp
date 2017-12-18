@@ -12,7 +12,7 @@ Goals of this project
 
 INSTALLATION
 
-- Ubuntu 16.04.3 LTS
+- * Ubuntu 16.04.3 LTS *
 
 install dependencies
 
