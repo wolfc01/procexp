@@ -27,6 +27,12 @@ apt-get install python-configobj
 apt-get install tcpdump
 ```
 
+### install dependencies for Fedora 27
+```
+yum install PyQwt
+yum install python-configobj
+```
+
 ### install dependencies for CentOS 7
 
 for CentOS version 7 PyQwt is not available in standard and EPEL repositories: --> build from source
