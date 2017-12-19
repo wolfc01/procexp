@@ -21,7 +21,7 @@ apt-get install python-configobj
 ```
 
 ### install dependencies for Debian 9
-_ as user root_:
+_as user root_:
 ```
 apt-get install python-qwt5-qt4
 apt-get install python-configobj
@@ -29,7 +29,7 @@ apt-get install tcpdump
 ```
 
 ### install dependencies for Fedora 27
-_ as user root_:
+_as user root_:
 ```
 yum install PyQwt
 yum install python-configobj
@@ -40,7 +40,7 @@ yum install python-configobj
 for CentOS version 7 PyQwt is not available in standard and EPEL repositories: --> build from source
 Download PyQwt5 sources from https://kent.dl.sourceforge.net/project/pyqwt/pyqwt5/PyQwt-5.2.0/PyQwt-5.2.0.tar.gz
 
-_ as user root_:
+_as user root_:
 ```
 yum install epel-release
 sudo yum group install "Development Tools"
@@ -55,7 +55,7 @@ make install
 ```
 
 ### last step for all distro's: download procexp python sources, unzip and run
-_ as a non root user_:
+_as a non root user_:
 
 download procexp from github as zip file from https://github.com/wolfc01/procexp/archive/master.zip
 
