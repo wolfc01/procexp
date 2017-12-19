@@ -8,7 +8,7 @@ Goals of this project
 3. Make the process explorer a standard component of above mentioned distro's
 4. Everything else which will be needed
 
-# INSTALLATION
+## INSTALLATION
 ### install dependencies for Ubuntu 16.04.3 LTS, Mint 18.3
 _as user root_:
 ```
