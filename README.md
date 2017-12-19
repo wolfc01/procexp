@@ -54,7 +54,7 @@ make install
 ```
 
 ### last step for all distro's: download procexp python sources, unzip and run
-_as a non root user_:
+_as a non root user_ :
 
 download procexp from github as zip file from https://github.com/wolfc01/procexp/archive/master.zip
 
