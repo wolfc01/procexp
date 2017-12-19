@@ -12,17 +12,13 @@ Goals of this project
 
 # INSTALLATION
 
-- *Ubuntu 16.04.3 LTS*
-
-### install dependencies
+### install dependencies for Ubuntu 16.04.3 LTS
 
 ```
 apt-get install python-qwt5-qt4
 apt-get install python-configobj
 ```
-
-- *Centos 7*
-### install dependencies
+### install dependencies for CentOS 7
 
 for CentOS version 7 PyQwt is not available in standard and EPEL repositories: --> build from source
 Download PyQwt5 sources from https://kent.dl.sourceforge.net/project/pyqwt/pyqwt5/PyQwt-5.2.0/PyQwt-5.2.0.tar.gz
