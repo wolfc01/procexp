@@ -21,7 +21,28 @@ apt-get install python-qwt5-qt4
 apt-get install python-configobj
 ```
 
-### download and install
+- *Centos 7*
+### install dependencies
+
+for CentOS version 7 PyQwt is not available in standard and EPEL repositories: --> build from source
+Download PyQwt5 sources from https://kent.dl.sourceforge.net/project/pyqwt/pyqwt5/PyQwt-5.2.0/PyQwt-5.2.0.tar.gz
+```
+yum install epel-release
+sudo yum group install "Development Tools"
+yum install PyQt4-devel
+yum install qwt
+yum install qwt-devel
+tar -xvzf PyQwt-5.2.0/PyQwt-5.2.0.tar.gz
+cd PyQwt-5.2.0/configure
+python configure.py -Q ../qwt-5.2
+make
+make install
+```
+
+
+
+
+### last step for all distro's: download procexp python sources, unzip and run
 
 download procexp from github as zip file from https://github.com/wolfc01/procexp/archive/master.zip
 
