@@ -12,7 +12,7 @@ Goals of this project
 
 # INSTALLATION
 
-### install dependencies for Ubuntu 16.04.3 LTS
+### install dependencies for Ubuntu 16.04.3 LTS, Mint 18.3
 
 ```
 apt-get install python-qwt5-qt4
