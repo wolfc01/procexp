@@ -13,7 +13,6 @@ Goals of this project
 # INSTALLATION
 
 ### install dependencies for Ubuntu 16.04.3 LTS, Mint 18.3
-
 _as user root_:
 ```
 apt-get install python-qwt5-qt4
@@ -64,4 +63,3 @@ unzip master.zip
 cd procexp-master
 ./procexp.py
 ```
-
