@@ -12,15 +12,12 @@ Goals of this project
 ### install dependencies for Ubuntu 16.04.3 LTS, Mint 18.3
 _as user root_:
 ```
-apt-get install python-qwt5-qt4
-apt-get install python-configobj
+apt-get install python-qwt5-qt4 python-configobj
 ```
 ### install dependencies for Debian 9
 _as user root_:
 ```
-apt-get install python-qwt5-qt4
-apt-get install python-configobj
-apt-get install tcpdump
+apt-get install python-qwt5-qt4 python-configobj tcpdump
 ```
 ### install dependencies for Fedora 27
 _as user root_:
