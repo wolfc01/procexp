@@ -348,13 +348,13 @@ def addProcessAndParents(proc, procList):
   """
   global g_mainUi
   
-  if g_treeProcesses.has_key(proc): #process already exists, do nothing
+  if proc in g_treeProcesses.keys(): #process already exists, do nothing
     return g_treeProcesses[proc]
     
-  g_treeProcesses[proc] = QtGui.QTreeWidgetItem([])
+  g_treeProcesses[proc] = QtWidgets.QTreeWidgetItem([])
   g_greenTopLevelItems[proc] = g_treeProcesses[proc]
   
-  if procList[proc]["PPID"] > 0 and procList.has_key(procList[proc]["PPID"]): #process has a parent
+  if procList[proc]["PPID"] > 0 and (procList[proc]["PPID"] in procList.keys()): #process has a parent
     parent = addProcessAndParents(procList[proc]["PPID"],procList)
     parent.addChild(g_treeProcesses[proc])
   else: #process has no parent, thus it is toplevel. add it to the treewidget
@@ -391,7 +391,7 @@ def expandAll():
   """ expand all subtrees
   """
   global g_mainUi
-  for topLevelIndex in xrange(g_mainUi.processTreeWidget.topLevelItemCount()):
+  for topLevelIndex in range(g_mainUi.processTreeWidget.topLevelItemCount()):
     item = g_mainUi.processTreeWidget.topLevelItem(topLevelIndex)
     expandChilds(item)
 

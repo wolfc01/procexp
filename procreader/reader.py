@@ -23,6 +23,7 @@ import time
 import os
 import utils.procutils
 import singleprocess
+from procreader.singleprocess import singleProcessDetailsAndHistory
 import subprocess
 import rootproxy
 import struct
@@ -287,16 +288,16 @@ class procreader(object):
       self.__processList__[process] = \
         {"name": "", \
         "env": UNKNOWN, \
-        "prevJiffy":0, \
-        "prevJiffyKernel":0, \
-        "prevIO":0, \
-        "PPID":None, \
-        "cpuUsage":0, \
+        "prevJiffy": 0, \
+        "prevJiffyKernel": 0, \
+        "prevIO": 0, \
+        "PPID": None, \
+        "cpuUsage": 0, \
         "cmdline" : UNKNOWN, \
-        "uid":UNKNOWN, \
-        "wchan":UNKNOWN, \
-        "nfThreads":UNKNOWN, \
-        "history":singleprocess.singleProcessDetailsAndHistory(process,self.__historyCount__, prefixDir=self._prefixDir),\
+        "uid": UNKNOWN, \
+        "wchan": UNKNOWN, \
+        "nfThreads": UNKNOWN, \
+        "history": singleProcessDetailsAndHistory(process, self.__historyCount__, prefixDir=self._prefixDir),\
         "hasListener": False}
 
   def __getUIDName__(self, uid):
@@ -314,7 +315,7 @@ class procreader(object):
   def __removeUnknownParents__(self):#useful when filtered on UID
     for process in self.__processList__:
       if self.__processList__[process]["PPID"] > 0:
-        if not(self.__processList__.has_key(self.__processList__[process]["PPID"])):
+        if not(self.__processList__[process]["PPID"] in self.__processList__.keys()):
           self.__processList__[process]["PPID"] = 0
 
   def __getProcessDetails__(self):

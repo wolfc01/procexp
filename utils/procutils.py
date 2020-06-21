@@ -49,7 +49,7 @@ def logUnhandledException(exc_type, exc_value, exc_traceback):
   errorbox.exec_()
   file("/tmp/procexp.log","ab").write(msg+"\n")
   
-sys.excepthook = logUnhandledException
+# sys.excepthook = logUnhandledException
 
 def log(msg):
   """put a log message into the queue"""
