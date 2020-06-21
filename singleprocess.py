@@ -19,8 +19,8 @@
 #
 # Display process properties and statistics of a single process
 #
-from PyQt4 import QtCore, QtGui, uic
-import PyQt4.Qwt5 as Qwt
+from PyQt5 import QtCore, QtGui, uic
+from PyQt5 import Qwt
 import subprocess
 import utils.procutils
 import procreader.tcpip_stat as tcpip_stat

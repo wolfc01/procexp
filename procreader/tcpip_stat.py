@@ -26,7 +26,7 @@
 #
 # When for a long TIMEOUT time no packages come in, the corresponding connection is cleared
  
-import Queue
+import queue
 import threading
 import datetime
 import rootproxy

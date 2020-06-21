@@ -21,8 +21,8 @@
 #
 
 
-from PyQt4 import QtCore, QtGui, uic
-import PyQt4.Qwt5 as Qwt
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+import PyQt5.Qwt as Qwt
 import plotobjects
 import os
 
@@ -115,7 +115,7 @@ class systemOverviewUi(object):
   def __init__(self, cpuCount, depth, reader):
     self.__reader__ = reader
     self.__depth__ = depth
-    self.__dialog__ = QtGui.QDialog()
+    self.__dialog__ = QtWidgets.QDialog()
     self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/systeminformation.ui"), baseinstance=self.__dialog__)
     self.__cpuCount__ = cpuCount
     self.__cpuPlotArray__ = []
@@ -153,8 +153,8 @@ class systemOverviewUi(object):
     self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_32]]
     
     
-    for cpu in xrange(32):
-      if cpu+1 > self.__cpuCount__:
+    for cpu in range(32):
+      if (cpu + 1) > self.__cpuCount__:
         self.__cpuPlotArray__[cpu][0].setVisible(False)
         self.__cpuPlotArray__[cpu].append(False)
       else:

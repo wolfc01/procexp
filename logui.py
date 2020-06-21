@@ -16,8 +16,8 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
-from PyQt4.QtGui import QDialog
-from PyQt4 import uic
+from PyQt5.QtWidgets import QDialog
+from PyQt5 import uic
 from utils.procutils import getLog
 import os
 

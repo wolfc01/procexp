@@ -20,7 +20,7 @@
 # implements a message UI capable of supressing messages which the user already knows
 #
 
-from PyQt4 import QtGui, uic
+from PyQt5 import QtGui, uic
 import os
 dialog = None
 import configobj

@@ -1,4 +1,4 @@
-from PyQt4 import QtGui, uic
+from PyQt5 import QtGui, uic
 import subprocess
 import os
 import utils.procutils

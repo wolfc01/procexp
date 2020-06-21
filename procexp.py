@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # This file is part of the Linux Process Explorer
 # See www.sourceforge.net/projects/procexp
 #
@@ -24,10 +24,8 @@
 
 #create qt app early, in order to show unhandled exceptions graphically.
 import sys
-from PyQt4 import QtCore, QtGui, uic
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import utils.procutils
-
-app = QtGui.QApplication(sys.argv)
 
 import procreader.reader
 import logui
@@ -192,7 +190,7 @@ def loadSettings():
     
   #load default settings for undefined settings
   for item in g_defaultSettings:
-    if g_settings.has_key(item):
+    if item in g_settings.keys():
       pass
     else:
       g_settings[item] = g_defaultSettings[item]
@@ -210,7 +208,7 @@ def loadSettings():
     
   #load default settings for undefined settings
   for item in g_defaultSettings:
-    if g_settings.has_key(item):
+    if item in g_settings.keys():
       pass
     else:
       g_settings[item] = g_defaultSettings[item]
@@ -271,14 +269,22 @@ def prepareUI(mainUi):
 
   #create a timer which triggers the process explorer to update its contents
   g_timer = QtCore.QTimer(mainUi.processTreeWidget)
-  QtCore.QObject.connect(g_timer, QtCore.SIGNAL("timeout()"), updateUI)
-  QtCore.QObject.connect(mainUi.processTreeWidget, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), onContextMenu)
-  QtCore.QObject.connect(mainUi.menuFile,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuProcess,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuOptions,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuSettings, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuView, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuHelp, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  g_timer.timeout.connect(updateUI)
+  # QtCore.QObject.connect(g_timer, QtCore.SIGNAL("timeout()"), updateUI)
+  mainUi.processTreeWidget.customContextMenuRequested.connect(onContextMenu)
+  # QtCore.QObject.connect(mainUi.processTreeWidget, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), onContextMenu)
+  mainUi.menuFile.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuFile,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuProcess.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuProcess,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuOptions.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuOptions,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuSettings.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuSettings, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuView.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuView, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuHelp.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuHelp, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
   
   #prepare the plot
   global g_curveCpuHist
@@ -544,13 +550,15 @@ def updateUI():
   except:
     import traceback
     utils.procutils.log("Unhandled exception:%s" %traceback.format_exc())
-    print traceback.format_exc()
+    print(traceback.format_exc())
   
   g_firstUpdate = False
 
 if __name__ == "__main__":
-
-  g_mainWindow = QtGui.QMainWindow()
+  print("Call to __main__")
+  app = QtWidgets.QApplication(sys.argv)
+  print("app created: '%s'" % app)
+  g_mainWindow = QtWidgets.QMainWindow()
   g_mainUi = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/main.ui"), baseinstance=g_mainWindow)
   prepareUI(g_mainUi)
   loadSettings()
@@ -579,8 +587,8 @@ if __name__ == "__main__":
 
   signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-  app.exec_()
+  return_code = app.exec_()
   tcpip_stat.tcpStat().stop()
   rootproxy.end()
-  sys.exit()
+  sys.exit(return_code)
 

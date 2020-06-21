@@ -20,17 +20,18 @@ import os
 import signal
 import ctypes
 import traceback
-import Queue
-logQueue = Queue.Queue()
+import queue
+logQueue = queue.Queue()
 import sys
-import PyQt4.QtGui
+import PyQt5.QtGui
+from PyQt5 import QtWidgets
 import threading
 import socket
 
 _ipResolver = None
 
 def message(msg):
-  errorbox = PyQt4.QtGui.QMessageBox()
+  errorbox = QtWidgets.QMessageBox()
   errorbox.setText(msg)
   errorbox.exec_()
   
@@ -43,7 +44,7 @@ def logUnhandledException(exc_type, exc_value, exc_traceback):
   filename = os.path.basename(filename)
   error = "%s: %s" % (str(exc_type).split(".")[-1], exc_value)
   msg = error + " on line %d, file %s" % (line, filename) 
-  errorbox = PyQt4.QtGui.QMessageBox()
+  errorbox = QtWidgets.QMessageBox()
   errorbox.setText("Unhandled exception:\n"+msg)
   errorbox.exec_()
   file("/tmp/procexp.log","ab").write(msg+"\n")
@@ -64,13 +65,13 @@ def getLog():
 
 lib = ctypes.cdll.LoadLibrary("libc.so.6")
 BLOCKSIZE=4096
-s = ctypes.create_string_buffer('\000' * BLOCKSIZE)
+s = ctypes.create_string_buffer(b'\000' * BLOCKSIZE)
 
 class FileError(Exception):
   pass
 
 def readFullFile(path):
-  return open(path,"rb").read()
+  return open(path,"r").read()
 
 def killProcess(process):
   try:

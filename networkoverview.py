@@ -20,7 +20,7 @@
 # Display network overview
 #
 
-from PyQt4 import QtCore, QtGui, uic
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import utils.procutils
 import plotobjects
 import os
@@ -65,16 +65,16 @@ class networkOverviewUi(object):
   def __init__(self, networkCards, depth, reader):
     self.__reader__ = reader
     self.__depth__ = depth
-    self.__dialog__ = QtGui.QDialog()
+    self.__dialog__ = QtWidgets.QDialog()
     self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/networkinformation.ui"), baseinstance=self.__dialog__)
     self.__networkCards__ = networkCards
     self.__netPlotArray = []
-    for _i in xrange(_MAX_NOOFNETWORKCARDS):
+    for _i in range(_MAX_NOOFNETWORKCARDS):
       self.__netPlotArray +=[[getattr(self.__ui__, "groupBoxNetworkCard_%02d" %_i),
                               getattr(self.__ui__, "qwtPlotNetworkCardHistory_%02d" %_i)]]
     self.__tabs__ = {}
 
-    for card in xrange(_MAX_NOOFNETWORKCARDS):
+    for card in range(_MAX_NOOFNETWORKCARDS):
       if card+1 > len(self.__networkCards__):
         self.__netPlotArray[card][0].setVisible(False)
         self.__netPlotArray[card].append(False)
@@ -108,8 +108,8 @@ class networkOverviewUi(object):
       
     #create tab per network card
     for card in self.__networkCards__:
-      tab = QtGui.QWidget()
-      self.__tabs__[card] = [tab, [QtGui.QLabel(tab) for _ in xrange(13)], [QtGui.QLabel(tab) for _ in xrange(13)]] 
+      tab = QtWidgets.QWidget()
+      self.__tabs__[card] = [tab, [QtWidgets.QLabel(tab) for _ in range(13)], [QtWidgets.QLabel(tab) for _ in range(13)]] 
       self.__ui__.tabWidget.addTab(tab, "")
       self.__ui__.tabWidget.setTabText(self.__ui__.tabWidget.indexOf(tab), card)
       ymargin=20
@@ -165,7 +165,7 @@ class networkOverviewUi(object):
 
   def update(self):
     """update the state of this diaglog"""
-    for plot in xrange(_MAX_NOOFNETWORKCARDS):
+    for plot in range(_MAX_NOOFNETWORKCARDS):
       if plot+1 <= len(self.__networkCards__):
         self.__netPlotArray[plot][3].update()
     
