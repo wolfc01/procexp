@@ -597,39 +597,54 @@ class procreader(object):
     return self.__processList__, self.__closedProcesses__, self.__newProcesses__
 
   def hasProcess(self, process):
-    return self.__processList__.has_key(int(process))
+    return int(process) in self.__processList__.keys()
   def setListener(self, process):
-    if self.__processList__.has_key(int(process)):
+    if int(process) in self.__processList__.keys():
       self.__processList__[int(process)]["hasListener"]=True
   def getProcessCpuUsageHistory(self, process):
     return self.__processList__[int(process)]["history"].cpuUsageHistory
+
   def getcwd(self, process):
     return self.__processList__[int(process)]["history"].cwd
+
   def getexe(self, process):
     return self.__processList__[int(process)]["history"].exe
+
   def getstartedtime(self, process):
     return self.__processList__[int(process)]["history"].startedtime
+
   def getcmdline(self, process):
     return self.__processList__[int(process)]["history"].cmdline
+
   def getppid(self, process):
     return self.__processList__[int(process)]["history"].ppid
+
   def getProcessCpuUsageKernelHistory(self, process):
     return self.__processList__[int(process)]["history"].cpuUsageKernelHistory
+
   def getProcessRssUsageHistory(self, process):
     return self.__processList__[int(process)]["history"].rssUsageHistory
+
   def getIOHistory(self, process):
     return self.__processList__[int(process)]["history"].IOHistory
+
   def getEnvironment(self,process):
     return self.__processList__[int(process)]["env"]
+
   def getHistoryDepth(self, process):
     return self.__processList__[int(process)]["history"].HistoryDepth
+
   def getCpuCount(self):
     return self.__cpuCount__
+
   def getMemoryUsage(self):
     return self.__totalMemKb, self.__actualMemKb, self.__buffersMemKb, self.__cachedMemKb, self.__swapUsed, self.__swapTotal
+
   def getLoadAvg(self):
     return  self.__loadavg__, self.__noofprocs__, self.__noofrunningprocs__, self.__lastpid__
+
   def getThreads(self, process):
     return self.__processList__[int(process)]["history"].threads
+
   def getFileInfo(self, process):
     return self.__processList__[int(process)]["history"].openFiles

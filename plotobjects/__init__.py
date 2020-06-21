@@ -37,9 +37,10 @@ class niceCurve(object):
     self.__curveExt__.attach(plot)
 
   def setData(self, x, y):
-    self.__curve__.setData(x, y)
-    self.__curveExt__.setData(x,y)
-
+    self.__curve__.setSamples(x, y)
+    self.__curveExt__.setSamples(x, y)
+    # self.__curve__.setData(list(x), y)
+    # self.__curveExt__.setData(list(x),y)
 
 
 class procExpPlot(object):

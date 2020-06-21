@@ -84,6 +84,7 @@ class cpuPlotObject(object):
     self.__cpuUsageSystemHistory__ = [0] * int(self.__depth__)
     self.__cpuUsageIoWaitHistory__ = [0] * int(self.__depth__)
     self.__cpuUsageIrqHistory__ = [0] * int(self.__depth__)
+
   def update(self):
     values = self.__reader__.getSingleCpuUsage(self.__cpu__)
     self.__cpuUsageHistory__.append(values[0]+values[1]+values[2]+values[3])
@@ -100,10 +101,7 @@ class cpuPlotObject(object):
     
     self.__cpuUsageIrqHistory__.append(values[3])
     self.__cpuUsageIrqHistory__ = self.__cpuUsageIrqHistory__[1:]
-    
 
-
-                                 
     self.__curveCpuHist__ .setData(range(self.__depth__), self.__cpuUsageHistory__)
     self.__curveCpuSystemHist__.setData(range(self.__depth__), self.__cpuUsageSystemHistory__)
     self.__curveIoWaitHist__.setData(range(self.__depth__), self.__cpuUsageIoWaitHistory__)
@@ -183,7 +181,7 @@ class systemOverviewUi(object):
     
     
   def update(self):
-    for plot in xrange(32):
+    for plot in range(32):
       if plot+1 <= self.__cpuCount__:
         self.__cpuPlotArray__[plot][2].update()
     memvalues = self.__reader__.getMemoryUsage()

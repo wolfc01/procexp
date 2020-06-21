@@ -118,11 +118,11 @@ def performMenuAction(action):
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
     except IndexError:
       return
-    process = str(selectedItem.data(1,0).toString())
-    if g_singleProcessUiList.has_key(process):
+    process = str(selectedItem.data(1,0))
+    if process in g_singleProcessUiList.keys():
       g_singleProcessUiList[process].makeVisible()
     else:
-      if g_procList.has_key(int(process)):
+      if int(process) in g_procList.keys():
         g_singleProcessUiList[process] = singleprocess.singleUi(process, g_procList[int(process)]["cmdline"], g_procList[int(process)]["name"], g_reader, int(g_settings["historySampleCount"]))
   elif action is g_mainUi.actionSaveSettings:
     saveSettings()
@@ -367,7 +367,7 @@ def delChild(item, childtodelete):
   """ Delete child, search recursively
   """
   if item != None:
-    for index in xrange(item.childCount()):
+    for index in range(item.childCount()):
       thechild = item.child(index)
       if thechild != None:
         if thechild == childtodelete:
@@ -379,7 +379,7 @@ def expandChilds(parent):
   """ expand all childs of given parent
   """
   global g_mainUi
-  for index in xrange(parent.childCount()):
+  for index in range(parent.childCount()):
     thechild = parent.child(index)
     if thechild != None:
       g_mainUi.processTreeWidget.expandItem(thechild)
@@ -413,13 +413,13 @@ def updateUI():
     #color all green processes with default background
     defaultBgColor = app.palette().color(QtGui.QPalette.Base)  
     for proc in g_greenTopLevelItems:
-      for column in xrange(g_greenTopLevelItems[proc].columnCount()):
-        g_greenTopLevelItems[proc].setBackgroundColor(column, defaultBgColor)
+      for column in range(g_greenTopLevelItems[proc].columnCount()):
+        g_greenTopLevelItems[proc].setBackground(column, defaultBgColor)
     g_greenTopLevelItems = {}
    
     #delete all red widgetItems
     for proc in g_redTopLevelItems:
-      for topLevelIndex in xrange(g_mainUi.processTreeWidget.topLevelItemCount()):
+      for topLevelIndex in range(g_mainUi.processTreeWidget.topLevelItemCount()):
         topLevelItem = g_mainUi.processTreeWidget.topLevelItem(topLevelIndex)
         delChild(topLevelItem, g_redTopLevelItems[proc])
         if topLevelItem == g_redTopLevelItems[proc]:
@@ -438,7 +438,7 @@ def updateUI():
         item = g_treeProcesses[proc]
         if item.parent() is not None:
           parentItem = item.parent()
-          for idx in xrange(parentItem.childCount()):
+          for idx in range(parentItem.childCount()):
             if item == parentItem.child(idx):
               parentItem.takeChild(idx)
           g_mainUi.processTreeWidget.addTopLevelItem(g_treeProcesses[proc])
@@ -453,8 +453,8 @@ def updateUI():
     #color all deleted processed red
     for proc in g_redTopLevelItems:
       try:
-        for column in xrange(g_redTopLevelItems[proc].columnCount()):
-          g_redTopLevelItems[proc].setBackgroundColor(column, QtGui.QColor(255,0,0))
+        for column in range(g_redTopLevelItems[proc].columnCount()):
+          g_redTopLevelItems[proc].setBackground(column, QtGui.QColor(255,0,0))
       except RuntimeError:
         pass 
     
@@ -482,8 +482,8 @@ def updateUI():
     if g_firstUpdate == False:
       for proc in g_greenTopLevelItems:
         item = g_greenTopLevelItems[proc]
-        for column in xrange(item.columnCount()):
-          item.setBackgroundColor(column, QtGui.QColor(0,255,0))
+        for column in range(item.columnCount()):
+          item.setBackground(column, QtGui.QColor(0,255,0))
       
     if (len(closedProc) > 0) or (len(newProc) > 0):
       expandAll()

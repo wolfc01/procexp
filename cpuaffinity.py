@@ -27,7 +27,7 @@ def doAffinity(cpuCount, process):
         aff.__dict__[objName].setEnabled(False)
   
   #check CPU checkboxes
-  for cpu in xrange(cpuCount):
+  for cpu in range(cpuCount):
     for objName in aff.__dict__:
       if objName == "checkBox_%s" %cpu:
         if affinity & 2**cpu == 2**cpu:
@@ -41,7 +41,7 @@ def doAffinity(cpuCount, process):
 
   #apply new affinity
   newAff = 0
-  for cpu in xrange(cpuCount):
+  for cpu in range(cpuCount):
     for objName in aff.__dict__:
       if objName == "checkBox_%s" %cpu:
         if aff.__dict__[objName].isChecked():
