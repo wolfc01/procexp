@@ -279,12 +279,12 @@ class singleUi(object):
       bytesSentPerSecond=0
       bytesReceivedPerSecond=0
       with self._tcpstat.connectionsLock:
-        if self._tcpstat.connections().has_key(key1):
+        if key1 in self._tcpstat.connections():
           bytesSentPerSecond=self._tcpstat.connections()[key1][tcpip_stat.BYTESPERSECONDIDX]
           nftotalBytesPerSecond+=bytesSentPerSecond  
       key2 = "%s.%s > %s.%s" %(iptoaddrdec, int(iptoport,16), ipfromaddrdec, int(ipfromport,16))
       with self._tcpstat.connectionsLock:
-        if self._tcpstat.connections().has_key(key2):
+        if key2 in self._tcpstat.connections():
           bytesReceivedPerSecond=self._tcpstat.connections()[key2][tcpip_stat.BYTESPERSECONDIDX]    
           nftotalBytesPerSecond+=bytesReceivedPerSecond
       

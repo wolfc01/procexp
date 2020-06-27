@@ -191,8 +191,8 @@ class procreader(object):
         ethtoolerror = True
       
       if data[0] is not None:
-        for line in data[0].split("\n"):
-          if line.find("Speed") != -1:
+        for line in data[0].split(b"\n"):
+          if line.find(b"Speed") != -1:
             try:
               speed = int(line.split(":")[1].split("Mb/s")[0])
             except:

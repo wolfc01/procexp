@@ -150,7 +150,7 @@ def performMenuAction(action):
   elif action is g_mainUi.actionSet_affinity:
     try:
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
-      process = str(selectedItem.data(1,0).toString())
+      process = str(selectedItem.data(1,0))
     except IndexError:
       return
     cpuaffinity.doAffinity(g_reader.getCpuCount(), process)

@@ -111,7 +111,7 @@ class IpResolver(object):
     
   def resolveIP(self, ip):
     """resolve IP number"""
-    if self._resolvedTable.has_key(ip):
+    if ip in self._resolvedTable:
       return self._resolvedTable[ip]
     else:
       if self._nrResolvers < self._maxResolvers:
