@@ -19,8 +19,8 @@
 #
 # Display process properties and statistics of a single process
 #
-from PyQt4 import QtCore, QtGui, uic
-import PyQt4.Qwt5 as Qwt
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
+from PyQt5 import Qwt
 import subprocess
 import utils.procutils
 import procreader.tcpip_stat as tcpip_stat
@@ -53,7 +53,7 @@ class singleUi(object):
     self.__proc__ = proc
     self.__reader__ = reader
     self.__name__ = name
-    self.__dialog__ = QtGui.QDialog()
+    self.__dialog__ = QtWidgets.QDialog()
     self.__procDetails__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/processdetails.ui"), baseinstance=self.__dialog__)
     self.__dialog__.show()
     self.__dialog__.setWindowTitle(proc+":"+cmdLine+" Properties")
@@ -101,8 +101,8 @@ class singleUi(object):
     #self.__procDetails__.qwtPlotCpuHist.setAxisScale(0,0,self.__depth__,10)    
     
     self.__curveCpuPlotGrid__ = Qwt.QwtPlotGrid()
-    self.__curveCpuPlotGrid__.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__curveCpuPlotGrid__.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+    self.__curveCpuPlotGrid__.setMajorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+    self.__curveCpuPlotGrid__.setMinorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
     self.__curveCpuPlotGrid__.enableXMin(True)
     self.__curveCpuPlotGrid__.attach(self.__procDetails__.qwtPlotCpuHist)
     #----------------------------------------------------------------------------------------------
@@ -122,8 +122,8 @@ class singleUi(object):
     
     #self.__procDetails__.qwtPlotRssHgetThreist.setAxisScale(0,0,100,10)
     self.__RssPlotGrid__ = Qwt.QwtPlotGrid()
-    self.__RssPlotGrid__.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__RssPlotGrid__.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+    self.__RssPlotGrid__.setMajorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+    self.__RssPlotGrid__.setMinorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
     self.__RssPlotGrid__.enableXMin(True)
     self.__RssPlotGrid__.attach(self.__procDetails__.qwtPlotRssHist)
     #----------------------------------------------------------------------------------------------
@@ -143,8 +143,8 @@ class singleUi(object):
     
     #self.__procDetails__.qwtPlotIoHist.setAxisScale(0,0,100,10)
     self.__IOPlotGrid__ = Qwt.QwtPlotGrid()
-    self.__IOPlotGrid__.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__IOPlotGrid__.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+    self.__IOPlotGrid__.setMajorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+    self.__IOPlotGrid__.setMinorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
     self.__IOPlotGrid__.enableXMin(True)
     self.__IOPlotGrid__.attach(self.__procDetails__.qwtPlotIoHist)
     #----------------------------------------------------------------------------------------------
@@ -163,8 +163,8 @@ class singleUi(object):
     
     #self.__procDetails__.qwtPlotIoHist.setAxisScale(0,0,100,10)
     self.__TcpipPlotGrid__ = Qwt.QwtPlotGrid()
-    self.__TcpipPlotGrid__.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__TcpipPlotGrid__.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+    self.__TcpipPlotGrid__.setMajorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+    self.__TcpipPlotGrid__.setMinorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
     self.__TcpipPlotGrid__.enableXMin(True)
     self.__TcpipPlotGrid__.attach(self.__procDetails__.qwtPlotTcpipHist)
     #----------------------------------------------------------------------------------------------
@@ -183,17 +183,17 @@ class singleUi(object):
     self.__procDetails__.qwtPlotTcpipHist.enableAxis(0, False )    
     self.__procDetails__.qwtPlotTcpipHist.enableAxis(2, False )
     #----------------------------------------------------------------------------------------------
-    self._availableLabel = QtGui.QLabel("                                                                                ", parent=self.__procDetails__.qwtPlotTcpipHist )
+    self._availableLabel = QtWidgets.QLabel("                                                                                ", parent=self.__procDetails__.qwtPlotTcpipHist )
       
     font = QtGui.QFont("Arial", pointSize=12)
     self._availableLabel.setFont(font)
     self._availableLabel.setStyleSheet("QLabel { color : grey; }");
     self._availableLabel.show()
-    
-    QtCore.QObject.connect(self.__procDetails__.pushButtonOK, QtCore.SIGNAL('clicked()'), self.__onClose__)
+
+    self.__procDetails__.pushButtonOK.clicked.connect(self.__onClose__)
   
     # Fill some field only at construction time
-    QtCore.QObject.connect(self.__procDetails__.filterEdit, QtCore.SIGNAL('textEdited(QString)'), self.__onFilterTextEdit__)
+    self.__procDetails__.filterEdit.textEdited.connect(self.__onFilterTextEdit__)
     
     self.__lddoutput__ = None
     self._tcpstat = tcpip_stat.tcpStat()
@@ -279,12 +279,12 @@ class singleUi(object):
       bytesSentPerSecond=0
       bytesReceivedPerSecond=0
       with self._tcpstat.connectionsLock:
-        if self._tcpstat.connections().has_key(key1):
+        if key1 in self._tcpstat.connections():
           bytesSentPerSecond=self._tcpstat.connections()[key1][tcpip_stat.BYTESPERSECONDIDX]
           nftotalBytesPerSecond+=bytesSentPerSecond  
       key2 = "%s.%s > %s.%s" %(iptoaddrdec, int(iptoport,16), ipfromaddrdec, int(ipfromport,16))
       with self._tcpstat.connectionsLock:
-        if self._tcpstat.connections().has_key(key2):
+        if key2 in self._tcpstat.connections():
           bytesReceivedPerSecond=self._tcpstat.connections()[key2][tcpip_stat.BYTESPERSECONDIDX]    
           nftotalBytesPerSecond+=bytesReceivedPerSecond
       
@@ -316,17 +316,17 @@ class singleUi(object):
         self.__procDetails__.tcpipTableWidget.insertRow(row)
       if height != -1:
         self.__procDetails__.tcpipTableWidget.setRowHeight(row, height)
-      self.__procDetails__.tcpipTableWidget.setVerticalHeaderItem (row, QtGui.QTableWidgetItem(""))
+      self.__procDetails__.tcpipTableWidget.setVerticalHeaderItem (row, QtWidgets.QTableWidgetItem(""))
       
-      itemProto = QtGui.QTableWidgetItem(line[0])
-      itemFrom = QtGui.QTableWidgetItem(line[1])
-      itemFromPort = QtGui.QTableWidgetItem(line[2])
-      itemTo = QtGui.QTableWidgetItem(line[3])
-      itemToPort = QtGui.QTableWidgetItem(line[4])
-      itemState = QtGui.QTableWidgetItem(line[5])
+      itemProto = QtWidgets.QTableWidgetItem(line[0])
+      itemFrom = QtWidgets.QTableWidgetItem(line[1])
+      itemFromPort = QtWidgets.QTableWidgetItem(line[2])
+      itemTo = QtWidgets.QTableWidgetItem(line[3])
+      itemToPort = QtWidgets.QTableWidgetItem(line[4])
+      itemState = QtWidgets.QTableWidgetItem(line[5])
       if len(line) > 6:
-        bytesSentSec = QtGui.QTableWidgetItem(str(line[6]))
-        bytesReceivedSec = QtGui.QTableWidgetItem(str(line[7]))
+        bytesSentSec = QtWidgets.QTableWidgetItem(str(line[6]))
+        bytesReceivedSec = QtWidgets.QTableWidgetItem(str(line[7]))
         
       self.__procDetails__.tcpipTableWidget.setItem(row, 0, itemProto)
       self.__procDetails__.tcpipTableWidget.setItem(row, 1, itemFrom)
@@ -358,13 +358,13 @@ class singleUi(object):
         self.__updateEnvironmentDisplay()
         data = self.__reader__.getProcessCpuUsageHistory(self.__proc__)
         actual = data[-1:][0]
-        self.__curveCpuHist__.setData(self.__y__, data)
-        self.__curveCpuHistExt__.setData(self.__y__, data)
+        self.__curveCpuHist__.setSamples(self.__y__, data)
+        self.__curveCpuHistExt__.setSamples(self.__y__, data)
         
         
         data = self.__reader__.getProcessCpuUsageKernelHistory(self.__proc__)
-        self.__curveCpuKernelHist__.setData(self.__y__, data)
-        self.__curveCpuKernelHistExt__.setData(self.__y__, data)
+        self.__curveCpuKernelHist__.setSamples(self.__y__, data)
+        self.__curveCpuKernelHistExt__.setSamples(self.__y__, data)
 
         self.__procDetails__.qwtPlotCpuHist.replot()
         self.__procDetails__.labelActualCpuUsage.setText(str(actual) + "%")
@@ -372,16 +372,16 @@ class singleUi(object):
         
         data = self.__reader__.getProcessRssUsageHistory(self.__proc__)
         actual = data[-1:][0]
-        self.__curveRssHist__.setData(self.__y__, data)
-        self.__curveRssHistExt__.setData(self.__y__, data)
+        self.__curveRssHist__.setSamples(self.__y__, data)
+        self.__curveRssHistExt__.setSamples(self.__y__, data)
         self.__procDetails__.qwtPlotRssHist.replot()
         self.__procDetails__.labelActualRss.setText(str(actual) + " kB")
         self.__procDetails__.actualRss.setValue(actual)
         
         data = self.__reader__.getIOHistory(self.__proc__)
         actual = data[-1:][0]
-        self.__curveIOHist__.setData(self.__y__, data)
-        self.__curveIOHistExt__.setData(self.__y__, data)
+        self.__curveIOHist__.setSamples(self.__y__, data)
+        self.__curveIOHistExt__.setSamples(self.__y__, data)
         self.__procDetails__.qwtPlotIoHist.replot()
         self.__procDetails__.labelActualIo.setText(str(actual) + " kB/s")
         self.__procDetails__.actualIo.setValue(actual)
@@ -392,8 +392,8 @@ class singleUi(object):
           actual = self.__TCPHist__[-1:][0] / 1024
         except IndexError:
           actual = 0
-        self.__curveTcpipHist__.setData(self.__y__, data)
-        self.__curveTcpipHistExt__.setData(self.__y__, data)
+        self.__curveTcpipHist__.setSamples(self.__y__, data)
+        self.__curveTcpipHistExt__.setSamples(self.__y__, data)
         self.__procDetails__.qwtPlotTcpipHist.replot()
         self.__procDetails__.labelActualTcpip.setText(str(actual) + " kB/s")
         self.__procDetails__.actualTcpip.setValue(actual)
@@ -442,11 +442,11 @@ class singleUi(object):
             self.__procDetails__.threadsTableWidget.insertRow(row)
           if height != -1:
             self.__procDetails__.threadsTableWidget.setRowHeight(row, height)
-          self.__procDetails__.threadsTableWidget.setVerticalHeaderItem (row, QtGui.QTableWidgetItem(""))
+          self.__procDetails__.threadsTableWidget.setVerticalHeaderItem (row, QtWidgets.QTableWidgetItem(""))
           
-          itemTid = QtGui.QTableWidgetItem(str(t))
-          itemWchan = QtGui.QTableWidgetItem(str(threadsInfo[t][0]))
-          itemWakeups = QtGui.QTableWidgetItem(str(threadsInfo[t][1]))
+          itemTid = QtWidgets.QTableWidgetItem(str(t))
+          itemWchan = QtWidgets.QTableWidgetItem(str(threadsInfo[t][0]))
+          itemWakeups = QtWidgets.QTableWidgetItem(str(threadsInfo[t][1]))
           self.__procDetails__.threadsTableWidget.setItem(row, 0, itemTid)
           self.__procDetails__.threadsTableWidget.setItem(row, 1, itemWchan)
           self.__procDetails__.threadsTableWidget.setItem(row, 2, itemWakeups)
@@ -463,15 +463,12 @@ class singleUi(object):
             self.__procDetails__.filesTableWidget.insertRow(row)
           if height != -1:
             self.__procDetails__.filesTableWidget.setRowHeight(row, height)
-          self.__procDetails__.filesTableWidget.setVerticalHeaderItem (row, QtGui.QTableWidgetItem(""))
+          self.__procDetails__.filesTableWidget.setVerticalHeaderItem (row, QtWidgets.QTableWidgetItem(""))
           
-          itemFd = QtGui.QTableWidgetItem(str(fd))
-          itemPath = QtGui.QTableWidgetItem(str(fileInfo[str(fd)]["path"]))
-          itemPos = QtGui.QTableWidgetItem(str(fileInfo[str(fd)]["fdinfo"].split("\n")[0].split("\t")[1]))
+          itemFd = QtWidgets.QTableWidgetItem(str(fd))
+          itemPath = QtWidgets.QTableWidgetItem(str(fileInfo[str(fd)]["path"]))
+          itemPos = QtWidgets.QTableWidgetItem(str(fileInfo[str(fd)]["fdinfo"].split("\n")[0].split("\t")[1]))
           self.__procDetails__.filesTableWidget.setItem(row, 0, itemFd)
           self.__procDetails__.filesTableWidget.setItem(row, 1, itemPath)
           self.__procDetails__.filesTableWidget.setItem(row, 2, itemPos)
           row += 1
-          
-        
-       

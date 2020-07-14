@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 # This file is part of the Linux Process Explorer
 # See www.sourceforge.net/projects/procexp
 #
@@ -24,10 +24,8 @@
 
 #create qt app early, in order to show unhandled exceptions graphically.
 import sys
-from PyQt4 import QtCore, QtGui, uic
+from PyQt5 import QtCore, QtGui, QtWidgets, uic
 import utils.procutils
-
-app = QtGui.QApplication(sys.argv)
 
 import procreader.reader
 import logui
@@ -120,11 +118,11 @@ def performMenuAction(action):
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
     except IndexError:
       return
-    process = str(selectedItem.data(1,0).toString())
-    if g_singleProcessUiList.has_key(process):
+    process = str(selectedItem.data(1,0))
+    if process in g_singleProcessUiList.keys():
       g_singleProcessUiList[process].makeVisible()
     else:
-      if g_procList.has_key(int(process)):
+      if int(process) in g_procList.keys():
         g_singleProcessUiList[process] = singleprocess.singleUi(process, g_procList[int(process)]["cmdline"], g_procList[int(process)]["name"], g_reader, int(g_settings["historySampleCount"]))
   elif action is g_mainUi.actionSaveSettings:
     saveSettings()
@@ -152,7 +150,7 @@ def performMenuAction(action):
   elif action is g_mainUi.actionSet_affinity:
     try:
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
-      process = str(selectedItem.data(1,0).toString())
+      process = str(selectedItem.data(1,0))
     except IndexError:
       return
     cpuaffinity.doAffinity(g_reader.getCpuCount(), process)
@@ -192,7 +190,7 @@ def loadSettings():
     
   #load default settings for undefined settings
   for item in g_defaultSettings:
-    if g_settings.has_key(item):
+    if item in g_settings.keys():
       pass
     else:
       g_settings[item] = g_defaultSettings[item]
@@ -210,7 +208,7 @@ def loadSettings():
     
   #load default settings for undefined settings
   for item in g_defaultSettings:
-    if g_settings.has_key(item):
+    if item in g_settings.keys():
       pass
     else:
       g_settings[item] = g_defaultSettings[item]
@@ -271,14 +269,22 @@ def prepareUI(mainUi):
 
   #create a timer which triggers the process explorer to update its contents
   g_timer = QtCore.QTimer(mainUi.processTreeWidget)
-  QtCore.QObject.connect(g_timer, QtCore.SIGNAL("timeout()"), updateUI)
-  QtCore.QObject.connect(mainUi.processTreeWidget, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), onContextMenu)
-  QtCore.QObject.connect(mainUi.menuFile,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuProcess,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuOptions,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuSettings, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuView, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
-  QtCore.QObject.connect(mainUi.menuHelp, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  g_timer.timeout.connect(updateUI)
+  # QtCore.QObject.connect(g_timer, QtCore.SIGNAL("timeout()"), updateUI)
+  mainUi.processTreeWidget.customContextMenuRequested.connect(onContextMenu)
+  # QtCore.QObject.connect(mainUi.processTreeWidget, QtCore.SIGNAL('customContextMenuRequested(const QPoint&)'), onContextMenu)
+  mainUi.menuFile.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuFile,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuProcess.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuProcess,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuOptions.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuOptions,  QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuSettings.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuSettings, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuView.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuView, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
+  mainUi.menuHelp.triggered.connect(performMenuAction)
+  # QtCore.QObject.connect(mainUi.menuHelp, QtCore.SIGNAL('triggered(QAction*)'), performMenuAction)
   
   #prepare the plot
   global g_curveCpuHist
@@ -342,13 +348,13 @@ def addProcessAndParents(proc, procList):
   """
   global g_mainUi
   
-  if g_treeProcesses.has_key(proc): #process already exists, do nothing
+  if proc in g_treeProcesses.keys(): #process already exists, do nothing
     return g_treeProcesses[proc]
     
-  g_treeProcesses[proc] = QtGui.QTreeWidgetItem([])
+  g_treeProcesses[proc] = QtWidgets.QTreeWidgetItem([])
   g_greenTopLevelItems[proc] = g_treeProcesses[proc]
   
-  if procList[proc]["PPID"] > 0 and procList.has_key(procList[proc]["PPID"]): #process has a parent
+  if procList[proc]["PPID"] > 0 and (procList[proc]["PPID"] in procList.keys()): #process has a parent
     parent = addProcessAndParents(procList[proc]["PPID"],procList)
     parent.addChild(g_treeProcesses[proc])
   else: #process has no parent, thus it is toplevel. add it to the treewidget
@@ -361,7 +367,7 @@ def delChild(item, childtodelete):
   """ Delete child, search recursively
   """
   if item != None:
-    for index in xrange(item.childCount()):
+    for index in range(item.childCount()):
       thechild = item.child(index)
       if thechild != None:
         if thechild == childtodelete:
@@ -373,7 +379,7 @@ def expandChilds(parent):
   """ expand all childs of given parent
   """
   global g_mainUi
-  for index in xrange(parent.childCount()):
+  for index in range(parent.childCount()):
     thechild = parent.child(index)
     if thechild != None:
       g_mainUi.processTreeWidget.expandItem(thechild)
@@ -385,7 +391,7 @@ def expandAll():
   """ expand all subtrees
   """
   global g_mainUi
-  for topLevelIndex in xrange(g_mainUi.processTreeWidget.topLevelItemCount()):
+  for topLevelIndex in range(g_mainUi.processTreeWidget.topLevelItemCount()):
     item = g_mainUi.processTreeWidget.topLevelItem(topLevelIndex)
     expandChilds(item)
 
@@ -407,13 +413,13 @@ def updateUI():
     #color all green processes with default background
     defaultBgColor = app.palette().color(QtGui.QPalette.Base)  
     for proc in g_greenTopLevelItems:
-      for column in xrange(g_greenTopLevelItems[proc].columnCount()):
-        g_greenTopLevelItems[proc].setBackgroundColor(column, defaultBgColor)
+      for column in range(g_greenTopLevelItems[proc].columnCount()):
+        g_greenTopLevelItems[proc].setBackground(column, defaultBgColor)
     g_greenTopLevelItems = {}
    
     #delete all red widgetItems
     for proc in g_redTopLevelItems:
-      for topLevelIndex in xrange(g_mainUi.processTreeWidget.topLevelItemCount()):
+      for topLevelIndex in range(g_mainUi.processTreeWidget.topLevelItemCount()):
         topLevelItem = g_mainUi.processTreeWidget.topLevelItem(topLevelIndex)
         delChild(topLevelItem, g_redTopLevelItems[proc])
         if topLevelItem == g_redTopLevelItems[proc]:
@@ -432,7 +438,7 @@ def updateUI():
         item = g_treeProcesses[proc]
         if item.parent() is not None:
           parentItem = item.parent()
-          for idx in xrange(parentItem.childCount()):
+          for idx in range(parentItem.childCount()):
             if item == parentItem.child(idx):
               parentItem.takeChild(idx)
           g_mainUi.processTreeWidget.addTopLevelItem(g_treeProcesses[proc])
@@ -447,8 +453,8 @@ def updateUI():
     #color all deleted processed red
     for proc in g_redTopLevelItems:
       try:
-        for column in xrange(g_redTopLevelItems[proc].columnCount()):
-          g_redTopLevelItems[proc].setBackgroundColor(column, QtGui.QColor(255,0,0))
+        for column in range(g_redTopLevelItems[proc].columnCount()):
+          g_redTopLevelItems[proc].setBackground(column, QtGui.QColor(255,0,0))
       except RuntimeError:
         pass 
     
@@ -476,8 +482,8 @@ def updateUI():
     if g_firstUpdate == False:
       for proc in g_greenTopLevelItems:
         item = g_greenTopLevelItems[proc]
-        for column in xrange(item.columnCount()):
-          item.setBackgroundColor(column, QtGui.QColor(0,255,0))
+        for column in range(item.columnCount()):
+          item.setBackground(column, QtGui.QColor(0,255,0))
       
     if (len(closedProc) > 0) or (len(newProc) > 0):
       expandAll()
@@ -544,13 +550,15 @@ def updateUI():
   except:
     import traceback
     utils.procutils.log("Unhandled exception:%s" %traceback.format_exc())
-    print traceback.format_exc()
+    print(traceback.format_exc())
   
   g_firstUpdate = False
 
 if __name__ == "__main__":
-
-  g_mainWindow = QtGui.QMainWindow()
+  print("Call to __main__")
+  app = QtWidgets.QApplication(sys.argv)
+  print("app created: '%s'" % app)
+  g_mainWindow = QtWidgets.QMainWindow()
   g_mainUi = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/main.ui"), baseinstance=g_mainWindow)
   prepareUI(g_mainUi)
   loadSettings()
@@ -579,8 +587,8 @@ if __name__ == "__main__":
 
   signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-  app.exec_()
+  return_code = app.exec_()
   tcpip_stat.tcpStat().stop()
   rootproxy.end()
-  sys.exit()
+  sys.exit(return_code)
 

@@ -3,7 +3,7 @@
 import subprocess
 import os
 import uuid
-import const
+import rootproxy.const
 
 ptoc_file = None
 ctop_file = None

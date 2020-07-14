@@ -21,3 +21,5 @@ processReader
 
 Reads from the /proc filesystem.
 '''
+
+from procreader.singleprocess import singleProcessDetailsAndHistory

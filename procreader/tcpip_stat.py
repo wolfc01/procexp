@@ -26,7 +26,7 @@
 #
 # When for a long TIMEOUT time no packages come in, the corresponding connection is cleared
  
-import Queue
+import queue
 import threading
 import datetime
 import rootproxy
@@ -67,7 +67,7 @@ class _TcpStat(object):
           nfbytes = int(msg[msg.rfind(" "):])
           conn = msg[msg.find(" ")+1:msg.find(": tcp")]
           with self.connectionsLock:
-            if self._connections.has_key(conn):
+            if conn in self._connections.keys():
               self._connections[conn][_COUNTIDX] += nfbytes+64
               self._connections[conn][_TOTALIDX] += nfbytes+64
               self._connections[conn][_TIMEOUTIDX] = _TIMEOUT

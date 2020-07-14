@@ -98,7 +98,7 @@ class singleProcessDetailsAndHistory(object):
 
     try:
       self.cwd = os.readlink(self.__pathPrefix__ + "cwd")
-    except OSError, val:
+    except OSError as val:
       self.cwd = "<"+val.strerror+">"
     except :
       raise
@@ -107,7 +107,7 @@ class singleProcessDetailsAndHistory(object):
       #do below only once
       try:
         self.cmdline = utils.procutils.readFullFile(self.__pathPrefix__ + "cmdline").replace("\x00"," ")
-      except OSError, val:
+      except OSError as val:
         self.cmdline = "<"+val.strerror+">"
       except utils.procutils.FileError:
         self.cmdline = "---"
@@ -116,7 +116,7 @@ class singleProcessDetailsAndHistory(object):
 
     try:
       self.exe = os.readlink(self.__pathPrefix__ + "exe")
-    except OSError, val:
+    except OSError as val:
       self.exe = "<"+val.strerror+">"
     except :
       raise

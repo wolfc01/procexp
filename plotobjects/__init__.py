@@ -16,8 +16,8 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
 
-from PyQt4 import QtCore, QtGui
-import PyQt4.Qwt5 as Qwt
+from PyQt5 import QtCore, QtGui
+import PyQt5.Qwt as Qwt
 
 class scaleObject:
   pass
@@ -32,13 +32,15 @@ class niceCurve(object):
     self.__curve__.attach(plot)
     
     #work around to get nicer plotting.
-    self.__curveExt__ = Qwt.QwtPlotCurve(name+" extra")
+    self.__curveExt__ = Qwt.QwtPlotCurve(name + " extra")
     self.__curveExt__.setPen(QtGui.QPen(lineColor))
     self.__curveExt__.attach(plot)
-  def setData(self, x, y):
-    self.__curve__.setData(x, y)
-    self.__curveExt__.setData(x,y)
 
+  def setData(self, x, y):
+    self.__curve__.setSamples(x, y)
+    self.__curveExt__.setSamples(x, y)
+    # self.__curve__.setData(list(x), y)
+    # self.__curveExt__.setData(list(x),y)
 
 
 class procExpPlot(object):
@@ -46,8 +48,8 @@ class procExpPlot(object):
     self.__plot__ = qwtPlot
     if hasGrid:
       self.__curveCpuPlotGrid= Qwt.QwtPlotGrid()
-      self.__curveCpuPlotGrid.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-      self.__curveCpuPlotGrid.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+      self.__curveCpuPlotGrid.setMajorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
+      self.__curveCpuPlotGrid.setMinorPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
       self.__curveCpuPlotGrid.enableXMin(True)
       self.__curveCpuPlotGrid.attach(self.__plot__)  
     self.__plot__.setCanvasBackground(QtGui.QColor(0,0,0))
