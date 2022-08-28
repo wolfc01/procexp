@@ -67,7 +67,7 @@ class _TcpStat(object):
           nfbytes = int(msg[msg.rfind(" "):])
           conn = msg[msg.find(" ")+1:msg.find(": tcp")]
           with self.connectionsLock:
-            if conn in self._connections.keys():
+            if self._connections.has_key(conn):
               self._connections[conn][_COUNTIDX] += nfbytes+64
               self._connections[conn][_TOTALIDX] += nfbytes+64
               self._connections[conn][_TIMEOUTIDX] = _TIMEOUT

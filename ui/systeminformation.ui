@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>614</width>
-    <height>459</height>
+    <width>2118</width>
+    <height>488</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -26,11 +26,20 @@
       <string>CPU Usage History</string>
      </property>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>2</number>
+      </property>
+      <property name="topMargin">
+       <number>2</number>
+      </property>
+      <property name="rightMargin">
+       <number>2</number>
+      </property>
+      <property name="bottomMargin">
        <number>2</number>
       </property>
       <item row="0" column="0">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_01">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_01">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -52,7 +61,7 @@
        </widget>
       </item>
       <item row="0" column="1">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_02">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_02">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -74,7 +83,7 @@
        </widget>
       </item>
       <item row="0" column="2">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_03">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_03">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -96,7 +105,7 @@
        </widget>
       </item>
       <item row="0" column="3">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_04">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_04">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -118,7 +127,7 @@
        </widget>
       </item>
       <item row="0" column="4">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_05">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_05">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -140,7 +149,7 @@
        </widget>
       </item>
       <item row="0" column="5">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_06">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_06">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -162,7 +171,7 @@
        </widget>
       </item>
       <item row="0" column="6">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_07">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_07">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -184,7 +193,7 @@
        </widget>
       </item>
       <item row="0" column="7">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_08">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_08">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -206,7 +215,7 @@
        </widget>
       </item>
       <item row="1" column="0">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_09">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_09">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -228,7 +237,7 @@
        </widget>
       </item>
       <item row="1" column="1">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_10">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_10">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -250,7 +259,7 @@
        </widget>
       </item>
       <item row="1" column="2">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_11">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_11">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -272,7 +281,7 @@
        </widget>
       </item>
       <item row="1" column="3">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_12">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_12">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -294,7 +303,7 @@
        </widget>
       </item>
       <item row="1" column="4">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_13">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_13">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -316,7 +325,7 @@
        </widget>
       </item>
       <item row="1" column="5">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_14">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_14">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -338,7 +347,7 @@
        </widget>
       </item>
       <item row="1" column="6">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_15">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_15">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -360,7 +369,7 @@
        </widget>
       </item>
       <item row="1" column="7">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_16">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_16">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -382,7 +391,7 @@
        </widget>
       </item>
       <item row="2" column="0">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_17">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_17">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -404,7 +413,7 @@
        </widget>
       </item>
       <item row="2" column="1">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_18">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_18">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -426,7 +435,7 @@
        </widget>
       </item>
       <item row="2" column="2">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_19">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_19">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -448,7 +457,7 @@
        </widget>
       </item>
       <item row="2" column="3">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_20">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_20">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -470,7 +479,7 @@
        </widget>
       </item>
       <item row="2" column="4">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_21">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_21">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -492,7 +501,7 @@
        </widget>
       </item>
       <item row="2" column="5">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_22">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_22">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -514,7 +523,7 @@
        </widget>
       </item>
       <item row="2" column="6">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_23">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_23">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -536,7 +545,7 @@
        </widget>
       </item>
       <item row="2" column="7">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_24">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_24">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -558,7 +567,7 @@
        </widget>
       </item>
       <item row="3" column="0">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_25">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_25">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -580,7 +589,7 @@
        </widget>
       </item>
       <item row="3" column="1">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_26">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_26">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -602,7 +611,7 @@
        </widget>
       </item>
       <item row="3" column="2">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_27">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_27">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -624,7 +633,7 @@
        </widget>
       </item>
       <item row="3" column="3">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_28">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_28">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -646,7 +655,7 @@
        </widget>
       </item>
       <item row="3" column="4">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_29">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_29">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -668,7 +677,7 @@
        </widget>
       </item>
       <item row="3" column="5">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_30">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_30">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -690,7 +699,7 @@
        </widget>
       </item>
       <item row="3" column="6">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_31">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_31">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -712,7 +721,7 @@
        </widget>
       </item>
       <item row="3" column="7">
-       <widget class="QwtPlot" name="qwtPlotCpuHist_32">
+       <widget class="PlotWidget" name="qwtPlotCpuHist_32">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -742,11 +751,20 @@
       <string>Physical Memory History</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>2</number>
+      </property>
+      <property name="topMargin">
+       <number>2</number>
+      </property>
+      <property name="rightMargin">
+       <number>2</number>
+      </property>
+      <property name="bottomMargin">
        <number>2</number>
       </property>
       <item row="0" column="0">
-       <widget class="QwtPlot" name="qwtPlotMemoryHist">
+       <widget class="PlotWidget" name="qwtPlotMemoryHist">
         <property name="sizePolicy">
          <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
           <horstretch>0</horstretch>
@@ -1157,10 +1175,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
-   <container>1</container>
+   <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header location="global">pyqtgraph</header>
   </customwidget>
  </customwidgets>
  <resources/>

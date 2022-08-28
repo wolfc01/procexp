@@ -33,7 +33,7 @@ def _loadMsgSettings():
   global g_settings
   settingsPath = os.path.expanduser("~/.procexp/questions")
   if os.path.exists(settingsPath):
-    f = file(settingsPath,"rb")
+    f = open(settingsPath,"rb")
     settingsObj = configobj.ConfigObj(infile=f)
     g_settings=settingsObj.dict()
 
@@ -43,7 +43,7 @@ def _saveMsgSettings():
   settingsPath = os.path.expanduser("~/.procexp")
   if not(os.path.exists(settingsPath)):
     os.makedirs(settingsPath)
-  f = file(settingsPath + "/questions","wb")
+  f = open(settingsPath + "/questions","wb")
   cfg = configobj.ConfigObj(g_settings)
   cfg.write(f)
   f.close()

@@ -21,17 +21,16 @@ import signal
 import ctypes
 import traceback
 import queue
-logQueue = queue.Queue()
+logqueue = queue.Queue()
 import sys
 import PyQt5.QtGui
-from PyQt5 import QtWidgets
 import threading
 import socket
 
 _ipResolver = None
 
 def message(msg):
-  errorbox = QtWidgets.QMessageBox()
+  errorbox = PyQt5.QtWidgets.QMessageBox()
   errorbox.setText(msg)
   errorbox.exec_()
   
@@ -44,22 +43,22 @@ def logUnhandledException(exc_type, exc_value, exc_traceback):
   filename = os.path.basename(filename)
   error = "%s: %s" % (str(exc_type).split(".")[-1], exc_value)
   msg = error + " on line %d, file %s" % (line, filename) 
-  errorbox = QtWidgets.QMessageBox()
+  errorbox = PyQt5.QtWidgets.QMessageBox()
   errorbox.setText("Unhandled exception:\n"+msg)
   errorbox.exec_()
-  file("/tmp/procexp.log","ab").write(msg+"\n")
+  open("/tmp/procexp.log","a").write(msg+"\n")
   
-# sys.excepthook = logUnhandledException
+sys.excepthook = logUnhandledException
 
 def log(msg):
   """put a log message into the queue"""
-  logQueue.put(msg)
+  logqueue.put(msg)
 
 def getLog():
   #get almost all logs
   ret_s = ""
-  while not logQueue.empty():
-    ret_s += logQueue.get(block=False) + "\n"
+  while not logqueue.empty():
+    ret_s += logqueue.get(block=False) + "\n"
   return ret_s
 
 
@@ -111,7 +110,7 @@ class IpResolver(object):
     
   def resolveIP(self, ip):
     """resolve IP number"""
-    if ip in self._resolvedTable:
+    if self._resolvedTable.has_key(ip):
       return self._resolvedTable[ip]
     else:
       if self._nrResolvers < self._maxResolvers:

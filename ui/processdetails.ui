@@ -404,7 +404,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="QwtPlot" name="qwtPlotCpuHist"/>
+           <widget class="PlotWidget" name="qwtPlotCpuHist"/>
           </item>
          </layout>
         </widget>
@@ -451,7 +451,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="QwtPlot" name="qwtPlotRssHist"/>
+           <widget class="PlotWidget" name="qwtPlotRssHist"/>
           </item>
          </layout>
         </widget>
@@ -498,7 +498,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="QwtPlot" name="qwtPlotIoHist"/>
+           <widget class="PlotWidget" name="qwtPlotIoHist"/>
           </item>
          </layout>
         </widget>
@@ -545,7 +545,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="QwtPlot" name="qwtPlotTcpipHist"/>
+           <widget class="PlotWidget" name="qwtPlotTcpipHist"/>
           </item>
          </layout>
         </widget>
@@ -765,10 +765,9 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QwtPlot</class>
-   <extends>QFrame</extends>
-   <header>qwt_plot.h</header>
-   <container>1</container>
+   <class>PlotWidget</class>
+   <extends>QGraphicsView</extends>
+   <header>pyqtgraph</header>
   </customwidget>
  </customwidgets>
  <resources/>

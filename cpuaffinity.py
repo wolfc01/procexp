@@ -1,7 +1,7 @@
 from PyQt5 import QtGui, uic
 import subprocess
 import os
-import utils.procutils
+import utils.procutils as procutils
 
 
 def doAffinity(cpuCount, process):

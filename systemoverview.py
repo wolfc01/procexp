@@ -22,7 +22,7 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-import PyQt5.Qwt as Qwt
+#import PyQt4.Qwt5 as Qwt
 import plotobjects
 import os
 
@@ -84,7 +84,6 @@ class cpuPlotObject(object):
     self.__cpuUsageSystemHistory__ = [0] * int(self.__depth__)
     self.__cpuUsageIoWaitHistory__ = [0] * int(self.__depth__)
     self.__cpuUsageIrqHistory__ = [0] * int(self.__depth__)
-
   def update(self):
     values = self.__reader__.getSingleCpuUsage(self.__cpu__)
     self.__cpuUsageHistory__.append(values[0]+values[1]+values[2]+values[3])
@@ -101,7 +100,10 @@ class cpuPlotObject(object):
     
     self.__cpuUsageIrqHistory__.append(values[3])
     self.__cpuUsageIrqHistory__ = self.__cpuUsageIrqHistory__[1:]
+    
 
+
+                                 
     self.__curveCpuHist__ .setData(range(self.__depth__), self.__cpuUsageHistory__)
     self.__curveCpuSystemHist__.setData(range(self.__depth__), self.__cpuUsageSystemHistory__)
     self.__curveIoWaitHist__.setData(range(self.__depth__), self.__cpuUsageIoWaitHistory__)
@@ -152,7 +154,7 @@ class systemOverviewUi(object):
     
     
     for cpu in range(32):
-      if (cpu + 1) > self.__cpuCount__:
+      if cpu+1 > self.__cpuCount__:
         self.__cpuPlotArray__[cpu][0].setVisible(False)
         self.__cpuPlotArray__[cpu].append(False)
       else:

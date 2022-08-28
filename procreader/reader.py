@@ -23,13 +23,146 @@ import time
 import os
 import utils.procutils
 import singleprocess
-from procreader.singleprocess import singleProcessDetailsAndHistory
 import subprocess
 import rootproxy
-import struct
-import socket
+import datetime
 
 UNKNOWN = "---"
+
+class singleProcessDetailsAndHistory(object):
+  def __init__(self, pid, historyDepth, prefixDir = ""):
+    self._prefixDir = prefixDir
+    self.__pid__ = str(pid)
+    self.__pathPrefix__ = self._prefixDir+"/proc/"+self.__pid__+"/"
+    self.__pwd__ = UNKNOWN
+    self.__exepath__ = UNKNOWN
+    self.openFiles = {}
+    self.__memMap__ = ""
+    self.cpuUsageHistory = [0] * historyDepth
+    self.cpuUsageKernelHistory = [0] * historyDepth
+    self.rssUsageHistory = [0] * historyDepth
+    self.IOHistory = [0] * historyDepth
+    self.HistoryDepth = historyDepth
+    self.cmdline = None
+    self.startedtime = None
+    self.ppid = None
+    self.threads = {}
+
+  def __getFileDetails__(self, hasListener):
+    if hasListener:
+      try:
+        allfds = os.listdir(self.__pathPrefix__ + "fd")
+        self.openFiles = {}
+        for fd in allfds:
+          self.openFiles[fd] = {"path":os.readlink(self.__pathPrefix__ + "fd"+"/"+fd)}
+
+          #get fileinfo : kernel 2.6.22 and higher
+
+          try:
+            fileInfo = utils.procutils.readFullFile(self.__pathPrefix__ + "fdinfo/"+fd)
+            self.openFiles[fd]["fdinfo"] = fileInfo
+          except:
+            self.openFiles[fd]["fdinfo"] = "??"
+
+      except OSError:
+        pass
+
+  def _getThreadsInfo__(self, hasListener):
+    self.threads = {}
+    if hasListener:
+      try:
+        alldirs = os.listdir(self.__pathPrefix__ + "task/")
+        for t in alldirs:
+          try:
+            wchan = utils.procutils.readFullFile(self.__pathPrefix__ + "task/" + str(t) + "/wchan")
+            sched = utils.procutils.readFullFile(self.__pathPrefix__ + "task/" + str(t) + "/sched")
+            wakeupcount = int(sched.split("\n")[23].split(":")[1]) #23 is wakeupcount
+            self.threads[t] = [wchan, wakeupcount]
+          except:
+            pass
+      except OSError:
+        pass
+
+  def update(self, cpuUsage, cpuUsageKernel, totalRss, IO, hasListener):
+    if cpuUsage > 100:
+      cpuUsage = 0
+    if cpuUsageKernel > 100:
+      cpuUsageKernel = 0
+    if self.__pwd__ == UNKNOWN:
+      try:
+        self.__pwd__ = os.readlink(self.__pathPrefix__ + "cwd")
+      except:
+        self.__pwd__ = UNKNOWN
+    self.cpuUsageHistory.append(cpuUsage)
+    self.cpuUsageKernelHistory.append(cpuUsageKernel)
+    self.rssUsageHistory.append(totalRss)
+    self.IOHistory.append(IO)
+
+    self.cpuUsageHistory = self.cpuUsageHistory[1:]
+    self.cpuUsageKernelHistory = self.cpuUsageKernelHistory[1:]
+    self.rssUsageHistory = self.rssUsageHistory[1:]
+    self.IOHistory = self.IOHistory[1:]
+
+
+    try:
+      self.cwd = os.readlink(self.__pathPrefix__ + "cwd")
+    except OSError as val:
+      self.cwd = "<"+val.strerror+">"
+    except :
+      raise
+
+    if self.cmdline == None:
+      #do below only once
+      try:
+        self.cmdline = utils.procutils.readFullFile(self.__pathPrefix__ + "cmdline").replace("\x00"," ")
+      except OSError as val:
+        self.cmdline = "<"+val.strerror+">"
+      except utils.procutils.FileError:
+        self.cmdline = "---"
+      except:
+        raise
+
+    try:
+      self.exe = os.readlink(self.__pathPrefix__ + "exe")
+    except OSError as val:
+      self.exe = "<"+val.strerror+">"
+    except :
+      raise
+
+    #started time of a process
+    if self.startedtime == None:
+      try:
+        procstartedtime_seconds = utils.procutils.readFullFile(self.__pathPrefix__ + "stat").split(" ")[21]
+
+
+        procstat = utils.procutils.readFullFile(self._prefixDir+"/proc/stat").split("\n")
+        for line in procstat:
+          if line.find("btime") != -1:
+            systemstarted_seconds = line.split(" ")[1]
+        HZ = os.sysconf(os.sysconf_names["SC_CLK_TCK"])
+        epoch = datetime.datetime(month=1,day=1,year=1970)
+
+
+        procstarted = epoch + \
+                      datetime.timedelta(seconds=int(systemstarted_seconds)) + \
+                      datetime.timedelta(seconds=int(int(procstartedtime_seconds)/(HZ*1.0)+0.5))
+
+        self.startedtime = procstarted.strftime("%A, %d. %B %Y %I:%M%p")
+      except utils.procutils.FileError:
+        self.startedtime = "--"
+
+    #process parent pid
+    if self.ppid is None:
+      try:
+        self.ppid = utils.procutils.readFullFile(self.__pathPrefix__ + "stat").split(" ")[3]
+      except utils.procutils.FileError:
+        self.ppid = None
+
+    #all threads
+    self._getThreadsInfo__(hasListener)
+
+    #get fileInfo
+    self.__getFileDetails__(hasListener)
 
 
 class cpuhistoryreader(object):
@@ -187,6 +320,7 @@ class procreader(object):
       try:
         ethtool = subprocess.Popen(["ethtool", card], stdout=subprocess.PIPE, stderr=subprocess.PIPE )
         data = ethtool.communicate()
+        data = [d.decode() for d in data]
       except (OSError, ValueError):
         ethtoolerror = True
       
@@ -288,16 +422,16 @@ class procreader(object):
       self.__processList__[process] = \
         {"name": "", \
         "env": UNKNOWN, \
-        "prevJiffy": 0, \
-        "prevJiffyKernel": 0, \
-        "prevIO": 0, \
-        "PPID": None, \
-        "cpuUsage": 0, \
+        "prevJiffy":0, \
+        "prevJiffyKernel":0, \
+        "prevIO":0, \
+        "PPID":None, \
+        "cpuUsage":0, \
         "cmdline" : UNKNOWN, \
-        "uid": UNKNOWN, \
-        "wchan": UNKNOWN, \
-        "nfThreads": UNKNOWN, \
-        "history": singleProcessDetailsAndHistory(process, self.__historyCount__, prefixDir=self._prefixDir),\
+        "uid":UNKNOWN, \
+        "wchan":UNKNOWN, \
+        "nfThreads":UNKNOWN, \
+        "history":singleProcessDetailsAndHistory(process,self.__historyCount__, prefixDir=self._prefixDir),\
         "hasListener": False}
 
   def __getUIDName__(self, uid):
@@ -315,7 +449,7 @@ class procreader(object):
   def __removeUnknownParents__(self):#useful when filtered on UID
     for process in self.__processList__:
       if self.__processList__[process]["PPID"] > 0:
-        if not(self.__processList__[process]["PPID"] in self.__processList__.keys()):
+        if not(self.__processList__[process]["PPID"] in self.__processList__):
           self.__processList__[process]["PPID"] = 0
 
   def __getProcessDetails__(self):
@@ -597,54 +731,39 @@ class procreader(object):
     return self.__processList__, self.__closedProcesses__, self.__newProcesses__
 
   def hasProcess(self, process):
-    return int(process) in self.__processList__.keys()
+    return int(process) in self.__processList__
   def setListener(self, process):
-    if int(process) in self.__processList__.keys():
+    if int(process) in self.__processList__:
       self.__processList__[int(process)]["hasListener"]=True
   def getProcessCpuUsageHistory(self, process):
     return self.__processList__[int(process)]["history"].cpuUsageHistory
-
   def getcwd(self, process):
     return self.__processList__[int(process)]["history"].cwd
-
   def getexe(self, process):
     return self.__processList__[int(process)]["history"].exe
-
   def getstartedtime(self, process):
     return self.__processList__[int(process)]["history"].startedtime
-
   def getcmdline(self, process):
     return self.__processList__[int(process)]["history"].cmdline
-
   def getppid(self, process):
     return self.__processList__[int(process)]["history"].ppid
-
   def getProcessCpuUsageKernelHistory(self, process):
     return self.__processList__[int(process)]["history"].cpuUsageKernelHistory
-
   def getProcessRssUsageHistory(self, process):
     return self.__processList__[int(process)]["history"].rssUsageHistory
-
   def getIOHistory(self, process):
     return self.__processList__[int(process)]["history"].IOHistory
-
   def getEnvironment(self,process):
     return self.__processList__[int(process)]["env"]
-
   def getHistoryDepth(self, process):
     return self.__processList__[int(process)]["history"].HistoryDepth
-
   def getCpuCount(self):
     return self.__cpuCount__
-
   def getMemoryUsage(self):
     return self.__totalMemKb, self.__actualMemKb, self.__buffersMemKb, self.__cachedMemKb, self.__swapUsed, self.__swapTotal
-
   def getLoadAvg(self):
     return  self.__loadavg__, self.__noofprocs__, self.__noofrunningprocs__, self.__lastpid__
-
   def getThreads(self, process):
     return self.__processList__[int(process)]["history"].threads
-
   def getFileInfo(self, process):
     return self.__processList__[int(process)]["history"].openFiles
