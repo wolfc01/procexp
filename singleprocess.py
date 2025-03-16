@@ -84,18 +84,50 @@ class singleUi(object):
       fillLevel=0, 
       brush=pyqtgraph.mkBrush(color=(230,0,0)))
 
+    
+    self.__procDetails__.actualCpu.setStyleSheet("""
+    QProgressBar::chunk {
+        background-color: #00C800
+    }""")
+    self.__procDetails__.actualKernelCpu.setStyleSheet("""
+    QProgressBar::chunk {
+        background-color: #C80000
+    }""")
     self.__procDetails__.plotCpuHist.setBackground("w")
     self.__procDetails__.plotCpuHist.hideAxis("bottom")
     self.__procDetails__.plotCpuHist.hideAxis("left")
+    #-------- Middle plot memory usage-------------------------------------------------------------
+    self.__lineRssHist = self.__procDetails__.plotRssHist.plot(
+      self.__y__, 
+      [0]*self.__depth__,  
+      pen=pyqtgraph.mkPen(color=(110, 97, 19)),
+      fillLevel=0, 
+      brush=pyqtgraph.mkBrush(color=(207, 184, 37)))
+    self.__procDetails__.actualRss.setStyleSheet("""
+    QProgressBar::chunk {
+        background-color: #CFB825
+    }""")
+    self.__procDetails__.plotRssHist.setBackground("w")
+    self.__procDetails__.plotRssHist.hideAxis("bottom")
+    self.__procDetails__.plotRssHist.hideAxis("left")
+    #-------- Bottom plot IO usage ----------------------------------------------------------------
+    self.__lineIoHist = self.__procDetails__.plotIoHist.plot(
+      self.__y__, 
+      [0]*self.__depth__,  
+      pen=pyqtgraph.mkPen(color=(0,0,200)),
+      fillLevel=0, 
+      brush=pyqtgraph.mkBrush(color=(0,0,230)))
+    self.__procDetails__.actualIo.setStyleSheet("""
+    QProgressBar::chunk {
+        background-color: #0000E6
+    }""")
+    self.__procDetails__.plotIoHist.setBackground("w")
+    self.__procDetails__.plotIoHist.hideAxis("bottom")
+    self.__procDetails__.plotIoHist.hideAxis("left")
     
 
-    
-    
-    #-------- Middle plot memory usage-------------------------------------------------------------
-    #----------------------------------------------------------------------------------------------
-    
-    #-------- Bottom plot IO usage ----------------------------------------------------------------
-    #Curve for memory usage
+
+
     #----------------------------------------------------------------------------------------------
 
     #-------- TCP IO usage ----------------------------------------------------------------
@@ -279,12 +311,27 @@ class singleUi(object):
         self.__updateEnvironmentDisplay()
         data = self.__reader__.getProcessCpuUsageHistory(self.__proc__)
         actual = data[-1:][0]
+        self.__procDetails__.actualCpu.setValue(actual)
+        self.__procDetails__.labelActualCpuUsage.setText(str(actual) + "%")
         self.__lineCpuHist.setData(self.__y__, data)
 
         data = self.__reader__.getProcessCpuUsageKernelHistory(self.__proc__)
         self.__lineCpuKernelHist.setData(self.__y__, data)
+        self.__procDetails__.actualKernelCpu.setValue(data[-1:][0])
+        self.__procDetails__.labelActualKernelCpuUsage.setText(str(data[-1:][0]) + "%")
+
+        data = self.__reader__.getProcessRssUsageHistory(self.__proc__)
+        actual = data[-1:][0]
+        self.__lineRssHist.setData(self.__y__, data)
+        self.__procDetails__.actualRss.setValue(actual)
+        self.__procDetails__.labelActualRss.setText(str(actual) + " kB")
 
 
+        data = self.__reader__.getIOHistory(self.__proc__)
+        actual = data[-1:][0]
+        self.__lineIoHist.setData(self.__y__, data)
+        self.__procDetails__.labelActualIo.setText(str(round(actual)) + " kB/s")
+        self.__procDetails__.actualIo.setValue(actual)
         return
 
 
