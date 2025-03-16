@@ -97,14 +97,14 @@ def performMenuAction(action):
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
     except IndexError:
       return
-    process = selectedItem.data(1,0).toString()
+    process = selectedItem.data(1,0)
     utils.procutils.killProcessHard(process)
   elif action is g_mainUi.actionKill_process_tree:
     try:
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
     except IndexError:
       return
-    process = selectedItem.data(1,0).toString()
+    process = selectedItem.data(1,0)
     killProcessTree(process, g_procList)
   elif action is g_mainUi.actionShow_process_from_all_users:
     if g_onlyUser:
@@ -120,7 +120,7 @@ def performMenuAction(action):
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
     except IndexError:
       return
-    process = str(selectedItem.data(1,0).toString())
+    process = str(selectedItem.data(1,0))
     if process in g_singleProcessUiList:
       g_singleProcessUiList[process].makeVisible()
     else:
@@ -152,7 +152,7 @@ def performMenuAction(action):
   elif action is g_mainUi.actionSet_affinity:
     try:
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
-      process = str(selectedItem.data(1,0).toString())
+      process = str(selectedItem.data(1,0))
     except IndexError:
       return
     cpuaffinity.doAffinity(g_reader.getCpuCount(), process)
@@ -557,8 +557,8 @@ if __name__ == "__main__":
 
   g_mainWindow.show()
   app.processEvents()
-
   rootproxy.start(asRoot=True)
+
   if not rootproxy.isStarted():
     messageui.doMessageWindow("Process explorer has no root privileges. TCPIP traffic monitoring (using tcpdump) will not be available.")
 

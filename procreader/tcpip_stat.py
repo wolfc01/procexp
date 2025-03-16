@@ -33,6 +33,8 @@ import rootproxy
 import uuid
 import os
 import threading
+import time
+
 _TIMEOUT=10
 _TIMEOUTIDX=1
 _COUNTIDX=0
@@ -59,7 +61,13 @@ class _TcpStat(object):
 
   def _readFifo(self):
     """read fifo containing tcdump results"""
-    fifo = open(self._fifo, "r")
+    while True:
+      try:
+        fifo = open(self._fifo, "r")
+        break
+      except IOError:
+        time.sleep(0.1)
+
     while True:
       msg = fifo.readline()
       if msg.startswith("IP") and msg.find(" tcp ") != -1: #thus also contains ipv6 connections
@@ -84,7 +92,6 @@ class _TcpStat(object):
     """start measuring"""
     if self._started == False:
       self._fifo = "/tmp/procexp_"+str(uuid.uuid4())
-      os.mkfifo(self._fifo)
       rootproxy.doContinuousCommand(["tcpdump", "-U" , "-l", "-q", "-nn", "-t", "-i",  "any"], self._fifo)
       self._started = True
       t = threading.Thread(target=self._readFifo)
@@ -99,7 +106,6 @@ class _TcpStat(object):
     self._started = False
     if self._fifo:
       rootproxy.stopContinuousCommand(self._fifo)
-      os.remove(self._fifo)
   
   def tick(self):
     if self._prevTime is None:

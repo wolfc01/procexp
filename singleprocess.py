@@ -19,8 +19,7 @@
 #
 # Display process properties and statistics of a single process
 #
-from PyQt5 import QtCore, QtGui, uic
-#import PyQt5.Qwt5 as Qwt
+from PyQt5 import QtCore, QtGui, uic, QtWidgets
 import subprocess
 import utils.procutils
 import procreader.tcpip_stat as tcpip_stat
@@ -28,6 +27,7 @@ import procreader.reader
 import os
 import struct
 import socket
+import pyqtgraph
 
 UNKNOWN = "---" 
 
@@ -53,7 +53,7 @@ class singleUi(object):
     self.__proc__ = proc
     self.__reader__ = reader
     self.__name__ = name
-    self.__dialog__ = QtGui.QDialog()
+    self.__dialog__ = QtWidgets.QDialog()
     self.__procDetails__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/processdetails.ui"), baseinstance=self.__dialog__)
     self.__dialog__.show()
     self.__dialog__.setWindowTitle(proc+":"+cmdLine+" Properties")
@@ -70,130 +70,51 @@ class singleUi(object):
 
     #-------- top plot CPU usage-------------------------------------------------------------------
     #Curves for CPU usage
-    self.__curveCpuHist__ = Qwt.QwtPlotCurve("CPU History")
-    pen = QtGui.QPen(QtGui.QColor(0,255,0))
-    pen.setWidth(2)
-    
-    #work around to get better plotting.
-    self.__curveCpuHistExt__ = Qwt.QwtPlotCurve("CPU History extra")
-    self.__curveCpuHistExt__.setPen(QtGui.QPen(QtGui.QColor(0,255,0)))
-    self.__curveCpuHistExt__.attach(self.__procDetails__.qwtPlotCpuHist)
-    
-    
-    self.__curveCpuHist__.setPen(pen)
-    self.__curveCpuHist__.setBrush(QtGui.QColor(0,170,0))
-    self.__curveCpuHist__.attach(self.__procDetails__.qwtPlotCpuHist)
-    
-    #Curve for kernel usage
-    self.__curveCpuKernelHist__ = Qwt.QwtPlotCurve("CPU Kernel History")
-    pen = QtGui.QPen(QtGui.QColor(255,0,0))
-    pen.setWidth(1)
-    self.__curveCpuKernelHist__.setPen(pen)
-    self.__curveCpuKernelHist__.setBrush(QtGui.QColor(170,0,0))
-    self.__curveCpuKernelHist__.attach(self.__procDetails__.qwtPlotCpuHist)
-    
-    #work around to get better plotting.
-    self.__curveCpuKernelHistExt__ = Qwt.QwtPlotCurve("CPU Kernel History extra")
-    self.__curveCpuKernelHistExt__.setPen(QtGui.QPen(QtGui.QColor(255,0,0)))
-    self.__curveCpuKernelHistExt__.attach(self.__procDetails__.qwtPlotCpuHist)
-    
-    
-    #self.__procDetails__.qwtPlotCpuHist.setAxisScale(0,0,self.__depth__,10)    
-    
-    self.__curveCpuPlotGrid__ = Qwt.QwtPlotGrid()
-    self.__curveCpuPlotGrid__.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__curveCpuPlotGrid__.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__curveCpuPlotGrid__.enableXMin(True)
-    self.__curveCpuPlotGrid__.attach(self.__procDetails__.qwtPlotCpuHist)
     #----------------------------------------------------------------------------------------------
+    self.__lineCpuHist = self.__procDetails__.plotCpuHist.plot(
+      self.__y__, 
+      [0]*self.__depth__,
+      pen=pyqtgraph.mkPen(color=(0,200,0)),
+      fillLevel=0, 
+      brush=pyqtgraph.mkBrush(color=(0,230,0)))
+    self.__lineCpuKernelHist = self.__procDetails__.plotCpuHist.plot(
+      self.__y__, 
+      [0]*self.__depth__,
+      pen=pyqtgraph.mkPen(color=(200,0,0)),
+      fillLevel=0, 
+      brush=pyqtgraph.mkBrush(color=(230,0,0)))
+
+    self.__procDetails__.plotCpuHist.setBackground("w")
+    self.__procDetails__.plotCpuHist.hideAxis("bottom")
+    self.__procDetails__.plotCpuHist.hideAxis("left")
+    
+
+    
     
     #-------- Middle plot memory usage-------------------------------------------------------------
-    #Curve for memory usage
-    self.__curveRssHist__ = Qwt.QwtPlotCurve("Rss History")
-    pen = QtGui.QPen(QtGui.QColor(248,248,0))
-    pen.setWidth(1)
-    self.__curveRssHist__.setPen(pen)
-    self.__curveRssHist__.setBrush(QtGui.QColor(190,190,0))
-    self.__curveRssHist__.attach(self.__procDetails__.qwtPlotRssHist)
-    
-    self.__curveRssHistExt__ = Qwt.QwtPlotCurve("Rss extra")
-    self.__curveRssHistExt__.setPen(QtGui.QPen(QtGui.QColor(248,248,0)))
-    self.__curveRssHistExt__.attach(self.__procDetails__.qwtPlotRssHist)
-    
-    #self.__procDetails__.qwtPlotRssHgetThreist.setAxisScale(0,0,100,10)
-    self.__RssPlotGrid__ = Qwt.QwtPlotGrid()
-    self.__RssPlotGrid__.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__RssPlotGrid__.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__RssPlotGrid__.enableXMin(True)
-    self.__RssPlotGrid__.attach(self.__procDetails__.qwtPlotRssHist)
     #----------------------------------------------------------------------------------------------
     
     #-------- Bottom plot IO usage ----------------------------------------------------------------
     #Curve for memory usage
-    self.__curveIOHist__ = Qwt.QwtPlotCurve("IO History")
-    pen = QtGui.QPen(QtGui.QColor(0,214,214))
-    pen.setWidth(1)
-    self.__curveIOHist__.setPen(pen)
-    self.__curveIOHist__.setBrush(QtGui.QColor(0,150,150))
-    self.__curveIOHist__.attach(self.__procDetails__.qwtPlotIoHist)
-    
-    self.__curveIOHistExt__ = Qwt.QwtPlotCurve("IO History extra")
-    self.__curveIOHistExt__.setPen(QtGui.QPen(QtGui.QColor(0,214,214)))
-    self.__curveIOHistExt__.attach(self.__procDetails__.qwtPlotIoHist)
-    
-    #self.__procDetails__.qwtPlotIoHist.setAxisScale(0,0,100,10)
-    self.__IOPlotGrid__ = Qwt.QwtPlotGrid()
-    self.__IOPlotGrid__.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__IOPlotGrid__.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__IOPlotGrid__.enableXMin(True)
-    self.__IOPlotGrid__.attach(self.__procDetails__.qwtPlotIoHist)
     #----------------------------------------------------------------------------------------------
 
     #-------- TCP IO usage ----------------------------------------------------------------
-    self.__curveTcpipHist__ = Qwt.QwtPlotCurve("TCPIP History")
-    pen = QtGui.QPen(QtGui.QColor(0,214,214))
-    pen.setWidth(1)
-    self.__curveTcpipHist__.setPen(pen)
-    self.__curveTcpipHist__.setBrush(QtGui.QColor(196,60,210))
-    self.__curveTcpipHist__.attach(self.__procDetails__.qwtPlotTcpipHist)
-    
-    self.__curveTcpipHistExt__ = Qwt.QwtPlotCurve("TCPIP History extra")
-    self.__curveTcpipHistExt__.setPen(QtGui.QPen(QtGui.QColor(215,124,224)))
-    self.__curveTcpipHistExt__.attach(self.__procDetails__.qwtPlotTcpipHist)
-    
-    #self.__procDetails__.qwtPlotIoHist.setAxisScale(0,0,100,10)
-    self.__TcpipPlotGrid__ = Qwt.QwtPlotGrid()
-    self.__TcpipPlotGrid__.setMajPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__TcpipPlotGrid__.setMinPen(QtGui.QPen(QtGui.QColor(0,100,0), 0, QtCore.Qt.SolidLine))
-    self.__TcpipPlotGrid__.enableXMin(True)
-    self.__TcpipPlotGrid__.attach(self.__procDetails__.qwtPlotTcpipHist)
     #----------------------------------------------------------------------------------------------
     
     #  all plots ----------------------------------------------------------------------------------
-    self.__procDetails__.qwtPlotCpuHist.setCanvasBackground(QtGui.QColor(0,0,0))
-    self.__procDetails__.qwtPlotRssHist.setCanvasBackground(QtGui.QColor(0,0,0))
-    self.__procDetails__.qwtPlotIoHist.setCanvasBackground(QtGui.QColor(0,0,0))
-    self.__procDetails__.qwtPlotTcpipHist.setCanvasBackground(QtGui.QColor(0,0,0))
-    self.__procDetails__.qwtPlotCpuHist.enableAxis(0, False )
-    self.__procDetails__.qwtPlotCpuHist.enableAxis(2, False )
-    self.__procDetails__.qwtPlotRssHist.enableAxis(0, False )
-    self.__procDetails__.qwtPlotRssHist.enableAxis(2, False )
-    self.__procDetails__.qwtPlotIoHist.enableAxis(0, False )
-    self.__procDetails__.qwtPlotIoHist.enableAxis(2, False )
-    self.__procDetails__.qwtPlotTcpipHist.enableAxis(0, False )    
-    self.__procDetails__.qwtPlotTcpipHist.enableAxis(2, False )
     #----------------------------------------------------------------------------------------------
-    self._availableLabel = QtGui.QLabel("                                                                                ", parent=self.__procDetails__.qwtPlotTcpipHist )
+    self._availableLabel = QtWidgets.QLabel("                                                                                ", parent=self.__procDetails__.plotTcpipHist )
       
     font = QtGui.QFont("Arial", pointSize=12)
     self._availableLabel.setFont(font)
     self._availableLabel.setStyleSheet("QLabel { color : grey; }");
     self._availableLabel.show()
     
-    QtCore.QObject.connect(self.__procDetails__.pushButtonOK, QtCore.SIGNAL('clicked()'), self.__onClose__)
+    #QtCore.QObject.connect(self.__procDetails__.pushButtonOK, QtCore.SIGNAL('clicked()'), self.__onClose__)
+    self.__procDetails__.pushButtonOK.clicked.connect(self.__onClose__)
   
     # Fill some field only at construction time
-    QtCore.QObject.connect(self.__procDetails__.filterEdit, QtCore.SIGNAL('textEdited(QString)'), self.__onFilterTextEdit__)
+    self.__procDetails__.filterEdit.textChanged.connect(self.__onFilterTextEdit__)
     
     self.__lddoutput__ = None
     self._tcpstat = tcpip_stat.tcpStat()
@@ -358,8 +279,15 @@ class singleUi(object):
         self.__updateEnvironmentDisplay()
         data = self.__reader__.getProcessCpuUsageHistory(self.__proc__)
         actual = data[-1:][0]
-        self.__curveCpuHist__.setData(self.__y__, data)
-        self.__curveCpuHistExt__.setData(self.__y__, data)
+        self.__lineCpuHist.setData(self.__y__, data)
+
+        data = self.__reader__.getProcessCpuUsageKernelHistory(self.__proc__)
+        self.__lineCpuKernelHist.setData(self.__y__, data)
+
+
+        return
+
+
         
         
         data = self.__reader__.getProcessCpuUsageKernelHistory(self.__proc__)

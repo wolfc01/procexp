@@ -2,6 +2,7 @@
 
 import subprocess
 import os
+import time
 import uuid
 import rootproxy.const
 
@@ -36,25 +37,29 @@ def start(asRoot = True):
   
   ptoc_filename = "/tmp/ptoc"+str(uuid.uuid4()) #ParentTOChild
   ctop_filename = "/tmp/ctop"+str(uuid.uuid4()) #ChildTOParent
-  
-  os.mkfifo(ptoc_filename) #ParentToChild
-  os.mkfifo(ctop_filename) #ChildTOParent
-  
+    
   if asRoot:
     thisFile = __file__
     thisFile = thisFile.replace(".pyc", ".py")
     procroot = subprocess.Popen(["pkexec", thisFile.replace("__init__", "procroot"), ptoc_filename, ctop_filename])
   else:
     procroot = subprocess.Popen([os.path.abspath(__file__).replace("__init__", "procroot"), ptoc_filename, ctop_filename])
-  
-  try:  
-    ptoc_file = open(ptoc_filename, "w")
-    ctop_file = open(ctop_filename, "r")
-    started = True
-  except IOError:
-    started = False
-    os.remove(ptoc_filename)  
-    os.remove(ctop_filename)  
+
+  while True:
+    try:
+      os.close(os.open(ptoc_filename, flags= os.O_WRONLY)) #does file exist?
+      ptoc_file = open(ptoc_filename, "w")
+      break
+    except IOError:
+      import traceback
+      time.sleep(0.1)
+  while True:
+    try:
+      ctop_file = open(ctop_filename, "r")
+      break
+    except IOError:
+      time.sleep(0.1)
+  started = True
 
 def doCommand(CommandAndArgList):
   """issue command to procroot process and get the result"""
@@ -73,7 +78,9 @@ def doListDir(arg):
     global ptoc_file
     global ctop_file
     _write(ptoc_file, (const.Command.LISTDIR, arg))
-    result = eval(ctop_file.readline())
+    _data = ctop_file.readline()
+    print(_data)
+    result = eval(_data)
     if result[0] == const.Result.FAIL:
       raise CommandException
     else:
@@ -118,6 +125,4 @@ def end():
     
     _write(ptoc_file, (const.Command.END,)) 
     procroot.wait()
-    os.remove(ptoc_filename)  
-    os.remove(ctop_filename)  
-  
+

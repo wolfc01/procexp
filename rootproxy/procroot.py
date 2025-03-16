@@ -1,4 +1,4 @@
-#!/usr/bin/python
+#!/usr/bin/python3
 
 #
 # This process runs as root and gets all commands from the ptoc fifo
@@ -8,6 +8,13 @@ import subprocess
 import const
 import os
 import traceback
+import time
+
+os.mkfifo(sys.argv[1], 0o666) #ParentToChild
+os.mkfifo(sys.argv[2], 0o666) #ChildTOParent
+
+os.chmod(sys.argv[1], 0o666)
+os.chmod(sys.argv[2], 0o666)
 
 ptoc_fifo = open(sys.argv[1], "r")
 ctop_fifo = open(sys.argv[2], "w")
@@ -35,7 +42,11 @@ while True:
       result = (const.Result.FAIL, e.output)
     _write(ctop_fifo, repr(result))
   elif subprocesscommand[0] == const.Command.CONTINUE:
-    #start process and output to given existing fifo
+    # start process and 
+    # create fifo and from given fifo file name
+    # then output to given existing fifo
+    os.mkfifo(subprocesscommand[2], 0o666) #ParentToChild
+    os.chmod(subprocesscommand[2], 0o666)
     f = open(subprocesscommand[2], "w")
     processes[subprocesscommand[2]] = subprocess.Popen(subprocesscommand[1], stdout=f)
   elif subprocesscommand[0] == const.Command.LISTDIR:
@@ -56,8 +67,11 @@ while True:
     #start process and output to given existing fifo
     processes[subprocesscommand[1]].kill()
     processes[subprocesscommand[1]].wait()
+    os.remove(subprocesscommand[1])
     
-    
+os.remove(sys.argv[1])  
+os.remove(sys.argv[2])  
+ 
 for proc in processes:
   try:
     processes[proc].kill()

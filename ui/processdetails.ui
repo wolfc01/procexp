@@ -404,7 +404,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_5">
           <item>
-           <widget class="PlotWidget" name="qwtPlotCpuHist"/>
+           <widget class="PlotWidget" name="plotCpuHist"/>
           </item>
          </layout>
         </widget>
@@ -451,7 +451,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_4">
           <item>
-           <widget class="PlotWidget" name="qwtPlotRssHist"/>
+           <widget class="PlotWidget" name="plotRssHist"/>
           </item>
          </layout>
         </widget>
@@ -498,7 +498,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_2">
           <item>
-           <widget class="PlotWidget" name="qwtPlotIoHist"/>
+           <widget class="PlotWidget" name="plotIoHist"/>
           </item>
          </layout>
         </widget>
@@ -545,7 +545,7 @@
          </property>
          <layout class="QHBoxLayout" name="horizontalLayout_7">
           <item>
-           <widget class="PlotWidget" name="qwtPlotTcpipHist"/>
+           <widget class="PlotWidget" name="plotTcpipHist"/>
           </item>
          </layout>
         </widget>
