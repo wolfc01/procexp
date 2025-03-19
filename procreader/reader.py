@@ -652,7 +652,6 @@ class procreader(object):
     return self.__networkCards__[cardName]
     
   def getAllProcessSockets(self,process):
-    
     allFds = {}
     allUDP = {}
     try:

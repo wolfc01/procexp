@@ -544,7 +544,6 @@ def updateUI():
   except:
     import traceback
     utils.procutils.log("Unhandled exception:%s" %traceback.format_exc())
-    print( traceback.format_exc())
   
   g_firstUpdate = False
 

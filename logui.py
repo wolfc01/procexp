@@ -44,7 +44,6 @@ class _LogWindowWrapper(object):
 
   def close(self):
     '''Close this dialog'''
-    print("close")
     if self._dialog:
       self._dialog.close()
 

@@ -70,19 +70,20 @@ class _TcpStat(object):
 
     while True:
       msg = fifo.readline()
-      if msg.startswith("IP") and msg.find(" tcp ") != -1: #thus also contains ipv6 connections
-        try:
-          nfbytes = int(msg[msg.rfind(" "):])
-          conn = msg[msg.find(" ")+1:msg.find(": tcp")]
-          with self.connectionsLock:
-            if self._connections.has_key(conn):
-              self._connections[conn][_COUNTIDX] += nfbytes+64
-              self._connections[conn][_TOTALIDX] += nfbytes+64
-              self._connections[conn][_TIMEOUTIDX] = _TIMEOUT
-            else:
-              self._connections[conn] = [nfbytes, _TIMEOUT, 0, 0]
-        except ValueError:
-          pass  
+      if not(msg.startswith("IP")) and "IP" in msg: #be sure there is no interface named "IP" 
+        if msg.find(" tcp ") != -1:
+          try:
+            nfbytes = int(msg[msg.rfind(" "):])
+            conn = ' '.join(msg.split()[3:6])[:-1]
+            with self.connectionsLock:
+              if conn in self._connections:
+                self._connections[conn][_COUNTIDX] += nfbytes+64
+                self._connections[conn][_TOTALIDX] += nfbytes+64
+                self._connections[conn][_TIMEOUTIDX] = _TIMEOUT
+              else:
+                self._connections[conn] = [nfbytes, _TIMEOUT, 0, 0]
+          except ValueError:
+            pass  
   
   def connections(self):
     """connections"""

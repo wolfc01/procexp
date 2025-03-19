@@ -79,7 +79,6 @@ def doListDir(arg):
     global ctop_file
     _write(ptoc_file, (const.Command.LISTDIR, arg))
     _data = ctop_file.readline()
-    print(_data)
     result = eval(_data)
     if result[0] == const.Result.FAIL:
       raise CommandException

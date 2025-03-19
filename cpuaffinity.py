@@ -1,4 +1,4 @@
-from PyQt5 import QtGui, uic
+from PyQt5 import QtGui, uic, QtWidgets
 import subprocess
 import os
 import utils.procutils as procutils
@@ -8,7 +8,7 @@ def doAffinity(cpuCount, process):
   """ setup and handle the cpu affinity menu.
   """
   global ui
-  dialog = QtGui.QDialog()
+  dialog = QtWidgets.QDialog()
   aff = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/cpuaffinity.ui"), baseinstance=dialog)
   
   #get affinity of process
