@@ -61,7 +61,8 @@ class singleUi(object):
     self.__y__ = range(self.__depth__)
     self.__tcpConnections__ = []
     self.__tcpStat__ = None
-    self.__TCPHist__ = [0] * self.__reader__.getHistoryDepth(self.__proc__)
+    self.__TCPHistRec__ = [0] * self.__reader__.getHistoryDepth(self.__proc__)
+    self.__TCPHistSend__ = [0] * self.__reader__.getHistoryDepth(self.__proc__)
     self.__prevtcpipbytes__ = 0
     self.__envData = procreader.reader.UNKNOWN
 
@@ -124,15 +125,25 @@ class singleUi(object):
     self.__procDetails__.plotIoHist.hideAxis("bottom")
     self.__procDetails__.plotIoHist.hideAxis("left")
     #-------- TCP IO usage ----------------------------------------------------------------
-    self.__lineTCPHist = self.__procDetails__.plotTcpipHist.plot(
+    self.__lineTCPHistRec = self.__procDetails__.plotTcpipHist.plot(
       self.__y__, 
       [0]*self.__depth__,  
       pen=pyqtgraph.mkPen(color=(123,0,161)),
       fillLevel=0, 
       brush=pyqtgraph.mkBrush(color=(255,0,255)))
-    self.__procDetails__.actualIo.setStyleSheet("""
+    self.__lineTCPHistSend = self.__procDetails__.plotTcpipHist.plot(
+      self.__y__, 
+      [0]*self.__depth__,  
+      pen=pyqtgraph.mkPen(color=(123,0,161)),
+      fillLevel=0, 
+      brush=pyqtgraph.mkBrush(color=(128,0,128)))
+    self.__procDetails__.actualTcpipRec.setStyleSheet("""
     QProgressBar::chunk {
         background-color: #FF00FF
+    }""")
+    self.__procDetails__.actualTcpipSend.setStyleSheet("""
+    QProgressBar::chunk {
+        background-color: #7F007F
     }""")
     self.__procDetails__.plotTcpipHist.setBackground("w")
     self.__procDetails__.plotTcpipHist.hideAxis("bottom")
@@ -216,7 +227,8 @@ class singleUi(object):
     connections, udp = self.__reader__.getAllProcessSockets(self.__proc__) 
     text = []
     allConn = []
-    nftotalBytesPerSecond = 0
+    nftotalBytesRecPerSecond = 0
+    nftotalBytesSendPerSecond = 0
 
     #all IP connections
     for conn in connections:
@@ -244,12 +256,12 @@ class singleUi(object):
       with self._tcpstat.connectionsLock:
         if key1 in self._tcpstat.connections():
           bytesSentPerSecond=self._tcpstat.connections()[key1][tcpip_stat.BYTESPERSECONDIDX]
-          nftotalBytesPerSecond+=bytesSentPerSecond  
+          nftotalBytesSendPerSecond+=bytesSentPerSecond  
       key2 = "%s.%s > %s.%s" %(iptoaddrdec, int(iptoport,16), ipfromaddrdec, int(ipfromport,16))
       with self._tcpstat.connectionsLock:
         if key2 in self._tcpstat.connections():
           bytesReceivedPerSecond=self._tcpstat.connections()[key2][tcpip_stat.BYTESPERSECONDIDX]    
-          nftotalBytesPerSecond+=bytesReceivedPerSecond
+          nftotalBytesRecPerSecond+=bytesReceivedPerSecond
       
       state = tcpstates[int(connections[conn][3],16)]
       
@@ -259,12 +271,6 @@ class singleUi(object):
       text.append(("TCPIP", ipfromResolved, str(int(ipfromport,16)), iptoResolved, str(int(iptoport,16)), state, \
                    utils.procutils.humanReadable(bytesSentPerSecond)+"/s", utils.procutils.humanReadable(bytesReceivedPerSecond)+"/s"))
       
-    if nftotalBytesPerSecond > 0:
-      self._availableLabel.hide()  
-    self.__TCPHist__.append(nftotalBytesPerSecond)
-    self.__TCPHist__ = self.__TCPHist__[1:]
-
-
     #all UDP IP pairs (they are formally not 'connections')
     for conn in udp:
       ipfrom = udp[conn][1].split(":")
@@ -285,24 +291,30 @@ class singleUi(object):
       allConn.append(((ipfromaddrdec,int(ipfromport,16)),(iptoaddrdec,int(iptoport,16))))
 
       key = "%s.%s Out" %(ipfromaddrdec, int(ipfromport,16))
-      print(key)
       bytesSentPerSecond=0
       with self._tcpstat.connectionsLock:
         if key in self._tcpstat.connections():
           bytesSentPerSecond=self._tcpstat.connections()[key][tcpip_stat.BYTESPERSECONDIDX]
-          nftotalBytesPerSecond+=bytesSentPerSecond  
+          nftotalBytesSendPerSecond+=bytesSentPerSecond  
       key = "%s.%s In" %(ipfromaddrdec, int(ipfromport,16))
       bytesReceivedPerSecond=0
       with self._tcpstat.connectionsLock:
         if key in self._tcpstat.connections():
           bytesReceivedPerSecond=self._tcpstat.connections()[key][tcpip_stat.BYTESPERSECONDIDX]
-          nftotalBytesPerSecond+=bytesReceivedPerSecond  
+          nftotalBytesRecPerSecond+=bytesReceivedPerSecond  
 
       ipfromResolved = utils.procutils.resolveIP(ipfromaddrdec)
       iptoResolved = utils.procutils.resolveIP(iptoaddrdec)
     
       text.append(("UDP", ipfromResolved, str(int(ipfromport,16)), iptoResolved, str(int(iptoport,16)), "-", utils.procutils.humanReadable(bytesSentPerSecond)+"/s", utils.procutils.humanReadable(bytesReceivedPerSecond)+"/s"))
     
+    if nftotalBytesRecPerSecond > 0 or nftotalBytesSendPerSecond >0 :
+      self._availableLabel.hide()  
+    self.__TCPHistSend__.append(nftotalBytesSendPerSecond)
+    self.__TCPHistSend__ = self.__TCPHistSend__[1:]
+    self.__TCPHistRec__.append(nftotalBytesRecPerSecond)
+    self.__TCPHistRec__ = self.__TCPHistRec__[1:]
+
     self.__procDetails__.tcpipTableWidget.clearContents()
     fontInfo = QtGui.QFontInfo(self.__procDetails__.tcpipTableWidget.viewOptions().font)
     height = int(fontInfo.pixelSize()*1.2+0.5)
@@ -357,7 +369,6 @@ class singleUi(object):
         self.__procDetails__.actualCpu.setValue(actual)
         self.__procDetails__.labelActualCpuUsage.setText(str(actual) + "%")
         self.__lineCpuHist.setData(self.__y__, data)
-
         data = self.__reader__.getProcessCpuUsageKernelHistory(self.__proc__)
         self.__lineCpuKernelHist.setData(self.__y__, data)
         self.__procDetails__.actualKernelCpu.setValue(data[-1:][0])
@@ -377,14 +388,22 @@ class singleUi(object):
         self.__procDetails__.actualIo.setValue(actual)
 
         self.update_sockets()
-        data = self.__TCPHist__
+        data = self.__TCPHistRec__
         try:
-          actual = self.__TCPHist__[-1:][0] / 1024
+          actualRec = self.__TCPHistRec__[-1:][0] / 1024
         except IndexError:
-          actual = 0
-        self.__lineTCPHist.setData(self.__y__, data)
-        self.__procDetails__.labelActualTcpip.setText(str(round(actual)) + " kB/s")
-        self.__procDetails__.actualTcpip.setValue(actual)
+          actualRec = 0
+        self.__lineTCPHistRec.setData(self.__y__, data)
+        data = self.__TCPHistSend__
+        try:
+          actualSend = self.__TCPHistSend__[-1:][0] / 1024
+        except IndexError:
+          actualSend = 0
+        self.__lineTCPHistSend.setData(self.__y__, data)
+        self.__procDetails__.labelActualTcpipRec.setText(str(round(actualRec)) + " kB/s")
+        self.__procDetails__.actualTcpipRec.setValue(actualRec)
+        self.__procDetails__.labelActualTcpipSend.setText(str(round(actualSend)) + " kB/s")
+        self.__procDetails__.actualTcpipSend.setValue(actualSend)
         return
 
 
