@@ -39,6 +39,7 @@ _TIMEOUT=10
 _TIMEOUTIDX=1
 _COUNTIDX=0
 _TOTALIDX=3
+_TYPEIDX=4 #UDP / ICP
 BYTESPERSECONDIDX=2
 
 _tcpStatInstance=None
@@ -70,15 +71,33 @@ class _TcpStat(object):
 
     while True:
       msg = fifo.readline()
+      conn = None
+      port = None
       if not(msg.startswith("IP")) and "IP" in msg: #be sure there is no interface named "IP" 
+        packetType=""
+        if msg.find(" UDP") != -1: 
+          packetType="UDP"
         if msg.find(" tcp ") != -1:
+          packetType = "TCP"
+        if packetType != "":
           try:
             nfbytes = int(msg[msg.rfind(" "):])
-            conn = ' '.join(msg.split()[3:6])[:-1]
+            if packetType == "TCP":
+              conn = ' '.join(msg.split()[3:6])[:-1]
+            else:
+              if msg.split()[1]=="In":
+                port = msg.split()[5].split(".")[-1][:-1]
+              if msg.split()[1]=="Out":
+                port = msg.split()[3].split(".")[-1]
+              if port is not None:
+                if msg.count(":") > 4: #lots of ':' then it looks like ipv6 address
+                  conn = "::.%s %s" %(port, msg.split()[1])
+                else:
+                  conn = "0.0.0.0.%s %s" %(port, msg.split()[1])
             with self.connectionsLock:
               if conn in self._connections:
-                self._connections[conn][_COUNTIDX] += nfbytes+64
-                self._connections[conn][_TOTALIDX] += nfbytes+64
+                self._connections[conn][_COUNTIDX] += nfbytes
+                self._connections[conn][_TOTALIDX] += nfbytes
                 self._connections[conn][_TIMEOUTIDX] = _TIMEOUT
               else:
                 self._connections[conn] = [nfbytes, _TIMEOUT, 0, 0]

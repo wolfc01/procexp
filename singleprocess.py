@@ -217,6 +217,8 @@ class singleUi(object):
     text = []
     allConn = []
     nftotalBytesPerSecond = 0
+
+    #all IP connections
     for conn in connections:
       ipfrom = connections[conn][1].split(":")
       ipfromport = ipfrom[1]
@@ -261,12 +263,45 @@ class singleUi(object):
       self._availableLabel.hide()  
     self.__TCPHist__.append(nftotalBytesPerSecond)
     self.__TCPHist__ = self.__TCPHist__[1:]
+
+
+    #all UDP IP pairs (they are formally not 'connections')
     for conn in udp:
       ipfrom = udp[conn][1].split(":")
       ipfromport = ipfrom[1]
       ipfromaddr = ipfrom[0]
-      ipfromaddrdec = str(int(ipfromaddr[6:8],16)) + "." + str(int(ipfromaddr[4:6],16)) + "." + str(int(ipfromaddr[2:4],16)) + "." + str(int(ipfromaddr[0:2],16))
-      text.append(("UDP", ipfromaddrdec, str(int(ipfromport,16)), "-", "-", "-"))
+      if len(ipfromaddr) == 32: #ipv6 address
+        ipfromaddrdec = self.ipv6addr(ipfromaddr)
+      else:
+        ipfromaddrdec = str(int(ipfromaddr[6:8],16)) + "." + str(int(ipfromaddr[4:6],16)) + "." + str(int(ipfromaddr[2:4],16)) + "." + str(int(ipfromaddr[0:2],16))
+
+      ipto = udp[conn][2].split(":")
+      iptoport = ipto[1]
+      iptoaddr = ipto[0]
+      if len(iptoaddr) == 32:
+        iptoaddrdec = self.ipv6addr(iptoaddr)
+      else:
+        iptoaddrdec   = str(int(iptoaddr[6:8],16)) + "." + str(int(iptoaddr[4:6],16)) + "." + str(int(iptoaddr[2:4],16)) + "." + str(int(iptoaddr[0:2],16))
+      allConn.append(((ipfromaddrdec,int(ipfromport,16)),(iptoaddrdec,int(iptoport,16))))
+
+      key = "%s.%s Out" %(ipfromaddrdec, int(ipfromport,16))
+      print(key)
+      bytesSentPerSecond=0
+      with self._tcpstat.connectionsLock:
+        if key in self._tcpstat.connections():
+          bytesSentPerSecond=self._tcpstat.connections()[key][tcpip_stat.BYTESPERSECONDIDX]
+          nftotalBytesPerSecond+=bytesSentPerSecond  
+      key = "%s.%s In" %(ipfromaddrdec, int(ipfromport,16))
+      bytesReceivedPerSecond=0
+      with self._tcpstat.connectionsLock:
+        if key in self._tcpstat.connections():
+          bytesReceivedPerSecond=self._tcpstat.connections()[key][tcpip_stat.BYTESPERSECONDIDX]
+          nftotalBytesPerSecond+=bytesReceivedPerSecond  
+
+      ipfromResolved = utils.procutils.resolveIP(ipfromaddrdec)
+      iptoResolved = utils.procutils.resolveIP(iptoaddrdec)
+    
+      text.append(("UDP", ipfromResolved, str(int(ipfromport,16)), iptoResolved, str(int(iptoport,16)), "-", utils.procutils.humanReadable(bytesSentPerSecond)+"/s", utils.procutils.humanReadable(bytesReceivedPerSecond)+"/s"))
     
     self.__procDetails__.tcpipTableWidget.clearContents()
     fontInfo = QtGui.QFontInfo(self.__procDetails__.tcpipTableWidget.viewOptions().font)

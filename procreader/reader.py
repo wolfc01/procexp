@@ -616,7 +616,8 @@ class procreader(object):
       self.__allConnections__[connection.split()[9]] = connection.split()
   def __getAllUDPInfo__(self):
     self.__allUDP__ = {} #list of connections, organized by inode
-    data = utils.procutils.readFullFile(self._prefixDir + "/proc/net/udp").split("\n")
+    data = utils.procutils.readFullFile(self._prefixDir + "/proc/net/udp").split("\n")[1:]
+    data += utils.procutils.readFullFile(self._prefixDir + "/proc/net/udp6").split("\n")[1:]
     for udp in data:
       if len(udp) > 1:
         self.__allUDP__[udp.split()[9]] = udp.split()
