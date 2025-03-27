@@ -399,9 +399,16 @@ class singleUi(object):
           actualSend = self.__TCPHistSend__[-1:][0] / 1024
         except IndexError:
           actualSend = 0
+
+        maxTCPsend = max(self.__TCPHistSend__, key=lambda x: x) / 1024
+        maxTCPrec = max(self.__TCPHistRec__, key=lambda x: x) / 1024
+        maxTCPsend+=1
+        maxTCPrec+=1
         self.__lineTCPHistSend.setData(self.__y__, data)
         self.__procDetails__.labelActualTcpipRec.setText(str(round(actualRec)) + " kB/s")
         self.__procDetails__.actualTcpipRec.setValue(actualRec)
+        self.__procDetails__.actualTcpipRec.setMaximum(maxTCPrec)
+        self.__procDetails__.actualTcpipSend.setMaximum(maxTCPsend)
         self.__procDetails__.labelActualTcpipSend.setText(str(round(actualSend)) + " kB/s")
         self.__procDetails__.actualTcpipSend.setValue(actualSend)
         return
