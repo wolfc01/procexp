@@ -30,11 +30,11 @@ _MAX_NOOFNETWORKCARDS=32
 class networkPlotObject(object):
   def __init__(self, plot, depth, reader, card, scale):
     self.__curveNetInHist__ = plotobjects.niceCurve("Network In History", 
-                             1 ,QtGui.QColor(241,254,1), QtGui.QColor(181,190,1), 
-                             plot)
+                             1 ,(241,254,1), (181,190,1), 
+                             plot, 100)
     self.__curveNetOutHist__ = plotobjects.niceCurve("Network Out History", 
-                             1, QtGui.QColor(28,255,255),QtGui.QColor(0,168,168), 
-                             plot)
+                             1, (28,255,255),(0,168,168), 
+                             plot, 100)
                              
     self.__depth__ = depth
     self.__reader__ = reader

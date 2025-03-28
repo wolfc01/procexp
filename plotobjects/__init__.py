@@ -17,31 +17,33 @@
 
 
 from PyQt5 import QtCore, QtGui
-#import PyQt4.Qwt5 as Qwt
+import pyqtgraph
 
 class scaleObject:
   pass
 
 class niceCurve(object):
-  def __init__(self, name, penWidth, lineColor, fillColor, plot):
-    return
-    self.__curve__ = Qwt.QwtPlotCurve(name)
-    pen = QtGui.QPen(lineColor)
-    pen.setWidth(penWidth)
-    self.__curve__.setPen(pen)
-    self.__curve__.setBrush(fillColor)
-    self.__curve__.attach(plot)
+  def __init__(self, name, penWidth, lineColor, fillColor, plot, depth):
+    self.__plot = plot
+    self.__lineColor = lineColor
+    self.__fillColor = fillColor
+    self.__name = name
+    self.__penWidth = penWidth
+    self.__depth = depth
+
+    self.__line = plot.plot(
+      range(self.__depth), 
+      [0]*self.__depth,
+      pen=pyqtgraph.mkPen(color=lineColor, width=penWidth),
+      fillLevel=0, 
+      brush=pyqtgraph.mkBrush(color=fillColor))
     
-    #work around to get nicer plotting.
-    self.__curveExt__ = Qwt.QwtPlotCurve(name+" extra")
-    self.__curveExt__.setPen(QtGui.QPen(lineColor))
-    self.__curveExt__.attach(plot)
+    plot.setBackground("w")
+    plot.hideAxis("bottom")
+    plot.hideAxis("left")
+
   def setData(self, x, y):
-    return
-    self.__curve__.setData(x, y)
-    self.__curveExt__.setData(x,y)
-
-
+    self.__line.setData(x, y)
 
 class procExpPlot(object):
   def __init__(self, qwtPlot, scale=None, hasGrid=True):

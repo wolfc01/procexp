@@ -288,20 +288,20 @@ def prepareUI(mainUi):
   global g_curveCpuPlotGrid
   
   g_curveCpuHist = plotobjects.niceCurve("CPU History",
-                           1 , QtGui.QColor(0,255,0),QtGui.QColor(0,170,0), 
-                           mainUi.plotOverallCpuHist)
+                           1 , (0,255,0),(0,170,0), 
+                           mainUi.plotOverallCpuHist, 100)
   
   g_curveCpuSystemHist = plotobjects.niceCurve("CPU Kernel History",
-                           1, QtGui.QColor(255,0,0),QtGui.QColor(170,0,0), 
-                           mainUi.plotOverallCpuHist)
+                           1, (255,0,0),(170,0,0), 
+                           mainUi.plotOverallCpuHist, 100)
                            
   g_curveIoWaitHist = plotobjects.niceCurve("CPU IO wait history",
-                           1, QtGui.QColor(0,0,255),QtGui.QColor(0,0,127), 
-                           mainUi.plotOverallCpuHist)
+                           1, (0,0,255),(0,0,127), 
+                           mainUi.plotOverallCpuHist, 100)
   
   g_curveIrqHist = plotobjects.niceCurve("CPU irq history",
-                           1, QtGui.QColor(0,255,255),QtGui.QColor(0,127,127), 
-                           mainUi.plotOverallCpuHist)
+                           1, (0,255,255),(0,127,127), 
+                           mainUi.plotOverallCpuHist, 100)
 
   scale = plotobjects.scaleObject()
   scale.min = 0
@@ -544,6 +544,8 @@ def updateUI():
   except:
     import traceback
     utils.procutils.log("Unhandled exception:%s" %traceback.format_exc())
+    #print(traceback.format_exc())
+
   
   g_firstUpdate = False
 

@@ -22,15 +22,14 @@
 
 
 from PyQt5 import QtCore, QtGui, QtWidgets, uic
-#import PyQt4.Qwt5 as Qwt
 import plotobjects
 import os
 
 class memoryPlotObject(object):
   def __init__(self, plot, depth, reader):
     self.__curveMemHist__ = plotobjects.niceCurve("Memory History", 
-                             1 ,QtGui.QColor(217,137,123), QtGui.QColor(180,70,50), 
-                             plot)
+                             1 ,(217,137,123), (180,70,50), 
+                             plot, 100)
     self.__depth__ = depth
     self.__reader__ = reader
     self.__first__ = False
@@ -55,20 +54,20 @@ class memoryPlotObject(object):
 class cpuPlotObject(object):
   def __init__(self, plot, depth, reader, cpu):
     self.__curveCpuHist__ = plotobjects.niceCurve("CPU History", 
-                             1 , QtGui.QColor(0,255,0),QtGui.QColor(0,170,0), 
-                             plot)
+                             1 , (0,255,0),(0,170,0), 
+                             plot, depth)
     
     self.__curveCpuSystemHist__ = plotobjects.niceCurve("CPU Kernel History", 
-                             1, QtGui.QColor(255,0,0),QtGui.QColor(170,0,0), 
-                             plot)
+                             1, (255,0,0),(170,0,0), 
+                             plot, depth)
                              
     self.__curveIoWaitHist__ = plotobjects.niceCurve("CPU IO wait history", 
-                             1, QtGui.QColor(0,0,255),QtGui.QColor(0,0,127), 
-                             plot)
+                             1, (0,0,255),(0,0,127), 
+                             plot, depth)
     
     self.__curveIrqHist__ = plotobjects.niceCurve("CPU irq history", 
-                             1, QtGui.QColor(0,255,255),QtGui.QColor(0,127,127), 
-                             plot)
+                             1, (0,255,255),(0,127,127), 
+                             plot, depth)
     
     scale = plotobjects.scaleObject()
     scale.min = 0
@@ -119,38 +118,38 @@ class systemOverviewUi(object):
     self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/systeminformation.ui"), baseinstance=self.__dialog__)
     self.__cpuCount__ = cpuCount
     self.__cpuPlotArray__ = []
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_01]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_02]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_03]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_04]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_05]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_06]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_07]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_08]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_09]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_10]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_11]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_12]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_13]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_14]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_15]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_16]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_17]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_18]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_19]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_20]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_21]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_22]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_23]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_24]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_25]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_26]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_27]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_28]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_29]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_30]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_31]]
-    self.__cpuPlotArray__ += [[self.__ui__.qwtPlotCpuHist_32]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_01]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_02]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_03]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_04]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_05]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_06]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_07]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_08]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_09]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_10]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_11]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_12]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_13]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_14]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_15]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_16]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_17]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_18]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_19]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_20]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_21]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_22]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_23]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_24]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_25]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_26]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_27]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_28]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_29]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_30]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_31]]
+    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_32]]
     
     
     for cpu in range(32):
@@ -166,7 +165,7 @@ class systemOverviewUi(object):
                                                          self.__reader__,
                                                          cpu))
                                                          
-    self.__memPlot__ = memoryPlotObject(self.__ui__.qwtPlotMemoryHist,
+    self.__memPlot__ = memoryPlotObject(self.__ui__.plotMemoryHist,
                                                          self.__depth__,
                                                          self.__reader__)
   def show(self):
