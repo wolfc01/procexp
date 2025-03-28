@@ -74,10 +74,7 @@ class singleProcessDetailsAndHistory(object):
         alldirs = os.listdir(self.__pathPrefix__ + "task/")
         for t in alldirs:
           try:
-            wchan = utils.procutils.readFullFile(self.__pathPrefix__ + "task/" + str(t) + "/wchan")
-            sched = utils.procutils.readFullFile(self.__pathPrefix__ + "task/" + str(t) + "/sched")
-            wakeupcount = int(sched.split("\n")[23].split(":")[1]) #23 is wakeupcount
-            self.threads[t] = [wchan, wakeupcount]
+            self.threads[t] = [] #to be filled in future releases
           except:
             pass
       except OSError:

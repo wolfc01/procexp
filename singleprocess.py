@@ -386,6 +386,8 @@ class singleUi(object):
         self.__lineIoHist.setData(self.__y__, data)
         self.__procDetails__.labelActualIo.setText(str(round(actual)) + " kB/s")
         self.__procDetails__.actualIo.setValue(actual)
+        maxIO = max(data, key=lambda x: x)
+        self.__procDetails__.actualIo.setMaximum(maxIO+1)
 
         self.update_sockets()
         data = self.__TCPHistRec__
@@ -411,14 +413,7 @@ class singleUi(object):
         self.__procDetails__.actualTcpipSend.setMaximum(maxTCPsend)
         self.__procDetails__.labelActualTcpipSend.setText(str(round(actualSend)) + " kB/s")
         self.__procDetails__.actualTcpipSend.setValue(actualSend)
-        return
 
-
-        
-        
-        
-        
-        
         self.__procDetails__.imagePwdLabel.setText(self.__reader__.getcwd(self.__proc__))
         if str(self.__procDetails__.imageCommandLineLabel.text()) == "":
           cmdLine = self.__reader__.getcmdline(self.__proc__)
@@ -444,11 +439,12 @@ class singleUi(object):
               self.__lddoutput__ = err
             else:
               self.__lddoutput__ = output[0]
-              self.__lddoutput__ = self.__lddoutput__.replace("\t","")
-            self.__procDetails__.libraryTextEdit.setText(self.__lddoutput__)
+              self.__lddoutput__ = self.__lddoutput__.replace(b"\t",b"")
+            self.__procDetails__.libraryTextEdit.setText(self.__lddoutput__.decode())
             
           except:
-            self.__lddoutput__  = "--"
+           self.__lddoutput__  = "--"
+
         
         #thread information
         threadsInfo = self.__reader__.getThreads(self.__proc__)
@@ -466,11 +462,7 @@ class singleUi(object):
           self.__procDetails__.threadsTableWidget.setVerticalHeaderItem (row, QtWidgets.QTableWidgetItem(""))
           
           itemTid = QtWidgets.QTableWidgetItem(str(t))
-          itemWchan = QtWidgets.QTableWidgetItem(str(threadsInfo[t][0]))
-          itemWakeups = QtWidgets.QTableWidgetItem(str(threadsInfo[t][1]))
           self.__procDetails__.threadsTableWidget.setItem(row, 0, itemTid)
-          self.__procDetails__.threadsTableWidget.setItem(row, 1, itemWchan)
-          self.__procDetails__.threadsTableWidget.setItem(row, 2, itemWakeups)
           row += 1
           
         #show open files info

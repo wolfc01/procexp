@@ -41,7 +41,7 @@
       </size>
      </property>
      <property name="currentIndex">
-      <number>1</number>
+      <number>4</number>
      </property>
      <widget class="QWidget" name="image">
       <attribute name="title">
@@ -947,57 +947,6 @@
        </item>
       </layout>
      </widget>
-     <widget class="QWidget" name="strings">
-      <attribute name="title">
-       <string>Strings</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_11">
-       <item>
-        <widget class="QLabel" name="label_11">
-         <property name="text">
-          <string>Not implemented yet!</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="security">
-      <attribute name="title">
-       <string>Security</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_10">
-       <item>
-        <widget class="QLabel" name="label_10">
-         <property name="text">
-          <string>Not implemented yet!</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-     <widget class="QWidget" name="performance">
-      <attribute name="title">
-       <string>Performance</string>
-      </attribute>
-      <layout class="QVBoxLayout" name="verticalLayout_8">
-       <item>
-        <widget class="QLabel" name="label_8">
-         <property name="text">
-          <string>Not implemented yet!</string>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
-        </widget>
-       </item>
-      </layout>
-     </widget>
      <widget class="QWidget" name="threads">
       <attribute name="title">
        <string>Threads</string>
@@ -1008,16 +957,6 @@
          <column>
           <property name="text">
            <string>ThreadID</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>WCHAN</string>
-          </property>
-         </column>
-         <column>
-          <property name="text">
-           <string>Wakeups</string>
           </property>
          </column>
         </widget>
