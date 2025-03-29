@@ -16,38 +16,33 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
 
-from PyQt5 import QtCore, QtGui, uic
+from PyQt5 import QtCore, QtGui, uic, QtWidgets
 import os
 
-global ui
+ui = None
 
 def onChange():
-  global ui
-  
   try:
     nfSamples = int(str(ui.lineEditNfSamples.displayText())) * 1.0
     timesSecond = float(str(ui.lineEditTimesSecond.displayText()))
-  
-    ui.lineEditMinutes.setText(str(round(nfSamples / timesSecond / 60.0,2)))
-    ui.lineEditDays.setText(str(round((nfSamples / timesSecond) / (24.0*60.0*60.0),2)))
-    ui.lineEditHours.setText(str(round((nfSamples / timesSecond) / (60.0*60.0),2)))
-  except:
-    ui.lineEditMinutes.setText("?")
-    ui.lineEditDays.setText("?")
-    ui.lineEditHours.setText("?")
-  
+    fontSize = int(str(ui.lineEditFontSize.displayText()))
+  except: 
+    pass
 
 def doSettings(millisecWait, depth, fontSize):
   global ui
-  Dialog = QtGui.QDialog()
+  Dialog = QtWidgets.QDialog()
   settings = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/settings.ui"), baseinstance=Dialog)
+  settings.lineEditNfSamples.setText(str(depth))
+  settings.lineEditTimesSecond.setText(str(1/(millisecWait/1000)))
+  settings.lineEditFontSize.setText(str(fontSize))
   ui = settings
   Dialog.setModal(True)
-  QtCore.QObject.connect(settings.lineEditNfSamples,  QtCore.SIGNAL('textChanged (const QString&)'), onChange)
-  QtCore.QObject.connect(settings.lineEditTimesSecond,  QtCore.SIGNAL('textChanged (const QString&)'), onChange)
-  ui.lineEditTimesSecond.setText(str(float(1000.0 / (millisecWait * 1.0))))
-  ui.lineEditNfSamples.setText(str(depth))
-  ui.lineEditFontSize.setText(str(fontSize))
+
+  settings.lineEditNfSamples.textChanged.connect(onChange)
+  settings.lineEditTimesSecond.textChanged.connect(onChange)
+  settings.lineEditFontSize.textChanged.connect(onChange)
+
   Dialog.exec_()
   
   millisecWait = int(1000.0 / float(str(ui.lineEditTimesSecond.displayText())))

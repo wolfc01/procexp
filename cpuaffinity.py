@@ -13,7 +13,7 @@ def doAffinity(cpuCount, process):
   
   #get affinity of process
   affinityHexStr =subprocess.Popen(["taskset", "-p", str(process)], \
-                                   stdout=subprocess.PIPE).communicate()[0].strip().split("affinity mask: ")[1]
+                                   stdout=subprocess.PIPE).communicate()[0].strip().split(b"affinity mask: ")[1]
   
   affinity = int(affinityHexStr, 16)
 
