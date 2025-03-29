@@ -15,13 +15,13 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
-from PyQt5 import QtGui, uic
+from PyQt5 import QtGui, uic, QtWidgets
 import os
 
 def doAboutWindow():
   """Make an about window"""
   icon = os.path.dirname(__file__) + "/ui/icon.png"
-  dialog = QtGui.QDialog()
+  dialog = QtWidgets.QDialog()
   about = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/about.ui"), baseinstance=dialog)
   about.label.setPixmap(QtGui.QPixmap(icon))
   dialog.exec_()
