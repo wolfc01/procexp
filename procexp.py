@@ -48,6 +48,8 @@ import procreader.tcpip_stat as tcpip_stat
 import rootproxy
 import messageui
 
+version = "2.0.0"
+
 g_timer = None
 g_reader = None
 g_treeProcesses = {} #flat dictionary of processes
@@ -556,6 +558,7 @@ if __name__ == "__main__":
   prepareUI(g_mainUi)
   loadSettings()
 
+  g_mainWindow.setWindowTitle(g_mainWindow.windowTitle()+":"+version)
   g_mainWindow.show()
   app.processEvents()
   rootproxy.start(asRoot=True)
