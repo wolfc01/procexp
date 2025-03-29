@@ -366,18 +366,18 @@ class singleUi(object):
         self.__updateEnvironmentDisplay()
         data = self.__reader__.getProcessCpuUsageHistory(self.__proc__)
         actual = data[-1:][0]
-        self.__procDetails__.actualCpu.setValue(actual)
+        self.__procDetails__.actualCpu.setValue(int(actual))
         self.__procDetails__.labelActualCpuUsage.setText(str(actual) + "%")
         self.__lineCpuHist.setData(self.__y__, data)
         data = self.__reader__.getProcessCpuUsageKernelHistory(self.__proc__)
         self.__lineCpuKernelHist.setData(self.__y__, data)
-        self.__procDetails__.actualKernelCpu.setValue(data[-1:][0])
+        self.__procDetails__.actualKernelCpu.setValue(int(data[-1:][0]))
         self.__procDetails__.labelActualKernelCpuUsage.setText(str(data[-1:][0]) + "%")
 
         data = self.__reader__.getProcessRssUsageHistory(self.__proc__)
         actual = data[-1:][0]
         self.__lineRssHist.setData(self.__y__, data)
-        self.__procDetails__.actualRss.setValue(actual)
+        self.__procDetails__.actualRss.setValue(int(actual))
         self.__procDetails__.labelActualRss.setText(str(actual) + " kB")
 
 
@@ -385,7 +385,7 @@ class singleUi(object):
         actual = data[-1:][0]
         self.__lineIoHist.setData(self.__y__, data)
         self.__procDetails__.labelActualIo.setText(str(round(actual)) + " kB/s")
-        self.__procDetails__.actualIo.setValue(actual)
+        self.__procDetails__.actualIo.setValue(int(actual))
         maxIO = max(data, key=lambda x: x)
         self.__procDetails__.actualIo.setMaximum(maxIO+1)
 
@@ -408,11 +408,11 @@ class singleUi(object):
         maxTCPrec+=1
         self.__lineTCPHistSend.setData(self.__y__, data)
         self.__procDetails__.labelActualTcpipRec.setText(str(round(actualRec)) + " kB/s")
-        self.__procDetails__.actualTcpipRec.setValue(actualRec)
-        self.__procDetails__.actualTcpipRec.setMaximum(maxTCPrec)
-        self.__procDetails__.actualTcpipSend.setMaximum(maxTCPsend)
+        self.__procDetails__.actualTcpipRec.setValue(int(actualRec))
+        self.__procDetails__.actualTcpipRec.setMaximum(int(maxTCPrec))
+        self.__procDetails__.actualTcpipSend.setMaximum(int(maxTCPsend))
         self.__procDetails__.labelActualTcpipSend.setText(str(round(actualSend)) + " kB/s")
-        self.__procDetails__.actualTcpipSend.setValue(actualSend)
+        self.__procDetails__.actualTcpipSend.setValue(int(actualSend))
 
         self.__procDetails__.imagePwdLabel.setText(self.__reader__.getcwd(self.__proc__))
         if str(self.__procDetails__.imageCommandLineLabel.text()) == "":
