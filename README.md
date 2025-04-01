@@ -9,46 +9,43 @@ Goals of this project
 4. Everything else which will be needed
 
 ## INSTALLATION
-### install dependencies for Ubuntu 16.04.3 LTS, Mint 18.3
-_as user root_:
-```
-apt-get install python-qwt5-qt4 python-configobj
-```
-### install dependencies for Debian 9
-_as user root_:
-```
-apt-get install python-qwt5-qt4 python-configobj tcpdump
-```
-### install dependencies for Fedora 27
-_as user root_:
-```
-yum install PyQwt
-yum install python-configobj
-```
-### install dependencies for CentOS 7
+download procexp from https://github.com/wolfc01/procexp/archive/refs/heads/master.zip 
 
-for CentOS version 7 PyQwt is not available in standard and EPEL repositories: --> build from source
-Download PyQwt5 sources from https://kent.dl.sourceforge.net/project/pyqwt/pyqwt5/PyQwt-5.2.0/PyQwt-5.2.0.tar.gz
+### ubuntu 24.04.2
+as root:
+  apt update
+  apt install pip
+  apt install python3-venv
+  apt install tcpdump
 
-_as user root_:
-```
-yum install epel-release
-sudo yum group install "Development Tools"
-yum install PyQt4-devel
-yum install qwt
-yum install qwt-devel
-tar -xvzf PyQwt-5.2.0/PyQwt-5.2.0.tar.gz
-cd PyQwt-5.2.0/configure
-python configure.py -Q ../qwt-5.2
-make
-make install
-```
-### last step for all distro's: download procexp python sources, unzip and run
+as normal user:
+  cd ~
+  python3 -m venv ~/procexp
+  unzip procexp-master.zip 
+  cd procexp-master
+  ~/procexp/bin/pip install -r requirements.txt
+
+
+### Debian 12.10 (QSocket problem, does not run)
+as root: 
+  apt update
+  apt install pip
+  apt install python3-venv
+  apt install tcpdump
+
+as normal user:
+  cd ~
+  python3 -m venv ~/procexp
+  unzip procexp-master.zip 
+  cd procexp-master
+  ~/procexp/bin/pip install -r requirements.txt
+
+### last step for all distro's: 
 _as a non root user_ :
 
-download procexp from github as zip file from https://github.com/wolfc01/procexp/archive/master.zip
 ```
-unzip master.zip
+if on wayland:
+export QT_QPA_PLATFORM=wayland
 cd procexp-master
-./procexp.py
+~/procexp/bin/python3 ./procexp.py
 ```
