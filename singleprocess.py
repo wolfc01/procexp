@@ -353,7 +353,6 @@ class singleUi(object):
       self._availableLabel.setText("  tcpdump not running (no root privileges?).")
     else:
       self._availableLabel.setText("")
-
     if self.__processGone__ == False:
       if not(self.__reader__.hasProcess(self.__proc__)):
         self.__processGone__ = True
@@ -387,7 +386,7 @@ class singleUi(object):
         self.__procDetails__.labelActualIo.setText(str(round(actual)) + " kB/s")
         self.__procDetails__.actualIo.setValue(int(actual))
         maxIO = max(data, key=lambda x: x)
-        self.__procDetails__.actualIo.setMaximum(maxIO+1)
+        self.__procDetails__.actualIo.setMaximum(int(maxIO+1))
 
         self.update_sockets()
         data = self.__TCPHistRec__

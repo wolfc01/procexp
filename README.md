@@ -12,18 +12,19 @@ Goals of this project
 download procexp from https://github.com/wolfc01/procexp/archive/refs/heads/master.zip 
 
 ### ubuntu 24.04.2
-as root:
-  apt update
-  apt install pip
-  apt install python3-venv
-  apt install tcpdump
 
-as normal user:
-  cd ~
-  python3 -m venv ~/procexp
-  unzip procexp-master.zip 
-  cd procexp-master
-  ~/procexp/bin/pip install -r requirements.txt
+sudo apt update
+sudo apt install pip
+sudo apt install python3-venv
+sudo apt install tcpdump
+
+
+then:
+cd ~
+python3 -m venv ~/procexp
+unzip procexp-master.zip 
+cd procexp-master
+~/procexp/bin/pip install -r requirements.txt
 
 
 ### Debian 12.10 (QSocket problem, does not run)

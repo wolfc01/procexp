@@ -535,18 +535,17 @@ def updateUI():
     mem = g_reader.getMemoryUsage()
     totalSwap = mem[5]
     actualSwap = mem[4]
-    g_mainUi.memory.setValue(mem[0]-mem[1])
-    g_mainUi.memory.setMaximum(mem[0])
-    g_mainUi.swap.setValue(actualSwap)
+    g_mainUi.memory.setValue(int(mem[0]-mem[1]))
+    g_mainUi.memory.setMaximum(int(mem[0]))
+    g_mainUi.swap.setValue(int(actualSwap))
     if totalSwap > 0:
-      g_mainUi.swap.setMaximum(totalSwap)
+      g_mainUi.swap.setMaximum(int(totalSwap))
     else:
       g_mainUi.swap.setMaximum(1)
 
   except:
     import traceback
     utils.procutils.log("Unhandled exception:%s" %traceback.format_exc())
-    #print(traceback.format_exc())
 
   
   g_firstUpdate = False
