@@ -22,7 +22,7 @@ for now download the bleeding edge: procexp from https://github.com/wolfc01/proc
   cd procexp-master
   ~/procexp/bin/pip install -r requirements.txt
 ```
-### start process explorer: 
+## start process explorer: 
 _as a non root user_ :
 
 if on wayland:
@@ -30,7 +30,7 @@ if on wayland:
   export QT_QPA_PLATFORM=wayland
 ```
 
-start process explorer
+then start the process explorer as follows:
 ```
 cd procexp-master
 ~/procexp/bin/python3 ./procexp.py
