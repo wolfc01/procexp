@@ -1,52 +1,37 @@
 # process explorer for Linux
 
-The Linux Process Explorer aims to be a Linux equivalent of  (https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer). This project is a continuation of my project located at https://sourceforge.net/projects/procexp/. 
+This tool is a 'swiss army knife' for programmers and system administrators to study per process memory usage, IO usage, runtime memory leaks, TCP/UDP usage, and also process hierarchy.
 
-Goals of this project
-1. Revive the old code, refactor and complete functionality
-2. Pack it for Debian, Ubuntu, Redhat, Fedora and Mint
-3. Make the process explorer a standard component of above mentioned distro's
-4. Everything else which will be needed
+The Linux Process Explorer was inspired by the sysinternals process explorer tool of Microsoft.  (https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer). 
 
 ## INSTALLATION
-download procexp from https://github.com/wolfc01/procexp/archive/refs/heads/master.zip 
+for now download the bleeding edge: procexp from https://github.com/wolfc01/procexp/archive/refs/heads/master.zip 
 
-### ubuntu 24.04.2
-
-sudo apt update
-sudo apt install pip
-sudo apt install python3-venv
-sudo apt install tcpdump
-
-
-then:
-cd ~
-python3 -m venv ~/procexp
-unzip procexp-master.zip 
-cd procexp-master
-~/procexp/bin/pip install -r requirements.txt
-
-
-### Debian 12.10 (QSocket problem, does not run)
-as root: 
-  apt update
-  apt install pip
-  apt install python3-venv
-  apt install tcpdump
-
-as normal user:
+### ubuntu 24.04.2, mint 22.1
+```
+  sudo apt update
+  sudo apt install pip
+  sudo apt install python3-venv
+  sudo apt install tcpdump
+```
+#### then:
+```
   cd ~
   python3 -m venv ~/procexp
   unzip procexp-master.zip 
   cd procexp-master
   ~/procexp/bin/pip install -r requirements.txt
-
-### last step for all distro's: 
+```
+### start process explorer: 
 _as a non root user_ :
 
-```
 if on wayland:
-export QT_QPA_PLATFORM=wayland
+```
+  export QT_QPA_PLATFORM=wayland
+```
+
+start process explorer
+```
 cd procexp-master
 ~/procexp/bin/python3 ./procexp.py
 ```
