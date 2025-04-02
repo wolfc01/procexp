@@ -10,11 +10,19 @@ for now download the bleeding edge: procexp from https://github.com/wolfc01/proc
 ### ubuntu 24.04.2, mint 22.1
 ```
 sudo apt update
-udo apt install pip
+sudo apt install pip
 sudo apt install python3-venv
 sudo apt install tcpdump
 ```
-#### then:
+### debian 12.10 (as root)
+```
+apt update
+apt install pip
+apt install python3-venv
+apt install tcpdump
+```
+
+#### then for all distro's, as normal user:
 ```
 cd ~
 python3 -m venv ~/procexp
