@@ -21,7 +21,10 @@ apt install pip
 apt install python3-venv
 apt install tcpdump
 ```
-
+### fedora workstation 41 (as root)
+```
+dnf install python3-pip
+```
 #### then for all distro's, as normal user:
 ```
 cd ~
