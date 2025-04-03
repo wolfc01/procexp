@@ -10,22 +10,11 @@ for now download the bleeding edge: procexp from https://github.com/wolfc01/proc
 ### ubuntu 24.04.2, mint 22.1
 ```
 sudo apt update
-sudo apt install pip
+udo apt install pip
 sudo apt install python3-venv
 sudo apt install tcpdump
 ```
-### debian 12.10 (as root)
-```
-apt update
-apt install pip
-apt install python3-venv
-apt install tcpdump
-```
-### fedora workstation 41 (as root)
-```
-dnf install python3-pip
-```
-#### then for all distro's, as normal user:
+#### then:
 ```
 cd ~
 python3 -m venv ~/procexp
@@ -46,3 +35,5 @@ then start the process explorer as follows:
 cd procexp-master
 ~/procexp/bin/python3 ./procexp.py
 ```
+## UNINSTALL
+for packages pip, python3-venv and tcpdump: those are standard packages, and can be removed using their uninstall instructions. For process explorer removal, remove ~/procexp and ~/procexp-master. Then your system is clean from all procexp traces.
