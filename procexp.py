@@ -42,7 +42,7 @@ import plotobjects
 import networkoverview
 import colorlegend
 
-import cpuaffinity
+import cpuaffinitypriority
 import signal
 import procreader.tcpip_stat as tcpip_stat
 import rootproxy
@@ -151,13 +151,13 @@ def performMenuAction(action):
     logui.closeLogWindow()
   elif action is g_mainUi.actionColor_legend:
     colorlegend.doColorHelpLegend()
-  elif action is g_mainUi.actionSet_affinity:
+  elif action is g_mainUi.actionSet_affinityPriority:
     try:
       selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
       process = str(selectedItem.data(1,0))
     except IndexError:
       return
-    cpuaffinity.doAffinity(g_reader.getCpuCount(), process)
+    cpuaffinitypriority.doAffinityPriority(g_reader.getCpuCount(), process)
   elif action is g_mainUi.actionLog:
     logui.doLogWindow()
   elif action is g_mainUi.actionAbout:

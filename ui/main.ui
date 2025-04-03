@@ -175,7 +175,7 @@
      <x>0</x>
      <y>0</y>
      <width>686</width>
-     <height>27</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -201,8 +201,7 @@
     <property name="title">
      <string>Process</string>
     </property>
-    <addaction name="actionSet_affinity"/>
-    <addaction name="actionSet_priority"/>
+    <addaction name="actionSet_affinityPriority"/>
     <addaction name="separator"/>
     <addaction name="actionKill_process"/>
     <addaction name="actionKill_process_tree"/>
@@ -236,9 +235,9 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <action name="actionSet_affinity">
+  <action name="actionSet_affinityPriority">
    <property name="text">
-    <string>Set affinity</string>
+    <string>Set affinity / priority</string>
    </property>
   </action>
   <action name="actionSet_priority">
