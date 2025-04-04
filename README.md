@@ -27,6 +27,12 @@ For now, download the bleeding edge: `procexp` from https://github.com/wolfc01/p
    ~/procexp/bin/pip install -r requirements.txt
    ```
 
+### fedora workstation 41
+1. ```
+   #!/usr/bin/env sh
+   sudo dnf install python3-pip
+   ```   
+
 ## Start Process Explorer: 
 
 _As a non-superuser user:_
