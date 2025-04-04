@@ -31,8 +31,6 @@ import threading
 import datetime
 import rootproxy
 import uuid
-import os
-import threading
 import time
 
 _TIMEOUT=10

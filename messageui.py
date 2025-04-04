@@ -60,7 +60,7 @@ def clearAllMessages():
 def doMessageWindow(msg):
   """Make a message window"""
   _loadMsgSettings()
-  if g_settings.has_key(msg):
+  if msg in g_settings:
     return
   global dialog
   dialog = QtWidgets.QDialog()

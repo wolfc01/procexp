@@ -580,10 +580,8 @@ if __name__ == "__main__":
 
   updateUI()
 
+
   signal.signal(signal.SIGINT, signal.SIG_DFL)
 
   app.exec_()
-  tcpip_stat.tcpStat().stop()
-  rootproxy.end()
-  sys.exit()
 

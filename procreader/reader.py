@@ -22,7 +22,6 @@
 import time
 import os
 import utils.procutils
-import singleprocess
 import subprocess
 import rootproxy
 import datetime

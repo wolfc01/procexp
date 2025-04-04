@@ -47,6 +47,7 @@ def logUnhandledException(exc_type, exc_value, exc_traceback):
   errorbox.setText("Unhandled exception:\n"+msg)
   errorbox.exec_()
   open("/tmp/procexp.log","a").write(msg+"\n")
+  sys.exit()
   
 sys.excepthook = logUnhandledException
 
@@ -79,7 +80,11 @@ def killProcess(process):
     pass
   
 def killProcessHard(process):
-  os.kill(int(process), signal.SIGKILL)
+  try:
+    os.kill(int(process), signal.SIGKILL)
+  except PermissionError:
+    message("permission denied for process with PID=%s" %process)
+
 
 
 def humanReadable(value):

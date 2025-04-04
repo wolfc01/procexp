@@ -8,7 +8,6 @@ import subprocess
 import const
 import os
 import traceback
-import time
 
 os.mkfifo(sys.argv[1], 0o666) #ParentToChild
 os.mkfifo(sys.argv[2], 0o666) #ChildTOParent
