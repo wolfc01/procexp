@@ -10,40 +10,43 @@ For now, download the bleeding edge: `procexp` from https://github.com/wolfc01/p
 
 ### Ubuntu 24.04.2, Mint 22.1
 
-```sh
-sudo apt update
-sudo apt install pip
-sudo apt install python3-venv
-sudo apt install tcpdump
-```
+1. ```sh
+   #!/usr/bin/env sh
+   sudo apt update
+   sudo apt install pip
+   sudo apt install python3-venv
+   sudo apt install tcpdump
+   ```
 
-#### Then:
+1. ```bash
+   #!/usr/bin/env bash
+   cd ~
+   python3 -m venv ~/procexp
+   unzip procexp-master.zip 
+   cd procexp-master
+   ~/procexp/bin/pip install -r requirements.txt
+   ```
 
-```sh
-cd ~
-python3 -m venv ~/procexp
-unzip procexp-master.zip 
-cd procexp-master
-~/procexp/bin/pip install -r requirements.txt
-```
+## Start Process Explorer: 
 
-## start process explorer: 
+_As a non-superuser user:_
 
-_As a non root user:_
+1. If on Wayland:
 
-If on wayland:
+   ```bash
+   #!/usr/bin/env bash
+   export QT_QPA_PLATFORM=wayland
+   ```
 
-```sh
-export QT_QPA_PLATFORM=wayland
-```
+1. Then, start the process explorer as follows:
 
-Then, start the process explorer as follows:
-
-```sh
-cd procexp-master
-~/procexp/bin/python3 ./procexp.py
-```
+   ```bash
+   #!/usr/bin/env bash
+   cd procexp-master
+   ~/procexp/bin/python3 ./procexp.py
+   ```
 
 ## UNINSTALL
 
-For packages `pip`, `python3-venv` and `tcpdump`: those are standard packages, and can be removed using their uninstall instructions. For process explorer removal, remove `~/procexp` and `~/procexp-master`. Then your system is clean from all `procexp` traces.
+- For packages `pip`, `python3-venv` and `tcpdump`: those are standard packages, and can be removed using their uninstall instructions.
+- For process explorer removal, remove `~/procexp` and `~/procexp-master`. Then your system is clean from all `procexp` traces.
