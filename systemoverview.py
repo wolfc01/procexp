@@ -118,39 +118,12 @@ class systemOverviewUi(object):
     self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/systeminformation.ui"), baseinstance=self.__dialog__)
     self.__cpuCount__ = cpuCount
     self.__cpuPlotArray__ = []
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_01]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_02]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_03]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_04]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_05]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_06]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_07]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_08]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_09]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_10]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_11]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_12]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_13]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_14]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_15]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_16]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_17]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_18]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_19]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_20]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_21]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_22]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_23]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_24]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_25]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_26]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_27]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_28]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_29]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_30]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_31]]
-    self.__cpuPlotArray__ += [[self.__ui__.plotCpuHist_32]]
     
+    for objName in self.__ui__.__dict__:
+      for idx in range(32):
+        obj = objName.find("plotCpuHist_%0.2i" %(idx+1))
+        if obj != -1:
+          self.__cpuPlotArray__ += [[self.__ui__.__dict__[objName]]]     
     
     for cpu in range(32):
       if cpu+1 > self.__cpuCount__:
