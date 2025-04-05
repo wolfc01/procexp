@@ -29,7 +29,6 @@ class rootProxyObject:
     if asRoot:
       thisFile = __file__
       thisFile = thisFile.replace(".pyc", ".py")
-      print("pkexec", thisFile.replace("__init__", "procroot"))
       self._procroot = subprocess.Popen(["pkexec", thisFile.replace("__init__", "procroot"), self._ptoc_filename, self._ctop_filename])
     else:
       self._procroot = subprocess.Popen([os.path.abspath(__file__).replace("__init__", "procroot"), self._ptoc_filename, self._ctop_filename])
