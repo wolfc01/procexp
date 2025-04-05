@@ -87,22 +87,16 @@ class cpuPlotObject(object):
     values = self.__reader__.getSingleCpuUsage(self.__cpu__)
     self.__cpuUsageHistory__.append(values[0]+values[1]+values[2]+values[3])
     self.__cpuUsageHistory__ = self.__cpuUsageHistory__[1:]
-    
-    
+       
     self.__cpuUsageSystemHistory__.append(values[1]+values[2]+values[3])
     self.__cpuUsageSystemHistory__ = self.__cpuUsageSystemHistory__[1:]
-    
-    
+       
     self.__cpuUsageIoWaitHistory__.append(values[2]+values[3])
     self.__cpuUsageIoWaitHistory__ = self.__cpuUsageIoWaitHistory__[1:]
-    
-    
+       
     self.__cpuUsageIrqHistory__.append(values[3])
     self.__cpuUsageIrqHistory__ = self.__cpuUsageIrqHistory__[1:]
-    
-
-
-                                 
+                                    
     self.__curveCpuHist__ .setData(range(self.__depth__), self.__cpuUsageHistory__)
     self.__curveCpuSystemHist__.setData(range(self.__depth__), self.__cpuUsageSystemHistory__)
     self.__curveIoWaitHist__.setData(range(self.__depth__), self.__cpuUsageIoWaitHistory__)
@@ -116,6 +110,7 @@ class systemOverviewUi(object):
     self.__depth__ = depth
     self.__dialog__ = QtWidgets.QDialog()
     self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/systeminformation.ui"), baseinstance=self.__dialog__)
+    self.__ui__.resize(100,200)
     self.__cpuCount__ = cpuCount
     self.__cpuPlotArray__ = []
     
@@ -152,7 +147,6 @@ class systemOverviewUi(object):
     font = QtGui.QFont()
     font.setPointSize(fontSize)
     self.__dialog__.setFont(font)
-    
     
   def update(self):
     for plot in range(32):

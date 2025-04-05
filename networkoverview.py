@@ -67,6 +67,7 @@ class networkOverviewUi(object):
     self.__depth__ = depth
     self.__dialog__ = QtWidgets.QDialog()
     self.__ui__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/networkinformation.ui"), baseinstance=self.__dialog__)
+    self.__ui__.resize(100,200)
     self.__networkCards__ = networkCards
     self.__netPlotArray = []
     for _i in range(_MAX_NOOFNETWORKCARDS):
