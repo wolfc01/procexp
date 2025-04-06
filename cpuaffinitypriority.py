@@ -20,23 +20,38 @@ def doAffinityPriority(cpuCount, process):
                                    stdout=subprocess.PIPE).communicate()[0].strip().split(b"\n")[1].strip().decode()
   gui.lineEditPriority.setText(priority)
 
-  #disable cpu checkboxes of the cpu's.
-  for objName in gui.__dict__:
-    if objName.find("checkBox_") != -1:
-      cpuNr = int(objName.split("_")[1])
-      if cpuNr < cpuCount:
-        gui.__dict__[objName].setEnabled(True)
-      else:
-        gui.__dict__[objName].setEnabled(False)
-  
+  #fill the grid with checkboxes
+  grid = gui.__dict__["gridLayout"]
+  row = 0
+  col = 0
+
+  if cpuCount <= 8:
+    rowMax = 4
+  elif cpuCount <= 32:
+    rowMax = 8
+  elif cpuCount <= 128:
+    rowMax = 16
+  else:
+    rowMax = 24
+
+  for cpu in range(cpuCount):
+    cb = QtWidgets.QCheckBox("checkBox_%s" %cpu)
+    cb.setText("CPU_%s" %cpu)
+    grid.addWidget(cb, row, col)
+    row += 1
+    if row > rowMax-1:
+      row = 0
+      col += 1
+
   #check CPU checkboxes
   for cpu in range(cpuCount):
-    for objName in gui.__dict__:
-      if objName == "checkBox_%s" %cpu:
+    for w in gui.findChildren(QtWidgets.QCheckBox):
+      objName = w.text()
+      if objName == "CPU_%s" %cpu:
         if affinity & 2**cpu == 2**cpu:
-          gui.__dict__[objName].setChecked(True)
+          w.setChecked(True)
         else:
-          gui.__dict__[objName].setChecked(False)
+          w.setChecked(False)
           
   dialog.setModal(True)
   dialog.exec_()
@@ -44,9 +59,10 @@ def doAffinityPriority(cpuCount, process):
   #apply new affinity
   newAff = 0
   for cpu in range(cpuCount):
-    for objName in gui.__dict__:
-      if objName == "checkBox_%s" %cpu:
-        if gui.__dict__[objName].isChecked():
+    for w in gui.findChildren(QtWidgets.QCheckBox):
+      objName = w.text()
+      if objName == "CPU_%s" %cpu:
+        if w.isChecked():
           newAff = newAff | 2**cpu
 
   if affinity != newAff:
