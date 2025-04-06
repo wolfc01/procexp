@@ -135,9 +135,21 @@ def performMenuAction(action):
                                                        int(g_settings["historySampleCount"]), \
                                                        int(g_settings["fontSize"]))
     g_settings["updateTimer"] = int(msec)
-    g_settings["historySampleCount"] = int(depth)
     g_settings["fontSize"] = int(fontSize)
     setFontSize(fontSize)
+
+    if g_settings["historySampleCount"] != int(depth):
+      g_settings["historySampleCount"] = int(depth)
+      global g_cpuUsageHistory
+      global g_cpuUsageSystemHistory
+      global g_cpuUsageIoWaitHistory
+      global g_cpuUsageIrqHistory
+      g_cpuUsageHistory = [0] * int(g_settings["historySampleCount"])
+      g_cpuUsageSystemHistory = [0] * int(g_settings["historySampleCount"])
+      g_cpuUsageIoWaitHistory = [0] * int(g_settings["historySampleCount"])
+      g_cpuUsageIrqHistory = [0] * int(g_settings["historySampleCount"])
+    
+
   elif action is g_mainUi.actionSystem_information:
     g_systemOverviewUi.show()
   elif action is g_mainUi.actionNetwork_Information:

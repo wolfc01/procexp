@@ -35,18 +35,13 @@ def message(msg):
   errorbox.exec_()
   
 
-def logUnhandledException(exc_type, exc_value, exc_traceback):
+def logUnhandledException(*exc_info):
   """log an unhandled exception"""
-
-  filename, line, dummy, dummy = \
-    traceback.extract_tb(exc_traceback).pop()
-  filename = os.path.basename(filename)
-  error = "%s: %s" % (str(exc_type).split(".")[-1], exc_value)
-  msg = error + " on line %d, file %s" % (line, filename) 
+  text = "".join(traceback.format_exception(*exc_info))
   errorbox = PyQt5.QtWidgets.QMessageBox()
-  errorbox.setText("Unhandled exception:\n"+msg)
+  errorbox.setText("Unhandled exception:\n"+text)
   errorbox.exec_()
-  open("/tmp/procexp.log","a").write(msg+"\n")
+  open("/tmp/procexp.log","a").write(text+"\n")
   sys.exit()
   
 sys.excepthook = logUnhandledException
