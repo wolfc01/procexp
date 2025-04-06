@@ -148,7 +148,13 @@ def performMenuAction(action):
       g_cpuUsageSystemHistory = [0] * int(g_settings["historySampleCount"])
       g_cpuUsageIoWaitHistory = [0] * int(g_settings["historySampleCount"])
       g_cpuUsageIrqHistory = [0] * int(g_settings["historySampleCount"])
-    
+      if g_reader is not None:
+        g_reader.setNewHistoryDepth(int(depth)) 
+      for process in g_singleProcessUiList:   
+        if g_singleProcessUiList[process] is not None: 
+          g_singleProcessUiList[process].setNewDepth(depth)
+
+
 
   elif action is g_mainUi.actionSystem_information:
     g_systemOverviewUi.show()

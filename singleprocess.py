@@ -222,7 +222,15 @@ class singleUi(object):
     addr = socket.inet_ntop(socket.AF_INET6, addr)
     return addr
 
+  def setNewDepth(self, depth):
+    if self.__depth__ != depth:  
+      self.__TCPHistRec__ = [0] * self.__reader__.getHistoryDepth(self.__proc__)
+      self.__TCPHistSend__ = [0] * self.__reader__.getHistoryDepth(self.__proc__)
+      self.__depth__ = depth  
+      self.__y__ = range(self.__depth__)
+
   def update_sockets(self):
+
     #fill tcp/ip values
     connections, udp = self.__reader__.getAllProcessSockets(self.__proc__) 
     text = []
@@ -471,18 +479,21 @@ class singleUi(object):
         fileInfo = self.__reader__.getFileInfo(self.__proc__)
         row = 0
         for fd in sorted([int(fd) for fd in fileInfo.keys()]):
-          if self.__procDetails__.filesTableWidget.rowCount() <= row:
-            self.__procDetails__.filesTableWidget.insertRow(row)
-          if height != -1:
-            self.__procDetails__.filesTableWidget.setRowHeight(row, height)
-          self.__procDetails__.filesTableWidget.setVerticalHeaderItem (row, QtWidgets.QTableWidgetItem(""))
-          
-          itemFd = QtWidgets.QTableWidgetItem(str(fd))
-          itemPath = QtWidgets.QTableWidgetItem(str(fileInfo[str(fd)]["path"]))
-          itemPos = QtWidgets.QTableWidgetItem(str(fileInfo[str(fd)]["fdinfo"].split("\n")[0].split("\t")[1]))
-          self.__procDetails__.filesTableWidget.setItem(row, 0, itemFd)
-          self.__procDetails__.filesTableWidget.setItem(row, 1, itemPath)
-          self.__procDetails__.filesTableWidget.setItem(row, 2, itemPos)
+          try:
+            if self.__procDetails__.filesTableWidget.rowCount() <= row:
+              self.__procDetails__.filesTableWidget.insertRow(row)
+            if height != -1:
+              self.__procDetails__.filesTableWidget.setRowHeight(row, height)
+            self.__procDetails__.filesTableWidget.setVerticalHeaderItem (row, QtWidgets.QTableWidgetItem(""))
+            
+            itemFd = QtWidgets.QTableWidgetItem(str(fd))
+            itemPath = QtWidgets.QTableWidgetItem(str(fileInfo[str(fd)]["path"]))
+            itemPos = QtWidgets.QTableWidgetItem(str(fileInfo[str(fd)]["fdinfo"].split("\n")[0].split("\t")[1]))
+            self.__procDetails__.filesTableWidget.setItem(row, 0, itemFd)
+            self.__procDetails__.filesTableWidget.setItem(row, 1, itemPath)
+            self.__procDetails__.filesTableWidget.setItem(row, 2, itemPos)
+          except IndexError:
+            pass
           row += 1
           
         

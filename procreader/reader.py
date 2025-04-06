@@ -47,6 +47,14 @@ class singleProcessDetailsAndHistory(object):
     self.ppid = None
     self.threads = {}
 
+  def setNewHistoryDepth(self, newDepth):
+    if newDepth != self.HistoryDepth:
+      self.HistoryDepth = newDepth
+      self.cpuUsageHistory = [0] * newDepth
+      self.cpuUsageKernelHistory = [0] * newDepth
+      self.rssUsageHistory = [0] * newDepth
+      self.IOHistory = [0] * newDepth
+
   def __getFileDetails__(self, hasListener):
     if hasListener:
       try:
@@ -324,6 +332,12 @@ class procreader(object):
         utils.procutils.log("  network graph scaling for %s is set to autoscale" %card)
     if ethtoolerror:
       utils.procutils.log("  ** ethtool not found, or access denied. For better results, allow access to ethtool")
+
+  def setNewHistoryDepth(self, newDepth):
+    if newDepth != self.__historyCount__:
+      self.__historyCount__ = newDepth
+      for process in self.__processList__:
+        self.__processList__[process]["history"].setNewHistoryDepth(newDepth)
 
   def __initReader__(self):
     self.__processList__ = {}
