@@ -205,7 +205,9 @@
     <addaction name="separator"/>
     <addaction name="actionKill_process"/>
     <addaction name="actionKill_process_tree"/>
+    <addaction name="separator"/>
     <addaction name="actionSuspend_process"/>
+    <addaction name="actionResume_process"/>
     <addaction name="separator"/>
     <addaction name="actionProperties"/>
    </widget>
@@ -388,6 +390,11 @@
   <action name="actionClear_Messages">
    <property name="text">
     <string>Clear 'do not show again' messages</string>
+   </property>
+  </action>
+  <action name="actionResume_process">
+   <property name="text">
+    <string>Resume process</string>
    </property>
   </action>
  </widget>

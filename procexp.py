@@ -47,6 +47,8 @@ import signal
 import procreader.tcpip_stat as tcpip_stat
 import rootproxy
 import messageui
+import subprocess
+
 
 version = "2.0.0"
 
@@ -181,6 +183,22 @@ def performMenuAction(action):
     aboutui.doAboutWindow()
   elif action is g_mainUi.actionClear_Messages:
     messageui.clearAllMessages()
+  elif action is g_mainUi.actionSuspend_process:
+    selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
+    process = str(selectedItem.data(1,0))
+    p = subprocess.Popen(["kill", "-s", "SIGSTOP", str(process)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    data = p.communicate()
+    result =p.returncode
+    if p.returncode != 0:
+      utils.procutils.message("suspend process %s failed \n\nmessage=%s" %(process, data[1].decode()))
+  elif action is g_mainUi.actionResume_process:
+    selectedItem = g_mainUi.processTreeWidget.selectedItems()[0]
+    process = str(selectedItem.data(1,0))
+    p = subprocess.Popen(["kill", "-s", "SIGCONT", str(process)], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    data = p.communicate()
+    result =p.returncode
+    if p.returncode != 0:
+      utils.procutils.message("resume process %s failed \n\nmessage=%s" %(process, data[1].decode()))
   else:
     utils.procutils.log("This action (%s)is not yet supported." %action)
 
