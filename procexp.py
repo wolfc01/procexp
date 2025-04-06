@@ -134,7 +134,7 @@ def performMenuAction(action):
     msec, depth, fontSize = settingsMenu.doSettings(int(g_settings["updateTimer"]),\
                                                        int(g_settings["historySampleCount"]), \
                                                        int(g_settings["fontSize"]))
-    g_settings["updateTimer"] = int(msec)
+   
     g_settings["fontSize"] = int(fontSize)
     setFontSize(fontSize)
 
@@ -153,9 +153,8 @@ def performMenuAction(action):
       for process in g_singleProcessUiList:   
         if g_singleProcessUiList[process] is not None: 
           g_singleProcessUiList[process].setNewDepth(depth)
-
-
-
+    g_settings["updateTimer"] = int(msec)
+    g_timer.start(int(g_settings["updateTimer"]))
   elif action is g_mainUi.actionSystem_information:
     g_systemOverviewUi.show()
   elif action is g_mainUi.actionNetwork_Information:
