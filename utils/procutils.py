@@ -67,9 +67,6 @@ lib = ctypes.cdll.LoadLibrary("libc.so.6")
 BLOCKSIZE=4096
 s = ctypes.create_string_buffer(b'\000' * BLOCKSIZE)
 
-class FileError(Exception):
-  pass
-
 def readFullFile(path):
   return open(path,"r").read()
 

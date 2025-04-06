@@ -542,13 +542,10 @@ def updateUI():
       g_mainUi.swap.setMaximum(int(totalSwap))
     else:
       g_mainUi.swap.setMaximum(1)
-
+    g_firstUpdate = False
   except:
-    import traceback
-    utils.procutils.log("Unhandled exception:%s" %traceback.format_exc())
-
-  
-  g_firstUpdate = False
+    g_firstUpdate = False
+    raise
 
 if __name__ == "__main__":
 

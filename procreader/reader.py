@@ -54,13 +54,10 @@ class singleProcessDetailsAndHistory(object):
         self.openFiles = {}
         for fd in allfds:
           self.openFiles[fd] = {"path":os.readlink(self.__pathPrefix__ + "fd"+"/"+fd)}
-
-          #get fileinfo : kernel 2.6.22 and higher
-
           try:
             fileInfo = utils.procutils.readFullFile(self.__pathPrefix__ + "fdinfo/"+fd)
             self.openFiles[fd]["fdinfo"] = fileInfo
-          except:
+          except (IOError, OSError, FileNotFoundError, ProcessLookupError):
             self.openFiles[fd]["fdinfo"] = "??"
 
       except OSError:
@@ -72,10 +69,7 @@ class singleProcessDetailsAndHistory(object):
       try:
         alldirs = os.listdir(self.__pathPrefix__ + "task/")
         for t in alldirs:
-          try:
-            self.threads[t] = [] #to be filled in future releases
-          except:
-            pass
+          self.threads[t] = [] #to be filled in future releases
       except OSError:
         pass
 
@@ -87,7 +81,7 @@ class singleProcessDetailsAndHistory(object):
     if self.__pwd__ == UNKNOWN:
       try:
         self.__pwd__ = os.readlink(self.__pathPrefix__ + "cwd")
-      except:
+      except OSError:
         self.__pwd__ = UNKNOWN
     self.cpuUsageHistory.append(cpuUsage)
     self.cpuUsageKernelHistory.append(cpuUsageKernel)
@@ -104,8 +98,6 @@ class singleProcessDetailsAndHistory(object):
       self.cwd = os.readlink(self.__pathPrefix__ + "cwd")
     except OSError as val:
       self.cwd = "<"+val.strerror+">"
-    except :
-      raise
 
     if self.cmdline == None:
       #do below only once
@@ -113,17 +105,13 @@ class singleProcessDetailsAndHistory(object):
         self.cmdline = utils.procutils.readFullFile(self.__pathPrefix__ + "cmdline").replace("\x00"," ")
       except OSError as val:
         self.cmdline = "<"+val.strerror+">"
-      except utils.procutils.FileError:
+      except (FileNotFoundError, ProcessLookupError):
         self.cmdline = "---"
-      except:
-        raise
 
     try:
       self.exe = os.readlink(self.__pathPrefix__ + "exe")
     except OSError as val:
       self.exe = "<"+val.strerror+">"
-    except :
-      raise
 
     #started time of a process
     if self.startedtime == None:
@@ -144,14 +132,14 @@ class singleProcessDetailsAndHistory(object):
                       datetime.timedelta(seconds=int(int(procstartedtime_seconds)/(HZ*1.0)+0.5))
 
         self.startedtime = procstarted.strftime("%A, %d. %B %Y %I:%M%p")
-      except utils.procutils.FileError:
+      except (FileNotFoundError, ProcessLookupError):
         self.startedtime = "--"
 
     #process parent pid
     if self.ppid is None:
       try:
         self.ppid = utils.procutils.readFullFile(self.__pathPrefix__ + "stat").split(" ")[3]
-      except utils.procutils.FileError:
+      except (FileNotFoundError, ProcessLookupError):
         self.ppid = None
 
     #all threads
@@ -325,7 +313,7 @@ class procreader(object):
           if line.find("Speed") != -1:
             try:
               speed = int(line.split(":")[1].split("Mb/s")[0])
-            except:
+            except (IndexError, ValueError):
               speed = None
       
       if speed is not None:
@@ -454,7 +442,7 @@ class procreader(object):
         try:
           env = utils.procutils.readFullFile(self._prefixDir + "/proc/"+str(process)+"/environ").split("\0")
           self.__processList__[process]["env"] = env
-        except: #pylint:disable=W0702
+        except (IOError, FileNotFoundError, ProcessLookupError):
           pass
       
   def __getProcessCpuDetails__(self):
@@ -470,7 +458,7 @@ class procreader(object):
         if self.__processList__[process]["uid"] == UNKNOWN:
           uid = str(os.stat(self._prefixDir + "/proc/"+str(process))[4])
           self.__processList__[process]["uid"] = self.__getUIDName__(uid)        
-      except:
+      except (IOError, IndexError, KeyError, FileNotFoundError, ProcessLookupError):
         pass #pylint:disable=W0702
       
       try:    
@@ -483,13 +471,13 @@ class procreader(object):
           #if line.startswith(" "):
             #totalRssMem += int(line.split("kB")[0].strip())
             
-      except: #pylint:disable=W0702
+      except (IOError, IndexError, FileNotFoundError, ProcessLookupError): #pylint:disable=W0702
         totalRssMem = 0
       if self.__processList__[process]["hasListener"]:
         try:
           wchan = utils.procutils.readFullFile(self._prefixDir + "/proc/"+str(process)+"/wchan")
           self.__processList__[process]["wchan"] = wchan
-        except: #pylint:disable=W0702
+        except (IOError, FileNotFoundError, ProcessLookupError): #pylint:disable=W0702
           self.__processList__[process]["wchan"] = UNKNOWN
       else:
         self.__processList__[process]["wchan"] = UNKNOWN
@@ -511,7 +499,7 @@ class procreader(object):
         try:
           io = utils.procutils.readFullFile(self._prefixDir + "/proc/"+str(process)+"/io").split("\n")
           iototal = int(io[0].split(": ")[1]) + int(io[1].split(": ")[1])
-        except: #pylint:disable=W0702
+        except (IOError, FileNotFoundError, ProcessLookupError): #pylint:disable=W0702
           iototal = 0
         
         if self.__processList__[process]["prevIO"] == 0: #first time
