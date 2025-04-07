@@ -26,7 +26,6 @@
 import sys
 from PyQt5 import QtCore, QtGui, uic, QtWidgets
 import utils.procutils
-import memorydebug
 
 app = QtWidgets.QApplication(sys.argv)
 
@@ -427,15 +426,8 @@ def expandAll():
     item = g_mainUi.processTreeWidget.topLevelItem(topLevelIndex)
     expandChilds(item)
 
-g_count = 0
 def updateUI():
   """update"""
-  if False:
-    global g_count
-    if g_count > 10:
-      g_count = 0
-      memorydebug.do()
-    g_count+=1
   tcpip_stat.tcpStat().tick()
   try:
     global g_procList
@@ -469,7 +461,7 @@ def updateUI():
     #create new items and mark items to be deleted red
     #draw tree hierarchy of processes
     for proc in newProc:
-      addProcessAndParents(proc, g_procList)
+      widgetItem = addProcessAndParents(proc, g_procList)
 
     #if the process has childs which do still exist, "reparent" the child.
     for proc in g_procList:
@@ -498,27 +490,21 @@ def updateUI():
         pass 
     
     #update status information about the processes  
-    #try:
-    for proc in g_procList:
-      g_treeProcesses[proc].setData(0, 0, g_procList[proc]["name"])
-      g_treeProcesses[proc].setData(1, 0, str(proc))
-      g_treeProcesses[proc].setData(2, 0, g_procList[proc]["cpuUsage"])
-      g_treeProcesses[proc].setData(3, 0, g_procList[proc]["cmdline"])
-      g_treeProcesses[proc].setData(4, 0, g_procList[proc]["uid"])
-      g_treeProcesses[proc].setData(5, 0, g_procList[proc]["wchan"])
-      g_treeProcesses[proc].setData(6, 0, g_procList[proc]["nfThreads"])
-    #except RuntimeError:
+    try:
+      for proc in g_procList:
+        g_treeProcesses[proc].setData(0, 0, g_procList[proc]["name"])
+        g_treeProcesses[proc].setData(1, 0, str(proc))
+        g_treeProcesses[proc].setData(2, 0, g_procList[proc]["cpuUsage"])
+        g_treeProcesses[proc].setData(3, 0, g_procList[proc]["cmdline"])
+        g_treeProcesses[proc].setData(4, 0, g_procList[proc]["uid"])
+        g_treeProcesses[proc].setData(5, 0, g_procList[proc]["wchan"])
+        g_treeProcesses[proc].setData(6, 0, g_procList[proc]["nfThreads"])
+    except RuntimeError:
       #underlying c++ object has been deleted
-    #  pass
+      pass
 
     for proc in closedProc:
       try:
-        parent = g_treeProcesses[proc].parent()
-        if parent is not None:
-          index = parent.indexOfChild(g_treeProcesses[proc])
-          parent.takeChild(index)
-        else:
-          pass
         del g_treeProcesses[proc]
       except KeyError:
         pass
