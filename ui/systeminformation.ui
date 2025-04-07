@@ -819,7 +819,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="baseSize">
@@ -838,7 +838,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -851,7 +851,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -864,7 +864,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -877,7 +877,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -890,7 +890,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -903,7 +903,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -916,7 +916,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -929,7 +929,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -942,7 +942,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -955,7 +955,7 @@
           <property name="minimumSize">
            <size>
             <width>40</width>
-            <height>10</height>
+            <height>13</height>
            </size>
           </property>
           <property name="text">
@@ -965,6 +965,12 @@
         </item>
         <item row="5" column="1">
          <widget class="QLabel" name="swapUsed">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>13</height>
+           </size>
+          </property>
           <property name="text">
            <string>0</string>
           </property>
