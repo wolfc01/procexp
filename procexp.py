@@ -393,18 +393,6 @@ def addProcessAndParents(proc, procList):
     g_toplevelItems[proc] = g_treeProcesses[proc]
   
   return g_treeProcesses[proc]
-  
-def delChild(item, childtodelete):
-  """ Delete child, search recursively
-  """
-  if item != None:
-    for index in range(item.childCount()):
-      thechild = item.child(index)
-      if thechild != None:
-        if thechild == childtodelete:
-          item.takeChild(index)
-        else:
-          delChild(thechild, childtodelete)
           
 def expandChilds(parent):
   """ expand all childs of given parent
@@ -441,73 +429,50 @@ def updateUI():
     g_reader.doReadProcessInfo()
     g_procList, closedProc, newProc = g_reader.getProcessInfo()
 
-    #color all green processes with default background
+    #color all green processes from previous cycle with default background
     defaultBgColor = app.palette().color(QtGui.QPalette.Base)  
     for proc in g_greenTopLevelItems:
       for column in range(g_greenTopLevelItems[proc].columnCount()):
         g_greenTopLevelItems[proc].setBackground(column, defaultBgColor)
     g_greenTopLevelItems = {}
    
-    #delete all red widgetItems
+    #delete all red widgetItems from previous cycle
     for proc in g_redTopLevelItems:
-      for topLevelIndex in range(g_mainUi.processTreeWidget.topLevelItemCount()):
-        topLevelItem = g_mainUi.processTreeWidget.topLevelItem(topLevelIndex)
-        delChild(topLevelItem, g_redTopLevelItems[proc])
-        if topLevelItem == g_redTopLevelItems[proc]:
-          g_mainUi.processTreeWidget.takeTopLevelItem(topLevelIndex)
-          
+      parent = g_redTopLevelItems[proc].parent()
+      if parent is not None:
+        index = parent.indexOfChild(g_redTopLevelItems[proc])
+        parent.takeChild(index)
+      else:
+        index = g_mainUi.processTreeWidget.indexOfTopLevelItem(g_redTopLevelItems[proc])
+        g_mainUi.processTreeWidget.takeTopLevelItem(index)
     g_redTopLevelItems = {}
     
     #create new items and mark items to be deleted red
     #draw tree hierarchy of processes
     for proc in newProc:
-      widgetItem = addProcessAndParents(proc, g_procList)
-
-    #if the process has childs which do still exist, "reparent" the child.
-    for proc in g_procList:
-      if g_procList[proc]["PPID"] == 0:
-        item = g_treeProcesses[proc]
-        if item.parent() is not None:
-          parentItem = item.parent()
-          for idx in range(parentItem.childCount()):
-            if item == parentItem.child(idx):
-              parentItem.takeChild(idx)
-          g_mainUi.processTreeWidget.addTopLevelItem(g_treeProcesses[proc])
+      addProcessAndParents(proc, g_procList)
 
     #copy processed to be deleted to the red list      
     for proc in closedProc:
-      try:
-        g_redTopLevelItems[proc] = g_treeProcesses[proc]
-      except KeyError:
-        pass
-     
+      g_redTopLevelItems[proc] = g_treeProcesses[proc]
+      del g_treeProcesses[proc]
+
     #color all deleted processed red
     for proc in g_redTopLevelItems:
-      try:
-        for column in range(g_redTopLevelItems[proc].columnCount()):
-          g_redTopLevelItems[proc].setBackground(column, QtGui.QColor(255,0,0))
-      except RuntimeError:
-        pass 
+      for column in range(g_redTopLevelItems[proc].columnCount()):
+        g_redTopLevelItems[proc].setBackground(column, QtGui.QColor(255,0,0))
+
     
     #update status information about the processes  
-    try:
-      for proc in g_procList:
-        g_treeProcesses[proc].setData(0, 0, g_procList[proc]["name"])
-        g_treeProcesses[proc].setData(1, 0, str(proc))
-        g_treeProcesses[proc].setData(2, 0, g_procList[proc]["cpuUsage"])
-        g_treeProcesses[proc].setData(3, 0, g_procList[proc]["cmdline"])
-        g_treeProcesses[proc].setData(4, 0, g_procList[proc]["uid"])
-        g_treeProcesses[proc].setData(5, 0, g_procList[proc]["wchan"])
-        g_treeProcesses[proc].setData(6, 0, g_procList[proc]["nfThreads"])
-    except RuntimeError:
-      #underlying c++ object has been deleted
-      pass
 
-    for proc in closedProc:
-      try:
-        del g_treeProcesses[proc]
-      except KeyError:
-        pass
+    for proc in g_procList:
+      g_treeProcesses[proc].setData(0, 0, g_procList[proc]["name"])
+      g_treeProcesses[proc].setData(1, 0, str(proc))
+      g_treeProcesses[proc].setData(2, 0, g_procList[proc]["cpuUsage"])
+      g_treeProcesses[proc].setData(3, 0, g_procList[proc]["cmdline"])
+      g_treeProcesses[proc].setData(4, 0, g_procList[proc]["uid"])
+      g_treeProcesses[proc].setData(5, 0, g_procList[proc]["wchan"])
+      g_treeProcesses[proc].setData(6, 0, g_procList[proc]["nfThreads"])
 
     #color all new processes 'green'
     if g_firstUpdate == False:
