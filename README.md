@@ -55,5 +55,5 @@ _As a non-superuser user:_
 
 ## UNINSTALL
 
-- For packages `pip`, `python3-venv` and `tcpdump`: those are standard packages, and can be removed using their uninstall instructions.
+- For packages `pip`, `python3-venv`, `libxcb-cursor-dev` and `tcpdump`: those are standard packages, and can be removed using their uninstall instructions.
 - For process explorer removal, remove `~/procexp` and `~/procexp-master`. Then your system is clean from all `procexp` traces.
