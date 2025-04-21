@@ -1,4 +1,4 @@
-from PyQt5 import QtGui, uic, QtWidgets
+from PyQt6 import QtGui, uic, QtWidgets
 import subprocess
 import os
 import utils.procutils as procutils
@@ -54,7 +54,7 @@ def doAffinityPriority(cpuCount, process):
           w.setChecked(False)
           
   dialog.setModal(True)
-  dialog.exec_()
+  dialog.exec()
 
   #apply new affinity
   newAff = 0

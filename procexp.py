@@ -24,7 +24,7 @@
 
 #create qt app early, in order to show unhandled exceptions graphically.
 import sys
-from PyQt5 import QtCore, QtGui, uic, QtWidgets
+from PyQt6 import QtCore, QtGui, uic, QtWidgets
 import utils.procutils
 
 app = QtWidgets.QApplication(sys.argv)
@@ -282,7 +282,7 @@ def saveSettings():
 
 def onContextMenu(point):
   global g_mainUi
-  g_mainUi.menuProcess.exec_(g_mainUi.processTreeWidget.mapToGlobal(point))
+  g_mainUi.menuProcess.exec(g_mainUi.processTreeWidget.mapToGlobal(point))
 
 def onHeaderContextMenu(point):
   menu = QtGui.QMenu()
@@ -292,7 +292,7 @@ def onHeaderContextMenu(point):
     action.setChecked(not g_mainUi.processTreeWidget.isColumnHidden(idx))
     action.setData(idx)
     menu.addAction(action)
-  selectedItem = menu.exec_(g_mainUi.processTreeWidget.mapToGlobal(point))
+  selectedItem = menu.exec(g_mainUi.processTreeWidget.mapToGlobal(point))
   if selectedItem is not None:
     g_mainUi.processTreeWidget.setColumnHidden(selectedItem.data().toInt()[0], not selectedItem.isChecked())
   
@@ -304,7 +304,7 @@ def prepareUI(mainUi):
   mainUi.processTreeWidget.setColumnCount(len(g_treeViewcolumns))
   
   mainUi.processTreeWidget.setHeaderLabels(g_treeViewcolumns)
-  mainUi.processTreeWidget.header().setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
+  mainUi.processTreeWidget.header().setContextMenuPolicy(QtCore.Qt.ContextMenuPolicy.CustomContextMenu)
   mainUi.processTreeWidget.header().customContextMenuRequested.connect(onHeaderContextMenu)
 
   #create a timer which triggers the process explorer to update its contents
@@ -435,10 +435,9 @@ def updateUI():
     g_procList, closedProc, newProc = g_reader.getProcessInfo()
 
     #color all green processes from previous cycle with default background
-    defaultBgColor = app.palette().color(QtGui.QPalette.Base)  
     for proc in g_greenTopLevelItems:
       for column in range(g_greenTopLevelItems[proc].columnCount()):
-        g_greenTopLevelItems[proc].setBackground(column, defaultBgColor)
+        g_greenTopLevelItems[proc].setBackground(column, g_mainUi.processTreeWidget.palette().window().color())
     g_greenTopLevelItems = {}
 
     def removeChildren(parent):
@@ -490,6 +489,8 @@ def updateUI():
     for proc in newProc:
       addProcessAndParents(proc, g_procList)
 
+    #get default backgroundcolor once
+    
     #copy processed to be deleted to the red list      
     for proc in closedProc:
       g_redTopLevelItems[proc] = g_treeProcesses.pop(proc)
@@ -620,5 +621,5 @@ if __name__ == "__main__":
 
   signal.signal(signal.SIGINT, signal.SIG_DFL)
 
-  app.exec_()
+  app.exec()
 

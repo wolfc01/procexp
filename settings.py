@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
 
-from PyQt5 import QtCore, QtGui, uic, QtWidgets
+from PyQt6 import QtCore, QtGui, uic, QtWidgets
 import os
 
 ui = None
@@ -43,7 +43,7 @@ def doSettings(millisecWait, depth, fontSize):
   settings.lineEditTimesSecond.textChanged.connect(onChange)
   settings.lineEditFontSize.textChanged.connect(onChange)
 
-  Dialog.exec_()
+  Dialog.exec()
   
   millisecWait = int(1000.0 / float(str(ui.lineEditTimesSecond.displayText())))
   depth = int(str(ui.lineEditNfSamples.displayText()))

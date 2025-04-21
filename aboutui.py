@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
-from PyQt5 import QtGui, uic, QtWidgets
+from PyQt6 import QtGui, uic, QtWidgets
 import os
 
 def doAboutWindow():
@@ -24,5 +24,5 @@ def doAboutWindow():
   dialog = QtWidgets.QDialog()
   about = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/about.ui"), baseinstance=dialog)
   about.label.setPixmap(QtGui.QPixmap(icon))
-  dialog.exec_()
+  dialog.exec()
 

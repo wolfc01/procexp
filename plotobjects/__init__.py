@@ -16,7 +16,7 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
 
-from PyQt5 import QtCore, QtGui
+from PyQt6 import QtCore, QtGui
 import pyqtgraph
 
 class scaleObject:

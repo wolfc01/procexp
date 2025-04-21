@@ -20,7 +20,7 @@
 # Display network overview
 #
 
-from PyQt5 import QtWidgets, QtCore, QtGui, uic
+from PyQt6 import QtWidgets, QtCore, QtGui, uic
 import utils.procutils
 import plotobjects
 import os

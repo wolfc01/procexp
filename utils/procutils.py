@@ -23,24 +23,24 @@ import traceback
 import queue
 logqueue = queue.Queue()
 import sys
-import PyQt5.QtGui
+import PyQt6.QtGui
 import threading
 import socket
 
 _ipResolver = None
 
 def message(msg):
-  errorbox = PyQt5.QtWidgets.QMessageBox()
+  errorbox = PyQt6.QtWidgets.QMessageBox()
   errorbox.setText(msg)
-  errorbox.exec_()
+  errorbox.exec()
   
 
 def logUnhandledException(*exc_info):
   """log an unhandled exception"""
   text = "".join(traceback.format_exception(*exc_info))
-  errorbox = PyQt5.QtWidgets.QMessageBox()
+  errorbox = PyQt6.QtWidgets.QMessageBox()
   errorbox.setText("Unhandled exception:\n"+text)
-  errorbox.exec_()
+  errorbox.exec()
   open("/tmp/procexp.log","a").write(text+"\n")
   sys.exit()
   

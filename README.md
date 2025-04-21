@@ -16,6 +16,7 @@ For now, download the bleeding edge: `procexp` from https://github.com/wolfc01/p
    sudo apt install pip
    sudo apt install python3-venv
    sudo apt install tcpdump
+   sudo apt install libxcb-cursor-dev
    ```
 
 1. ```bash

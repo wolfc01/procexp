@@ -129,7 +129,7 @@ def simGetProcessInfo():
     added = []
   #errorbox = QtWidgets.QMessageBox()
   #errorbox.setText("wait %s:\n" %g_stateCtr)
-  #errorbox.exec_()sleep 30 &
+  #errorbox.exec()sleep 30 &
   if g_stateCtr >= 15:
     g_stateCtr = 2
 

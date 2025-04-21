@@ -2,7 +2,7 @@ from collections import Counter
 import linecache
 import os
 import tracemalloc
-import PyQt5.QtWidgets as QtWidgets 
+import PyQt6.QtWidgets as QtWidgets 
 
 tracemalloc.start()
 

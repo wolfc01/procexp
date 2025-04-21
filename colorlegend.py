@@ -15,7 +15,7 @@
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA
 
-from PyQt5 import QtGui, uic, QtWidgets
+from PyQt6 import QtGui, uic, QtWidgets
 import os
 
 def doColorHelpLegend():
@@ -23,4 +23,4 @@ def doColorHelpLegend():
   dialog = QtWidgets.QDialog()
   myui = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/helplegend.ui"), baseinstance=dialog)
   dialog.setModal(True)
-  dialog.exec_()
+  dialog.exec()

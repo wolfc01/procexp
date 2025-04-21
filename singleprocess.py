@@ -19,7 +19,7 @@
 #
 # Display process properties and statistics of a single process
 #
-from PyQt5 import QtCore, QtGui, uic, QtWidgets
+from PyQt6 import QtCore, QtGui, uic, QtWidgets
 import subprocess
 import utils.procutils
 import procreader.tcpip_stat as tcpip_stat
@@ -324,7 +324,7 @@ class singleUi(object):
     self.__TCPHistRec__ = self.__TCPHistRec__[1:]
 
     self.__procDetails__.tcpipTableWidget.clearContents()
-    fontInfo = QtGui.QFontInfo(self.__procDetails__.tcpipTableWidget.viewOptions().font)
+    fontInfo = QtGui.QFontInfo(self.__procDetails__.tcpipTableWidget.font())
     height = int(fontInfo.pixelSize()*1.2+0.5)
     row=0
     for line in text:      
@@ -457,7 +457,7 @@ class singleUi(object):
         threadsInfo = self.__reader__.getThreads(self.__proc__)
         self.__procDetails__.threadsTableWidget.clearContents()
         
-        fontInfo = QtGui.QFontInfo(self.__procDetails__.threadsTableWidget.viewOptions().font)
+        fontInfo = QtGui.QFontInfo(self.__procDetails__.threadsTableWidget.font())
         height = int(fontInfo.pixelSize()*1.2+0.5)
         
         row=0
@@ -474,7 +474,7 @@ class singleUi(object):
           
         #show open files info
         self.__procDetails__.filesTableWidget.clearContents()
-        fontInfo = QtGui.QFontInfo(self.__procDetails__.filesTableWidget.viewOptions().font)
+        fontInfo = QtGui.QFontInfo(self.__procDetails__.filesTableWidget.font())
         height = int(fontInfo.pixelSize()*1.2+0.5)
         fileInfo = self.__reader__.getFileInfo(self.__proc__)
         row = 0
