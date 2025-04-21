@@ -75,6 +75,7 @@ g_networkOverviewUi = None
 g_mainWindow = None
 g_firstUpdate = True
 g_procList = {}
+g_stateCtr = 0
 
 #default settings
 g_settings = {}
@@ -413,7 +414,10 @@ def expandAll():
   for topLevelIndex in range(g_mainUi.processTreeWidget.topLevelItemCount()):
     item = g_mainUi.processTreeWidget.topLevelItem(topLevelIndex)
     expandChilds(item)
+    g_mainUi.processTreeWidget.expandItem(item)
 
+
+  
 def updateUI():
   """update"""
   tcpip_stat.tcpStat().tick()
@@ -426,6 +430,7 @@ def updateUI():
     if g_mainUi.freezeCheckBox.isChecked():
       return
     
+    deletedChildItems = {}
     g_reader.doReadProcessInfo()
     g_procList, closedProc, newProc = g_reader.getProcessInfo()
 
@@ -435,13 +440,46 @@ def updateUI():
       for column in range(g_greenTopLevelItems[proc].columnCount()):
         g_greenTopLevelItems[proc].setBackground(column, defaultBgColor)
     g_greenTopLevelItems = {}
-   
+
+    def removeChildren(parent):
+      allChilds = []
+      extraRedRemoved = []
+      for idx in range(parent.childCount()):
+        allChilds.append(parent.child(idx)) 
+      for widgetItem in allChilds:
+        #check if this one is already red
+        try:
+          procId = [proc for proc, item in g_redTopLevelItems.items() if item == widgetItem][0]
+          #this process is also red, so widget item can be removed
+          extraRedRemoved.append(procId)
+          continue
+        except IndexError:
+          pass
+        
+        #process not in red list, reparent to existing process parent or root if it has no parent process anymore.
+        try:
+          procId = [proc for proc, item in g_treeProcesses.items() if item == widgetItem][0]
+          parentWidget = g_treeProcesses[g_procList[procId]["PPID"]]
+          parent.removeChild(widgetItem)
+          parentWidget.addChild(widgetItem)
+        except KeyError:
+          #process does not exist, reparent it to toplevel, so it can be colored red the next update cycle
+          parent.removeChild(widgetItem)
+          g_mainUi.processTreeWidget.addTopLevelItem(widgetItem)
+          deletedChildItems[procId] = widgetItem
+      return extraRedRemoved
+
     #delete all red widgetItems from previous cycle
+    childsRemoved = []
     for proc in g_redTopLevelItems:
+      if proc in childsRemoved:
+        continue
       parent = g_redTopLevelItems[proc].parent()
       if parent is not None:
         index = parent.indexOfChild(g_redTopLevelItems[proc])
-        parent.takeChild(index)
+        child = parent.child(index)
+        childsRemoved.append(removeChildren(child))
+        child = parent.takeChild(index)
       else:
         index = g_mainUi.processTreeWidget.indexOfTopLevelItem(g_redTopLevelItems[proc])
         g_mainUi.processTreeWidget.takeTopLevelItem(index)
@@ -454,17 +492,19 @@ def updateUI():
 
     #copy processed to be deleted to the red list      
     for proc in closedProc:
-      g_redTopLevelItems[proc] = g_treeProcesses[proc]
-      del g_treeProcesses[proc]
+      g_redTopLevelItems[proc] = g_treeProcesses.pop(proc)
+
+    for proc in deletedChildItems:
+      g_redTopLevelItems[proc] = deletedChildItems[proc]
+    deletedChildItems = {}
+
 
     #color all deleted processed red
     for proc in g_redTopLevelItems:
       for column in range(g_redTopLevelItems[proc].columnCount()):
         g_redTopLevelItems[proc].setBackground(column, QtGui.QColor(255,0,0))
 
-    
     #update status information about the processes  
-
     for proc in g_procList:
       g_treeProcesses[proc].setData(0, 0, g_procList[proc]["name"])
       g_treeProcesses[proc].setData(1, 0, str(proc))
@@ -474,7 +514,7 @@ def updateUI():
       g_treeProcesses[proc].setData(5, 0, g_procList[proc]["wchan"])
       g_treeProcesses[proc].setData(6, 0, g_procList[proc]["nfThreads"])
 
-    #color all new processes 'green'
+    #color all new processes green
     if g_firstUpdate == False:
       for proc in g_greenTopLevelItems:
         item = g_greenTopLevelItems[proc]
@@ -575,7 +615,7 @@ if __name__ == "__main__":
   g_systemOverviewUi.setFontSize(int(g_settings["fontSize"]))
   g_networkOverviewUi.setFontSize(int(g_settings["fontSize"]))
 
-  updateUI()
+  #updateUI()
 
 
   signal.signal(signal.SIGINT, signal.SIG_DFL)
