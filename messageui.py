@@ -22,51 +22,49 @@
 
 from PyQt6 import uic, QtWidgets
 import os
-dialog = None
 import configobj
 
-g_settings = {}
+class settingsDialog():
+  def __init__(self):
+    self._settings = {}
 
-def _loadMsgSettings():
-  """ load messages earlier shown
-  """
-  global g_settings
-  settingsPath = os.path.expanduser("~/.procexp/questions")
-  if os.path.exists(settingsPath):
-    f = open(settingsPath,"rb")
-    settingsObj = configobj.ConfigObj(infile=f)
-    g_settings=settingsObj.dict()
+  def _loadMsgSettings(self):
+    """ load messages earlier shown
+    """
+    settingsPath = os.path.expanduser("~/.procexp/questions")
+    if os.path.exists(settingsPath):
+      f = open(settingsPath,"rb")
+      settingsObj = configobj.ConfigObj(infile=f)
+      self._settings=settingsObj.dict()
 
-def _saveMsgSettings():
-  """ save messages we dont want to see anymore
-  """
-  settingsPath = os.path.expanduser("~/.procexp")
-  if not(os.path.exists(settingsPath)):
-    os.makedirs(settingsPath)
-  f = open(settingsPath + "/questions","wb")
-  cfg = configobj.ConfigObj(g_settings)
-  cfg.write(f)
-  f.close()
+  def _saveMsgSettings(self):
+    """ save messages we dont want to see anymore
+    """
+    settingsPath = os.path.expanduser("~/.procexp")
+    if not(os.path.exists(settingsPath)):
+      os.makedirs(settingsPath)
+    f = open(settingsPath + "/questions","wb")
+    cfg = configobj.ConfigObj(self._settings)
+    cfg.write(f)
+    f.close()
 
-def clearAllMessages():
-  """ clear persisted messages we dont want to see
-  """
-  settingsPath = os.path.expanduser("~/.procexp/questions")
-  if os.path.exists(settingsPath):
-    os.remove(settingsPath)
-  global g_settings
-  g_settings = {}
-  
-def doMessageWindow(msg):
-  """Make a message window"""
-  _loadMsgSettings()
-  if msg in g_settings:
-    return
-  global dialog
-  dialog = QtWidgets.QDialog()
-  msgDialog = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/message.ui"), baseinstance=dialog)
-  msgDialog.messageLabel.setText(msg)
-  dialog.exec()
-  if msgDialog.showAgainCheckBox.isChecked():
-    g_settings[msg] = True
-    _saveMsgSettings()
+  def clearAllMessages(self):
+    """ clear persisted messages we dont want to see
+    """
+    settingsPath = os.path.expanduser("~/.procexp/questions")
+    if os.path.exists(settingsPath):
+      os.remove(settingsPath)
+    self._settings = {}
+    
+  def doMessageWindow(self, msg):
+    """Make a message window"""
+    self._loadMsgSettings()
+    if msg in self._settings:
+      return
+    dialog = QtWidgets.QDialog()
+    msgDialog = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/message.ui"), baseinstance=dialog)
+    msgDialog.messageLabel.setText(msg)
+    dialog.exec()
+    if msgDialog.showAgainCheckBox.isChecked():
+      self._settings[msg] = True
+      self._saveMsgSettings()
