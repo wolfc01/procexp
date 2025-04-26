@@ -419,6 +419,7 @@ class procreader(object):
     for process in self.__newProcesses__:
       self.__processList__[process] = \
         {"name": "", \
+        "runstatus": "",
         "env": UNKNOWN, \
         "prevJiffy":0, \
         "prevJiffyKernel":0, \

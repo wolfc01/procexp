@@ -45,7 +45,7 @@ def logUnhandledException(*exc_info):
   text = "".join(traceback.format_exception(*exc_info))
   if tbFromProxy is not None:
     text += "----------\n"
-  text += tbFromProxy
+    text += tbFromProxy
   errorbox = PyQt6.QtWidgets.QMessageBox()
   errorbox.setText("Unhandled exception:\n"+text)
   errorbox.exec()
