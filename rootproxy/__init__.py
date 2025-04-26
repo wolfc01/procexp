@@ -10,7 +10,14 @@ rootProxySingleton = None
 
 class CommandException(Exception):
   """exception raised when command has failed"""
-  pass
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args)
+    if "tb" in kwargs:
+      self._tb = kwargs["tb"]
+    else:
+      self._tb = None
+
+
 
 def _write(f, data):
   """write to FIFO"""
@@ -24,28 +31,38 @@ class rootProxyObject:
     self._ptoc_filename = "/tmp/ptoc"+str(uuid.uuid4()) #ParentTOChild
     self._ctop_filename = "/tmp/ctop"+str(uuid.uuid4()) #ChildTOParent
     self._procroot = None
+    self._pkexecError = False
     self.started = None
+    self.runningAsRoot = False
           
-    if asRoot:
-      thisFile = __file__
-      thisFile = thisFile.replace(".pyc", ".py")
-      self._procroot = subprocess.Popen(["pkexec", thisFile.replace("__init__", "procroot"), self._ptoc_filename, self._ctop_filename])
-    else:
-      self._procroot = subprocess.Popen([os.path.abspath(__file__).replace("__init__", "procroot"), self._ptoc_filename, self._ctop_filename])
+    #try as root
+    thisFile = __file__
+    thisFile = thisFile.replace(".pyc", ".py")
+    self._procroot = subprocess.Popen(["pkexec", thisFile.replace("__init__", "procroot"), self._ptoc_filename, self._ctop_filename])
 
     while True:
       try:
+        if self._procroot.poll() is not None:
+          self._pkexecError = True
+          break
         os.close(os.open(self._ptoc_filename, flags= os.O_WRONLY)) #does file exist?
         self._ptoc_file = open(self._ptoc_filename, "w")
-        break
-      except IOError:
-        time.sleep(0.1)
-    while True:
-      try:
         self._ctop_file = open(self._ctop_filename, "r")
+        self.runningAsRoot = True
         break
       except IOError:
         time.sleep(0.1)
+
+    if self._pkexecError:
+      self._procroot = subprocess.Popen([os.path.abspath(__file__).replace("__init__", "procroot"), self._ptoc_filename, self._ctop_filename])
+      while True:
+        try:
+          os.close(os.open(self._ptoc_filename, flags= os.O_WRONLY)) #does file exist?
+          self._ptoc_file = open(self._ptoc_filename, "w")
+          self._ctop_file = open(self._ctop_filename, "r")
+          break
+        except IOError:
+          time.sleep(0.1)
     self.started = True
   
   def doCommand(self, CommandAndArgList):
@@ -61,7 +78,7 @@ class rootProxyObject:
     _data = self._ctop_file.readline()
     result = eval(_data)
     if result[0] == const.Result.FAIL:
-      raise CommandException
+      raise CommandException(tb=result[1])
     else:
       return result[1]
 
@@ -98,6 +115,7 @@ def start(asRoot = True):
   global rootProxySingleton
   """start the command process, possible as root if required"""
   rootProxySingleton = rootProxyObject(asRoot)
+  return rootProxySingleton.runningAsRoot
 
 def end():
   if rootProxySingleton is not None: 

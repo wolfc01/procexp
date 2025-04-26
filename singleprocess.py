@@ -56,7 +56,7 @@ class singleUi(object):
     self.__dialog__ = QtWidgets.QDialog()
     self.__procDetails__ = uic.loadUi(os.path.join(os.path.dirname(__file__), "./ui/processdetails.ui"), baseinstance=self.__dialog__)
     self.__dialog__.show()
-    self.__dialog__.setWindowTitle(proc+":"+cmdLine+" Properties")
+    self.__dialog__.setWindowTitle(name+","+proc+":"+cmdLine+" Properties")
     self.__processGone__ = False
     self.__y__ = range(self.__depth__)
     self.__tcpConnections__ = []

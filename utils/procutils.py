@@ -26,6 +26,7 @@ import sys
 import PyQt6.QtGui
 import threading
 import socket
+import rootproxy
 
 _ipResolver = None
 
@@ -37,7 +38,14 @@ def message(msg):
 
 def logUnhandledException(*exc_info):
   """log an unhandled exception"""
+  if exc_info[0] is rootproxy.CommandException:
+    tbFromProxy = exc_info[1]._tb  
+  else:
+    tbFromProxy = None
   text = "".join(traceback.format_exception(*exc_info))
+  if tbFromProxy is not None:
+    text += "----------\n"
+  text += tbFromProxy
   errorbox = PyQt6.QtWidgets.QMessageBox()
   errorbox.setText("Unhandled exception:\n"+text)
   errorbox.exec()

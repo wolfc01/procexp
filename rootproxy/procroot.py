@@ -52,6 +52,8 @@ while True:
     try:
       result = os.listdir(subprocesscommand[1])
       _write(ctop_fifo, repr((const.Result.OK, result)))
+    except PermissionError:
+      _write(ctop_fifo, repr((const.Result.OK, [])))
     except:
       tb = traceback.format_exc()
       _write(ctop_fifo, repr((const.Result.FAIL, tb)))

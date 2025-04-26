@@ -100,11 +100,11 @@ class procexp:
     self._mainWindow.show()
 
     app.processEvents()
-    rootproxy.start(asRoot=True)
+    runningAsRoot = rootproxy.start(asRoot=True)
 
     self._messageui = messageui.settingsDialog() 
 
-    if not rootproxy.isStarted():
+    if not runningAsRoot:
       self._messageui.doMessageWindow("Process explorer has no root privileges. TCPIP traffic monitoring (using tcpdump) will not be available.")
 
     self._reader = procreader.reader.procreader(int(self._settings["updateTimer"]), int(self._settings["historySampleCount"]))
@@ -157,7 +157,10 @@ class procexp:
         self._singleProcessUiList[process].makeVisible()
       else:
         if int(process) in self._procList:
-          self._singleProcessUiList[process] = singleprocess.singleUi(process, self._procList[int(process)]["cmdline"], self._procList[int(process)]["name"], self._reader, int(self._settings["historySampleCount"]))
+          if self._procList[int(process)]["runstatus"] == "Z":
+            self._singleProcessUiList[process] = singleprocess.singleUi(process, self._procList[int(process)]["cmdline"], "["+self._procList[int(process)]["name"]+"]", self._reader, int(self._settings["historySampleCount"]))
+          else:
+            self._singleProcessUiList[process] = singleprocess.singleUi(process, self._procList[int(process)]["cmdline"], self._procList[int(process)]["name"], self._reader, int(self._settings["historySampleCount"]))
     elif action is self._mainUi.actionSaveSettings:
       self.saveSettings()
     elif action is self._mainUi.actionSettings:
@@ -495,7 +498,10 @@ class procexp:
 
       #update status information about the processes  
       for proc in self._procList:
-        self._treeProcesses[proc].setData(0, 0, self._procList[proc]["name"])
+        if self._procList[proc]["runstatus"] == "Z": #zombie
+          self._treeProcesses[proc].setData(0, 0, "["+self._procList[proc]["name"]+"]")
+        else:
+          self._treeProcesses[proc].setData(0, 0, self._procList[proc]["name"])
         self._treeProcesses[proc].setData(1, 0, str(proc))
         self._treeProcesses[proc].setData(2, 0, self._procList[proc]["cpuUsage"])
         self._treeProcesses[proc].setData(3, 0, self._procList[proc]["cmdline"])
@@ -554,7 +560,7 @@ class procexp:
       totalSwap = mem[5]
       actualSwap = mem[4]
       self._mainUi.memory.setValue(int(mem[0]-mem[1]))
-      self._mainUi.memory.setMaximum(int(mem[0]))
+      self._mainUi.memory.setMaximum(int(mem[0])) 
       self._mainUi.swap.setValue(int(actualSwap))
       if totalSwap > 0:
         self._mainUi.swap.setMaximum(int(totalSwap))

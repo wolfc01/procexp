@@ -498,6 +498,7 @@ class procreader(object):
         
       if procStat != None:
         procStatSplitted =  [procStat.split(" (")[0]]+[procStat.split(" (")[1].split(") ")[0]]+procStat.split(") ")[1].split()
+        self.__processList__[process]["runstatus"] = procStatSplitted[2]
         nextJiffy = int(procStatSplitted[13]) + int(procStatSplitted[14])
         try:
           cpuUsage = round(((nextJiffy - self.__processList__[process]["prevJiffy"]) / (self.__deltaJiffies__ * 1.0)) * 100, 1)
