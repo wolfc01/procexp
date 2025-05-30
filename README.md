@@ -1,12 +1,12 @@
 # Process Explorer for Linux
 
-This tool is a 'swiss army knife' for programmers and system administrators to study per-process memory usage, IO usage, runtime memory leaks, TCP/UDP usage, and also process hierarchy.
+This tool is a 'Swiss army knife' for programmers and system administrators to study per-process memory usage, IO usage, runtime memory leaks, TCP/UDP usage, and also process hierarchy.
 
 The Linux Process Explorer was inspired by [the Sysinternals Process Explorer tool by Microsoft](https://docs.microsoft.com/en-us/sysinternals/downloads/process-explorer).
 
 ## INSTALLATION
 
-download latest release: `procexp` from https://github.com/wolfc01/procexp/archive/refs/tags/v2.0.0.zip 
+Download the latest release: `procexp` from https://github.com/wolfc01/procexp/archive/refs/tags/v2.0.0.zip 
 
 ### Ubuntu 24.04.2, Mint 22.1
 
@@ -28,8 +28,9 @@ download latest release: `procexp` from https://github.com/wolfc01/procexp/archi
    ~/procexp/bin/pip install -r requirements.txt
    ```
 
-### fedora workstation 41
-1. ```
+### Fedora Workstation 41
+
+1. ```sh
    #!/usr/bin/env sh
    sudo dnf install python3-pip
    ```   
