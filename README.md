@@ -6,7 +6,7 @@ The Linux Process Explorer was inspired by [the Sysinternals Process Explorer to
 
 ## INSTALLATION
 
-For now, download the bleeding edge: `procexp` from https://github.com/wolfc01/procexp/archive/refs/heads/master.zip 
+download latest release: `procexp` from https://github.com/wolfc01/procexp/archive/refs/tags/v2.0.0.zip 
 
 ### Ubuntu 24.04.2, Mint 22.1
 
