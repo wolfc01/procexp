@@ -273,6 +273,9 @@
    </property>
   </action>
   <action name="actionShow_process_from_all_users">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>Show process from all users</string>
    </property>

@@ -156,7 +156,7 @@ class procexp:
       process = selectedItem.data(1,0)
       self.killProcessTree(process, self._procList)
     elif action is self._mainUi.actionShow_process_from_all_users:
-      if self._onlyUser:
+      if action.isChecked():
         self._reader.noFilterUID()
         self.clearTree()
         self._onlyUser = False
@@ -347,6 +347,7 @@ class procexp:
     mainUi.menuProcess.triggered.connect(self.performMenuAction)
     mainUi.menuOptions.triggered.connect(self.performMenuAction)
     mainUi.menuSettings.triggered.connect(self.performMenuAction)
+    mainUi.actionShow_process_from_all_users.setChecked(not self._onlyUser)
     mainUi.menuView.triggered.connect(self.performMenuAction)
     mainUi.menuHelp.triggered.connect(self.performMenuAction)
     
