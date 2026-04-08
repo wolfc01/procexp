@@ -684,6 +684,8 @@ class procreader(object):
     for line in data:
       cardName = line.split(":")[0].strip()
       if len(cardName) > 0:
+        if cardName not in self.__networkCards__:
+          self.__networkCards__[cardName] = {"actual": [0, 0, 0, 0], "speed": None}
         splittedLine = line.split(":")[1].split()
         recv = int(splittedLine[0])
         sent = int(splittedLine[8])

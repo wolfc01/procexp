@@ -24,10 +24,17 @@
 
 #create qt app early, in order to show unhandled exceptions graphically.
 import sys
+import argparse
+import pwd
 from PyQt6 import QtCore, QtGui, uic, QtWidgets
 import utils.procutils
 
-app = QtWidgets.QApplication(sys.argv)
+parser = argparse.ArgumentParser(description="Process Explorer for Linux")
+parser.add_argument("--user", metavar="USER", help="show processes of USER (name or UID) instead of the current user")
+parser.add_argument("--all-users", action="store_true", help="show processes from all users on startup")
+args, qt_args = parser.parse_known_args()
+
+app = QtWidgets.QApplication([sys.argv[0]] + qt_args)
 
 import procreader.reader
 import logui
@@ -61,6 +68,16 @@ class procexp:
     self._toplevelItems = {}
     self._mainUi = None
     self._onlyUser = True
+    self._filterUID = os.geteuid()
+
+    if args.all_users:
+      self._onlyUser = False
+    elif args.user is not None:
+      try:
+        self._filterUID = int(args.user)
+      except ValueError:
+        self._filterUID = pwd.getpwnam(args.user).pw_uid
+
     self._greenTopLevelItems = {}
     self._redTopLevelItems = {}
     self._singleProcessUiList = {}
@@ -112,7 +129,7 @@ class procexp:
     self._timer.start(int(self._settings["updateTimer"]))
 
     if self._onlyUser:
-      self._reader.setFilterUID(os.geteuid())
+      self._reader.setFilterUID(self._filterUID)
 
     self._systemOverviewUi = systemoverview.systemOverviewUi(self._reader.getCpuCount(), int(self._settings["historySampleCount"]), self._reader)
     self._networkOverviewUi = networkoverview.networkOverviewUi(self._reader.getNetworkCards(), int(self._settings["historySampleCount"]), self._reader)
@@ -139,12 +156,12 @@ class procexp:
       process = selectedItem.data(1,0)
       self.killProcessTree(process, self._procList)
     elif action is self._mainUi.actionShow_process_from_all_users:
-      if self._onlyUser:
+      if action.isChecked():
         self._reader.noFilterUID()
         self.clearTree()
         self._onlyUser = False
       else:
-        self._reader.setFilterUID(os.geteuid())
+        self._reader.setFilterUID(self._filterUID)
         self.clearTree()
         self._onlyUser = True
     elif action is self._mainUi.actionProperties:
@@ -303,7 +320,7 @@ class procexp:
     self._mainUi.menuProcess.exec(self._mainUi.processTreeWidget.mapToGlobal(point))
 
   def onHeaderContextMenu(self, point):
-    menu = QtGui.QMenu()
+    menu = QtWidgets.QMenu()
     for idx, col in enumerate(self._treeViewcolumns):
       action = QtGui.QAction(col, self._mainUi.processTreeWidget)
       action.setCheckable(True)
@@ -330,6 +347,7 @@ class procexp:
     mainUi.menuProcess.triggered.connect(self.performMenuAction)
     mainUi.menuOptions.triggered.connect(self.performMenuAction)
     mainUi.menuSettings.triggered.connect(self.performMenuAction)
+    mainUi.actionShow_process_from_all_users.setChecked(not self._onlyUser)
     mainUi.menuView.triggered.connect(self.performMenuAction)
     mainUi.menuHelp.triggered.connect(self.performMenuAction)
     
