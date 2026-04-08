@@ -35,7 +35,7 @@ Download the latest release: `procexp` from https://github.com/wolfc01/procexp/a
    sudo dnf install python3-pip
    ```   
 
-## Start Process Explorer: 
+## Start Process Explorer:
 
 _As a non-superuser user:_
 
@@ -53,6 +53,14 @@ _As a non-superuser user:_
    cd procexp-master
    ~/procexp/bin/python3 ./procexp.py
    ```
+
+### Command line options
+
+| Option | Description |
+|---|---|
+| `--user USER` | Show processes of USER (name or UID) instead of the current user |
+| `--all-users` | Show processes from all users on startup |
+| `-h`, `--help` | Show help message and exit |
 
 ## UNINSTALL
 
