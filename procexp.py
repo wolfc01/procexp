@@ -303,7 +303,7 @@ class procexp:
     self._mainUi.menuProcess.exec(self._mainUi.processTreeWidget.mapToGlobal(point))
 
   def onHeaderContextMenu(self, point):
-    menu = QtGui.QMenu()
+    menu = QtWidgets.QMenu()
     for idx, col in enumerate(self._treeViewcolumns):
       action = QtGui.QAction(col, self._mainUi.processTreeWidget)
       action.setCheckable(True)
